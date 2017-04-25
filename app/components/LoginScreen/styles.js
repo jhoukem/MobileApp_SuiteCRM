@@ -11,36 +11,47 @@ export const styles = StyleSheet.create({
 		fontSize: 12,
   	},
 
+  	fontError: {
+		color: 'red',
+		fontSize: 15,
+  	},
+
   	fontMedium: {
 		color: 'black',
 		fontWeight: 'bold',
 		fontSize: 15,
   	},
 
-  	allCentered: {
+  	logoWrapper: {
+    	flex: 0.3,
+  	},
+	
+	inputWrapper: {
+		flex: 0.2,
+    	padding: 20,
+    	//backgroundColor: 'black'
+  	},
+
+	statusWrapper: {
+		flex: 0.1,
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: 'center',
+		padding: 10,
 	},
 
-
-  	logoWrap: {
-    	flex: 0.4,
-        //padding: 30,
-  	},
-	
-	logo: {
-		flex: 1,
-    	width: null,
-    	height: null,
+  	buttonWrapper: {
+		flex: 0.1,
+    	padding: 20,
   	},
 
-	wrapper: {
-		flex: 0.5,
-    	padding: 30,
+  	iconWrap: {
+    	paddingHorizontal: 5,
+    	alignItems: 'center',
+    	justifyContent: 'center',
   	},
 
-  	inputWrap: {
+  	inputLineWrap: {
     	flexDirection: 'row',
     	marginVertical: 10,
     	height: 40,
@@ -48,10 +59,10 @@ export const styles = StyleSheet.create({
     	borderBottomColor: '#CCCC',
   	},
 
-  	iconWrap: {
-    	paddingHorizontal: 7,
-    	alignItems: 'center',
-    	justifyContent: 'center',
+  	logo: {
+		flex: 1,
+    	width: null,
+    	height: null,
   	},
 
   	icon: {

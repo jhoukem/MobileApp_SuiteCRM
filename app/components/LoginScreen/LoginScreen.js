@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, TextInput, Image, View } from 'react-native';
+import { Text, TextInput, Image, View, Button } from 'react-native';
 
 import { styles, images } from './index.js'
 
@@ -7,20 +7,36 @@ export class LoginScreen extends Component {
 
   constructor(props) {
     super(props);
-    this.state= {status: ''};
+    this.state= {status: 'Wrong credential and a super long text that should end wrapping around that park in california'};
   }
 
   render() {
     return (
     <View style={styles.container}>
 
-        <View style={styles.logoWrap}>
+        <View style={styles.logoWrapper}>
             <Image source={images.logoExelcia} style={styles.logo} resizeMode="contain" />
         </View>
 
      
-        <View style={styles.wrapper}>
-            <View style={styles.inputWrap}>
+        <View style={styles.inputWrapper}>
+            
+            {/* Server field*/}
+            <View style={styles.inputLineWrap}>
+                <View style={styles.iconWrap}>
+                    <Image source={images.serverIcon} style={styles.icon} resizeMode="contain" />
+                </View>
+                <TextInput 
+                  maxLength = {15}
+                  keyboardType = "numeric"
+                  placeholder="IP server" 
+                  placeholderTextColor="#CCC"
+                  style={styles.input} 
+                />
+            </View>
+
+            {/* Login field*/}
+            <View style={styles.inputLineWrap}>
                 <View style={styles.iconWrap}>
                     <Image source={images.personIcon} style={styles.icon} resizeMode="contain" />
                 </View>
@@ -31,8 +47,9 @@ export class LoginScreen extends Component {
                   style={styles.input} 
                 />
             </View>
-
-            <View style={styles.inputWrap}>
+            
+            {/* Password field*/}
+            <View style={styles.inputLineWrap}>
                 <View style={styles.iconWrap}>
                     <Image source={images.lockIcon} style={styles.icon} resizeMode="contain" />
                 </View>
@@ -44,20 +61,17 @@ export class LoginScreen extends Component {
                 />
             </View>
         </View>
-
-
-
-    {/*
-            
-
-        
-        
-      */}
-
-        
-        <View style={styles.allCentered}>
-          <Text style={styles.fontBasic}> { this.state.status } </Text>
- 	      </View>
+        <View style={styles.statusWrapper}>
+          <Text style={styles.fontError}> { this.state.status } </Text>
+        </View>
+        <View style={styles.buttonWrapper}>
+            <Button
+              /*onPress={onConnect}*/
+              title="Connect"
+              color="#1F94B7"
+              accessibilityLabel="Connect to the CRM server"
+            />
+        </View>
     </View>
     );
   }
