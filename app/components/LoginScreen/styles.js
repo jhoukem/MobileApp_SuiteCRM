@@ -2,35 +2,36 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
 	
-	container: {
+  container: {
 		flex: 1,
+    backgroundColor: "white",
 	},
 
 	fontBasic: {
-		color: 'black',
+	  color: 'black',
 		fontSize: 12,
-  	},
+  },
 
-  	fontError: {
+  fontError: {
 		color: 'red',
 		fontSize: 15,
-  	},
+  },
 
-  	fontMedium: {
+  fontMedium: {
 		color: 'black',
 		fontWeight: 'bold',
 		fontSize: 15,
-  	},
+  },
 
-  	logoWrapper: {
+  logoWrapper: {
     	flex: 0.3,
-  	},
+  },
 	
 	inputWrapper: {
 		flex: 0.2,
     	padding: 20,
     	//backgroundColor: 'black'
-  	},
+  },
 
 	statusWrapper: {
 		flex: 0.1,
@@ -40,39 +41,39 @@ export const styles = StyleSheet.create({
 		padding: 10,
 	},
 
-  	buttonWrapper: {
+  buttonWrapper: {
 		flex: 0.1,
-    	padding: 20,
-  	},
+    padding: 20,
+  },
 
-  	iconWrap: {
+  iconWrap: {
     	paddingHorizontal: 5,
     	alignItems: 'center',
     	justifyContent: 'center',
-  	},
+  },
 
-  	inputLineWrap: {
+  inputLineWrap: {
     	flexDirection: 'row',
     	marginVertical: 10,
     	height: 40,
     	borderBottomWidth: 1,
     	borderBottomColor: '#CCCC',
-  	},
+  },
 
-  	logo: {
-		flex: 1,
+  logo: {
+	    flex: 1,
     	width: null,
     	height: null,
-  	},
+  },
 
-  	icon: {
+  icon: {
     	height: 20,
     	width: 20,
-  	},
+  },
 
-  	input: {
+  input: {
     	flex: 1,
     	paddingHorizontal: 10,
-  	},
+  },
 
 });

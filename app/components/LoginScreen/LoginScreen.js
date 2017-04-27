@@ -7,7 +7,29 @@ export class LoginScreen extends Component {
 
   constructor(props) {
     super(props);
-    this.state= {status: 'Wrong credential and a super long text that should end wrapping around that park in california'};
+    this.state= {status: ''};
+    this.navigate = this.navigate.bind(this);
+  }
+
+
+  connect(){
+    var success = true;
+
+    /*
+      Handle the connection process
+    */
+
+    if(success){
+      this.navigate('List');
+    } else {
+      this.setState({status: 'Cannot connect to the given server'});
+    }
+  }
+
+  navigate(route){
+    this.props.navigator.push({
+      name: route,
+    })
   }
 
   render() {
@@ -66,7 +88,7 @@ export class LoginScreen extends Component {
         </View>
         <View style={styles.buttonWrapper}>
             <Button
-              /*onPress={onConnect}*/
+              onPress={() => this.connect()}
               title="Connect"
               color="#1F94B7"
               accessibilityLabel="Connect to the CRM server"
