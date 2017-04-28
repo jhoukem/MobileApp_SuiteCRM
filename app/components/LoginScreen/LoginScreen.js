@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Text, TextInput, Image, View, Button } from 'react-native';
 
 import { styles, images } from './index.js'
+import * as constants from '../../config/const.js'
+
 
 export class LoginScreen extends Component {
 
@@ -12,15 +14,58 @@ export class LoginScreen extends Component {
   }
 
 
-  connect(){
-    var success = true;
+  authentify(login, password){
 
-    /*
-      Handle the connection process
-    */
+
+    var credentials = {
+          user_auth:{
+              user_name: login,
+              password: password,
+          },
+          application: "RestTest",
+    };
+
+
+
+
+    var param = {  
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+              'method': 'login',
+              'input_type': 'JSON',
+              'response_type': 'JSON',
+              'rest_data': credentials,
+        })
+      }
+
+    console.log("Param to send :");
+    console.log(param);
+
+    /**
+    GET functionnal call
+    http://localhost/SuiteCRM/service/v3_1/rest.php?method=login&input_type=JSON&response_type=JSON&rest_data={%22user_auth%22:{%22user_name%22:%22admin%22,%22password%22:%2221232f297a57a5a743894a0e4a801fc3%22},%22application_name%22:%22test%22}
+    **/
+
+    fetch('http://10.32.15.51/SuiteCRM/service/v2/rest.php', param)  
+    .then(function(res) {
+        console.log("Retour :");
+        console.log(res);
+    })
+  
+    console.log('end');
+  }
+
+  connect(){
+    var success = false;
+
+    success = this.authentify('admin', '21232f297a57a5a743894a0e4a801fc3');
 
     if(success){
-      this.navigate('List');
+      this.navigate(constants.listScreen);
     } else {
       this.setState({status: 'Cannot connect to the given server'});
     }
@@ -28,7 +73,7 @@ export class LoginScreen extends Component {
 
   navigate(route){
     this.props.navigator.push({
-      name: route,
+      id: route,
     })
   }
 

@@ -7,14 +7,13 @@ export class ProspectEditScreen extends Component {
 
   constructor(props) {
     super(props);
-    this.state= { prospectName: 'Jean' };
   }
   
   handleCancel(){
 	Alert.alert('Abandonner', "Êtes vous sur de vouloir abandonner vos modifications ?",
         [
         	{text: 'Non', },
-            {text: 'Oui', onPress: () => this.props.navigator.pop()},
+          {text: 'Oui', onPress: () => this.props.navigator.pop()},
         ]
     )
   }
@@ -23,30 +22,57 @@ export class ProspectEditScreen extends Component {
   	var success = true;
 
   	if(success){
-		Alert.alert('Succès', "Le prospect à bien été enregistré dans votre CRM",
-    	[ 
-    		{text: 'OK', onPress: () => this.props.navigator.pop()},
-    	]
-    )
+		    Alert.alert('Succès', "Le prospect à bien été enregistré dans votre CRM",
+    	   [ 
+    		    {text: 'OK', onPress: () => this.props.navigator.pop()},
+    	   ]
+        )
   	} else {
-  		Alert.alert('Erreur', "Le prospect n'a pas pu être enregistré dans votre CRM",
-    	[ 
-    		{text: 'OK', },
-    	]
-    )
+  		  Alert.alert('Erreur', "Le prospect n'a pas pu être enregistré dans votre CRM",
+    	   [ 
+    		    {text: 'OK', },
+    	   ]
+        )
   	}
+  }
 
-	
+  handleDelete(){
+    var success = true;
+
+    if(success){
+        Alert.alert('Succès', "Le prospect à bien été supprimé de votre CRM",
+         [ 
+            {text: 'OK', onPress: () => this.props.navigator.pop()},
+         ]
+        )
+    } else {
+        Alert.alert('Erreur', "Le prospect n'a pas pu être supprimé de votre CRM",
+         [ 
+            {text: 'OK', },
+         ]
+        )
+    }
+  }
+
+  setNavActions(){
+    var navigator = this.props.navigator;
+    navigator.__onLeftNavButtonPressed = this.handleCancel.bind(this);
+    navigator.__onRightNavButtonPressed = this.handleSave.bind(this);
   }
 
   render() {
+    this.setNavActions();
+
     	return (
     		<View style={styles.container}>
     			
     					
     				<View style={styles.headerWrapper}>
-    					<Text>Prospect name: {this.state.prospectName} </Text>
-    				</View>
+                {/*Only display the prospect ID field if it exists*/}
+                {this.props.itemID !== undefined &&
+    					       <Text>Prospect ID: {this.props.itemID} </Text>
+    				    }
+            </View>
 
     				<View style={styles.bodyWrapper}>
     					<ScrollView style={styles.scroll}>
@@ -64,33 +90,18 @@ export class ProspectEditScreen extends Component {
     					</ScrollView>
     				</View>
     			
-    				<View style={styles.buttonWrapper}>
+            {/*Only display the delete button when the screen is accessed from an existing prospect*/}
+            {this.props.isEdition &&
 
-    					{/*Only display the delete button when the screen is accessed from an existing prospect*/}
-    					{this.props.arg != "Create" &&
-
-    						<Button
-              					/*onPress={onConnect}*/
-             					title= "Delete"
-              					color="red"
-              					accessibilityLabel="Create a new contact"
-            				/>
-            			}
-
-    					<Button
-              				onPress={() => this.handleCancel()}
-             				title="Cancel"
-              				color="orange"
-              				accessibilityLabel="Modify the selected contact"
-            			/>
-            			<Button
-              				onPress={() => this.handleSave()}
-              				title="Save"
-              				color="green"
-              				accessibilityLabel="Delete the selected contact"
-            			/>
-    				</View>
-    			
+    				    <View style={styles.buttonWrapper}>
+    						    <Button
+              				  onPress={() => this.handleDelete()}
+             					  title= "Delete"
+              				  color="red"
+              				  accessibilityLabel="Delete a the prospect"
+            		    />
+    				    </View>
+    			  }
     		</View>
     		);
   }

@@ -5,17 +5,19 @@ export const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: "white",
+		paddingTop: 50,
 	},
 
 	headerWrapper: {
 		flex: 0.05,
-		justifyContent: 'space-around',
-		padding: 20,
+		justifyContent: 'center',
+		alignItems: 'flex-start',
+		padding: 10,
 	},
 
 	bodyWrapper: {
 		flex: 0.6,
-		padding: 10,
+		padding: 20,
 	},
 
 
@@ -31,6 +33,18 @@ export const styles = StyleSheet.create({
 	scroll: {
 		borderWidth: 2,
     	borderColor: '#CCCC',
-	}
+	},
+
+	fontBasic: {
+		color: 'grey',
+		fontSize: 15,
+		backgroundColor: "white",
+	},
+
+	fontProspect: {
+		color: 'black',
+		fontSize: 25,
+		backgroundColor: "white",
+	},
 
 });
