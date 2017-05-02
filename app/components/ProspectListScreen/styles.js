@@ -20,6 +20,12 @@ export const styles = StyleSheet.create({
 		padding: 20,
 	},
 
+	activityIndicator: {
+		flex: 1,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
 
 	buttonWrapper: {
 		flex: 0.05,
