@@ -1,83 +1,91 @@
 import React, { Component } from 'react';
-import { Text, TextInput, Image, View, Button } from 'react-native';
+import { Text, TextInput, Image, View, Button, ActivityIndicator } from 'react-native';
 
 import { styles, images } from './index.js'
 import * as constants from '../../config/const.js'
 
+var DEBUG = false;
+var MD5 = require("crypto-js/md5");
+const HEADERS = 'method=login&input_type=JSON&response_type=JSON&rest_data=';
 
 export class LoginScreen extends Component {
 
   constructor(props) {
     super(props);
-    this.state= {status: ''};
+    this.state= {status: '', session: null, isFetching: false};
     this.navigate = this.navigate.bind(this);
   }
 
 
-  authentify(login, password){
-
-
-    var credentials = {
-          user_auth:{
-              user_name: login,
-              password: password,
-          },
-          application: "RestTest",
-    };
-
-
-
-
-    var param = {  
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-              'method': 'login',
-              'input_type': 'JSON',
-              'response_type': 'JSON',
-              'rest_data': credentials,
-        })
-      }
-
-    console.log("Param to send :");
-    console.log(param);
-
-    /**
-    GET functionnal call
-    http://localhost/SuiteCRM/service/v3_1/rest.php?method=login&input_type=JSON&response_type=JSON&rest_data={%22user_auth%22:{%22user_name%22:%22admin%22,%22password%22:%2221232f297a57a5a743894a0e4a801fc3%22},%22application_name%22:%22test%22}
-    **/
-
-    fetch('http://10.32.15.51/SuiteCRM/service/v2/rest.php', param)  
-    .then(function(res) {
-        console.log("Retour :");
-        console.log(res);
-    })
-  
-    console.log('end');
-  }
-
-  connect(){
-    var success = false;
-
-    success = this.authentify('admin', '21232f297a57a5a743894a0e4a801fc3');
-
-    if(success){
-      this.navigate(constants.listScreen);
-    } else {
-      this.setState({status: 'Cannot connect to the given server'});
-    }
-  }
-
   navigate(route){
     this.props.navigator.push({
       id: route,
+      passProp: {
+      sessionID: this.state.session,
+      },
     })
   }
 
+  connect(){
+    this.authentify('admin', MD5('admin'));
+  }
+
+
+    /*    création/update si name= id.
+    {"session": "28cs3kenqt4ifec6ghd6a0buj7", "module_name":"Prospects","name_value_list":{"name":"test","name":"ok","assigned_user_name":"toto"}}
+    
+    pr delete il suffit de mettre le flag delete a true
+
+    module-> prospects, method: get_entry_list
+    **/
+  authentify(login, password){
+
+    var credential = '{"user_auth":{"user_name":"'+ login +'","password":"'+ password +'"}}';
+
+    var dataToSend = {  
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: HEADERS.concat(credential),
+    }
+
+    this.setState({isFetching: true});
+
+    fetch('http://10.32.15.51/SuiteCRM/service/v3_1/rest.php', dataToSend)  
+    .then((response) => response.json())
+    .then((responseData) => {
+      if(DEBUG){
+        console.log("(LoginScreen)");
+        console.log(responseData);
+      }
+      this.setState({isFetching: false, session: responseData.id});
+      if(DEBUG){
+        console.log("(LoginScreen) fetched session id = " + this.state.session);
+      }
+    })
+    .done();
+  }
+
+  update(){
+    
+    // Wrong credential.
+    if(this.state.session === undefined && this.state.status === ""){
+       this.setState({status: 'Cannot connect to the given server', session: null});
+    }
+    // Successful connection.
+    else if(this.state.session){
+        this.navigate(constants.listScreen); 
+    }
+  }
+
+  
+
   render() {
+
+    this.update();
+
     return (
     <View style={styles.container}>
 
@@ -129,7 +137,13 @@ export class LoginScreen extends Component {
             </View>
         </View>
         <View style={styles.statusWrapper}>
-          <Text style={styles.fontError}> { this.state.status } </Text>
+          
+          
+          {this.state.isFetching &&
+           <ActivityIndicator style={[styles.statusWrapper, {height: 80}]} size="large" /> ||
+           <Text style={styles.fontError}> { this.state.status } </Text>
+          }
+
         </View>
         <View style={styles.buttonWrapper}>
             <Button
