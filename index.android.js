@@ -38,9 +38,9 @@ var mapper = {
                       case constants.loginScreen:
                           return (<View style={styles.mainStyle}><Text style={styles.fontNavBar}>ExelciaCRM Prospect Manager</Text></View>);
                       case constants.listScreen:
-                          return (<View style={styles.mainStyle}><Text style={styles.fontNavBar}>Prospects list</Text></View>);
+                          return (<View style={styles.mainStyle}><Text style={styles.fontNavBar}>Liste des prospects</Text></View>);
                       case constants.editScreen:
-                          return (<View style={styles.mainStyle}><Text style={styles.fontNavBar}>Prospect edition</Text></View>);
+                          return (<View style={styles.mainStyle}><Text style={styles.fontNavBar}>Edition du prospect</Text></View>);
                   }
               },
 };

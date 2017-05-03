@@ -119,27 +119,9 @@ export class ProspectEditScreen extends Component {
     }
 
     this.pushToServer();
-
-
-    /*
-
-  	if(success){
-		    Alert.alert('Succès', "Le prospect à bien été enregistré dans votre CRM",
-    	   [ 
-    		    {text: 'OK', onPress: () => this.props.navigator.pop()},
-    	   ]
-        )
-  	} else {
-  		  Alert.alert('Erreur', "Le prospect n'a pas pu être enregistré dans votre CRM",
-    	   [ 
-    		    {text: 'OK', },
-    	   ]
-        )
-  	}
-
-    */
   }
 
+  //{"name":"deleted","value":"1"}]}
   handleDelete(){
    /* var success = true;
 

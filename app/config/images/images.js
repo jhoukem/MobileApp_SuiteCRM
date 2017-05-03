@@ -5,4 +5,7 @@ export const images = {
 	personIcon: require('../../images/icon_login.png'),
 	lockIcon: require('../../images/icon_password.png'),
 	serverIcon: require('../../images/icon_server.png'),
+	reloadIcon: require('../../images/icon_refetch_data.png'),
+	saveIcon: require('../../images/icon_save.png'),
+	logoutIcon: require('../../images/icon_logout.png'),
 };

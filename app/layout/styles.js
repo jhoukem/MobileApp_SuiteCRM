@@ -23,6 +23,7 @@ export const styles = StyleSheet.create({
 	  flexDirection: 'column',
 	  justifyContent: 'center',
 	  alignItems: 'center',
+	  backgroundColor: "#1F94B7",
   	},
 
 	fontBasicDefault: {

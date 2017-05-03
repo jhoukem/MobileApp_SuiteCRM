@@ -44,14 +44,13 @@ export class ProspectListScreen extends Component {
 
   renderLeftNavButton(){
       return (      
-                <Text style={[defaultStyles.fontNavBar]}>Logout</Text>
+          <Image source={images.logoutIcon} style={styles.icon} />
       );
   }
 
   renderRightNavButton(){
       return (
-         <Image source={require('../../images/icon_refetch_data.png')} style={styles.icon} />
-               
+          <Image source={images.reloadIcon} style={styles.icon} />
       );
   }
 
@@ -108,7 +107,7 @@ export class ProspectListScreen extends Component {
     
     				{/*Header Part*/}
     				<View style={styles.headerWrapper}>
-    					<Text style={defaultStyles.fontBasicNote}>Select a prospect to modify it</Text>
+    					<Text style={defaultStyles.fontBasicNote}>Selectionnez un prospect pour le modifier</Text>
     				</View>
 
     				{/*Body Part*/}
@@ -135,9 +134,9 @@ export class ProspectListScreen extends Component {
     				<View style={styles.buttonWrapper}>
     				    <Button
               			onPress={() => this.navigate(constants.editScreen)}
-             				title="Create a new prospect"
+             				title="Créer un nouveau prospect"
               			color="#1F94B7"
-              			accessibilityLabel="Create a new prospect"
+              			accessibilityLabel="Créer un nouveau prospect"
             	  />
     				</View>
 

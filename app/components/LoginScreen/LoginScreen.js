@@ -162,7 +162,7 @@ export class LoginScreen extends Component {
         <View style={styles.buttonWrapper}>
             <Button
               onPress={() => this.connect()}
-              title="Connect"
+              title="Connection"
               color="#1F94B7"
               accessibilityLabel="Connect to the CRM server"
             />
