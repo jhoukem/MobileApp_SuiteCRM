@@ -7,6 +7,7 @@ export const styles = StyleSheet.create({
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: 'center',
+		padding: 10,
 	},
 
 
@@ -15,12 +16,45 @@ export const styles = StyleSheet.create({
 		borderBottomWidth: 1,
 	},
 
-	fontBasic: {
+
+	fontNavBar: {
+	  color: 'white',
+	  fontSize: 15,
+	  flexDirection: 'column',
+	  justifyContent: 'center',
+	  alignItems: 'center',
+  	},
+
+	fontBasicDefault: {
+	  color: 'black',
+	  fontSize: 12,
+	  backgroundColor: "white",
+  	},
+
+  	fontBasicMedium: {
 		color: 'black',
+		fontWeight: 'bold',
 		fontSize: 15,
-		fontFamily: 'sans-serif',
-		padding: 10,
-		backgroundColor: '#1F94B7',
+		backgroundColor: "white",
+  	},
+
+	fontBasicBig: {
+		color: 'black',
+		fontSize: 20,
+		fontWeight: 'bold',
+		backgroundColor: "white",
 	},
+
+	fontBasicNote: {
+		color: 'grey',
+		fontSize: 15,
+		backgroundColor: "white",
+	},
+  	
+  	fontBasicError: {
+		color: 'red',
+		fontSize: 15,
+		backgroundColor: "white",
+  	},
 
 });

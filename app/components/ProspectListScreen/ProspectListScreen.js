@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { Text, ScrollView, View, Button, FlatList, ListItem, TouchableHighlight, ActivityIndicator, Image } from 'react-native';
 
+import { styles as defaultStyles } from '../../layout/styles.js'
 import { styles, images } from './index.js'
 import * as constants from '../../config/const.js'
 
 
 
 var cpt = 0;
-var DEBUG = true;
+var DEBUG = false;
 const HEADERS = "method=get_entry_list&input_type=JSON&response_type=JSON&rest_data=";
 
 export class ProspectListScreen extends Component {
@@ -26,18 +27,11 @@ export class ProspectListScreen extends Component {
           passProp: {
               item: item,
               ip: this.props.ip,
+              sessionID: this.props.session,
           },
     	}); 
   }
 
-  logout(){
-    this.props.navigator.pop();
-  }
-
-  goToEdit(item){
-    this.navigate(constants.editScreen, item);
-  }
-  
   setNavActions(){
     var navigator = this.props.navigator;
    
@@ -48,10 +42,9 @@ export class ProspectListScreen extends Component {
     navigator.__onRightNavButtonPressed = this.reload.bind(this);
   }
 
-
   renderLeftNavButton(){
       return (      
-                <Text style={styles.fontBasic2}>Logout</Text>
+                <Text style={[defaultStyles.fontNavBar]}>Logout</Text>
       );
   }
 
@@ -62,25 +55,32 @@ export class ProspectListScreen extends Component {
       );
   }
 
+  logout(){
+    this.props.navigator.pop();
+  }
+
+  goToEdit(item){
+    this.navigate(constants.editScreen, item);
+  }
+
   reload(){
     this.fetchProspectList();
   }
 
-  update(){
-    this.setNavActions();
-  }
-
-  // Bad workaround
   componentDidMount(){
       this.fetchProspectList();
   }
 
+  componentWillUpdate(prevProps, prevState){
+    this.setNavActions();
+  }
+
   fetchProspectList(){
 
-    console.log("(ListScreen) Session id received = " + this.props.session);
+    if(DEBUG)
+      console.log("(ListScreen) Session id received = " + this.props.session);
 
     var param = '{"session":"'+ this.props.session +'","module_name":"Leads","query":"","max_results":"100" }';
-
     var dataToSend = {  
         method: 'POST',
         headers: {
@@ -106,18 +106,14 @@ export class ProspectListScreen extends Component {
 
 
   render() {
-    
-    this.update();
 
     	return (
     		<View style={styles.container}>
     
     				{/*Header Part*/}
     				<View style={styles.headerWrapper}>
-    					<Text style={styles.fontBasic}>Select a prospect to modify it</Text>
+    					<Text style={defaultStyles.fontBasicNote}>Select a prospect to modify it</Text>
     				</View>
-
-            
 
     				{/*Body Part*/}
     				<View style={styles.bodyWrapper}>
@@ -131,14 +127,13 @@ export class ProspectListScreen extends Component {
                             keyExtractor = {(item, index) => item.name_value_list.id.value}
                             renderItem={({item}) =>
                             <TouchableHighlight onPress={() => this.goToEdit(item)}>
-                                <Text style={styles.fontProspect}>{item.name_value_list.name.value}</Text>
+                                <Text style={defaultStyles.fontBasicBig}>{item.name_value_list.name.value}</Text>
                             </TouchableHighlight>
                             }
                         />
           			    </ScrollView>
     				    }
             </View>
-
 
 	    			{/*Button Part*/}
     				<View style={styles.buttonWrapper}>

@@ -8,29 +8,13 @@ export const styles = StyleSheet.create({
     paddingTop: 50,
 	},
 
-	fontBasic: {
-	  color: 'black',
-		fontSize: 12,
-  },
-
-  fontError: {
-		color: 'red',
-		fontSize: 15,
-  },
-
-  fontMedium: {
-		color: 'black',
-		fontWeight: 'bold',
-		fontSize: 15,
-  },
-
   logoWrapper: {
     	flex: 0.3,
   },
 	
 	inputWrapper: {
 		flex: 0.2,
-    	padding: 20,
+    padding: 20,
     	//backgroundColor: 'black'
   },
 

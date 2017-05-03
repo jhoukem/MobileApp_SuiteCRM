@@ -4,6 +4,7 @@ import { AppRegistry, View, Text, Navigator, Button, TouchableHighlight, BackAnd
 import { LoginScreen } from './app/components/LoginScreen/LoginScreen.js'
 import { ProspectListScreen } from './app/components/ProspectListScreen/ProspectListScreen.js'
 import { ProspectEditScreen } from './app/components/ProspectEditScreen/ProspectEditScreen.js'
+import { HelloWorld } from './app/components/HelloWorld/HelloWorld.js'
 import { styles } from './app/layout/styles.js'
 
 import * as constants from './app/config/const.js'
@@ -17,17 +18,17 @@ var mapper = {
                       return (
                           <View style={styles.mainStyle}>
                               <TouchableHighlight onPress={() => navigator.__onLeftNavButtonPressed()}>
-                                  <Text style={styles.fontBasic}> Back </Text>
+                                  {navigator.__renderLeftNavButton()}
                               </TouchableHighlight>
                           </View>);
                   }
               },
               RightButton: (route, navigator, index, navState) => {
-                  if(route.id === constants.editScreen){
+                  if(route.id !== constants.loginScreen){
                       return (
                           <View style={styles.mainStyle}>
                               <TouchableHighlight onPress={() => navigator.__onRightNavButtonPressed()}>
-                                  <Text style={styles.fontBasic}> Save </Text>
+                                  {navigator.__renderRightNavButton()}
                               </TouchableHighlight>
                           </View>);
                   }
@@ -35,11 +36,11 @@ var mapper = {
               Title: (route, navigator, index, navState) => {
                   switch(route.id){
                       case constants.loginScreen:
-                          return (<View style={styles.mainStyle}><Text style={styles.fontBasic}>ExelciaCRM Prospect Manager</Text></View>);
+                          return (<View style={styles.mainStyle}><Text style={styles.fontNavBar}>ExelciaCRM Prospect Manager</Text></View>);
                       case constants.listScreen:
-                          return (<View style={styles.mainStyle}><Text style={styles.fontBasic}>Prospects list</Text></View>);
+                          return (<View style={styles.mainStyle}><Text style={styles.fontNavBar}>Prospects list</Text></View>);
                       case constants.editScreen:
-                          return (<View style={styles.mainStyle}><Text style={styles.fontBasic}>Prospect edition</Text></View>);
+                          return (<View style={styles.mainStyle}><Text style={styles.fontNavBar}>Prospect edition</Text></View>);
                   }
               },
 };
@@ -86,14 +87,14 @@ class Main extends Component {
 
 	renderScene(route, navigator) {
     _navigator = navigator;
-
+    console.log(route.id);
 		switch(route.id){
       case constants.loginScreen:
           return <LoginScreen navigator={navigator} />
       case constants.listScreen:
-          return <ProspectListScreen navigator={navigator} />
+          return <ProspectListScreen navigator={navigator} ip={route.passProp.ip} session={route.passProp.sessionID} />
       case constants.editScreen:
-        return <ProspectEditScreen navigator={navigator} isEdition={route.passProp.isEdition} itemID={route.passProp.itemID} />
+        return <ProspectEditScreen navigator={navigator} ip={route.passProp.ip} session={route.passProp.sessionID} item={route.passProp.item} />
     }
 	}
 }

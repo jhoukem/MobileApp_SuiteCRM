@@ -34,13 +34,6 @@ export const styles = StyleSheet.create({
 		flex: 1,
 	
 	},
-	
-	label: {
-		color: 'black',
-		fontWeight: 'bold',
-		fontSize: 15,
-	
-	},
 
 	scroll: {
 		borderWidth: 2,
@@ -49,8 +42,7 @@ export const styles = StyleSheet.create({
 
 	icon: {
 		height: 30,
-		width: 50,
-		flex: 1,
+		width: 30,
 	},
 
 });

@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { Text, TextInput, Image, View, Button, ActivityIndicator } from 'react-native';
 
+import { styles as defaultStyles } from '../../layout/styles.js'
 import { styles, images } from './index.js'
 import * as constants from '../../config/const.js'
+
+
 
 var DEBUG = true;
 var MD5 = require("crypto-js/md5");
@@ -28,8 +31,8 @@ export class LoginScreen extends Component {
     this.props.navigator.push({
       id: route,
       passProp: {
-      sessionID: this.state.session,
-      ip: this.state.ip,
+          sessionID: this.state.session,
+          ip: this.state.ip,
       },
     })
   }
@@ -63,28 +66,28 @@ export class LoginScreen extends Component {
     fetch('http://'+ ip +'/SuiteCRM/service/v3_1/rest.php', dataToSend)  
     .then((response) => response.json())
     .then((responseData) => {
-     
-      this.setState({isFetching: false, session: responseData.id});
-      // Wrong credential.
-      if(this.state.session === undefined){
-        this.setState({status: 'Bad credential', session: null});
-      } 
-      // Got a session.
-      else if(this.state.session){
-        console.log("(LoginScreen) -> Move to list screen");
-        this.navigate(constants.listScreen); 
-      }
-
+      console.log("Got a server response");
       if(DEBUG){
         console.log("(LoginScreen)");
         console.log(responseData);
-        console.log("(LoginScreen) fetched session id = " + this.state.session);
       }
+     
+      this.setState({isFetching: false, session: responseData.id});
+      // Got a session.
+      if(this.state.session){
+        this.navigate(constants.listScreen); 
+      } 
+      // Wrong credential.
+      else {
+        this.setState({status: 'Bad credential', session: null});
+      }
+
     })
     .catch((error) => {
+        console.log("Got a network error");
         this.setState({isFetching: false, status: "Server unreachable", session: null});
         if(DEBUG){
-            console.warning(error);
+            console.log(error);
         }
     });
   }
@@ -152,7 +155,7 @@ export class LoginScreen extends Component {
           
           {this.state.isFetching &&
            <ActivityIndicator style={[styles.statusWrapper, {height: 80}]} size="large" /> ||
-           <Text style={styles.fontError}> { this.state.status } </Text>
+           <Text style={defaultStyles.fontBasicError}> { this.state.status } </Text>
           }
 
         </View>

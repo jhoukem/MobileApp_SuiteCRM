@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Text, ScrollView, View, Button, TextInput, Alert, Image } from 'react-native';
+import { Text, ScrollView, View, Button, TextInput, Alert, Image, ActivityIndicator } from 'react-native';
 
+import { styles as defaultStyles } from '../../layout/styles.js'
 import { styles, images } from './index.js'
-
+import * as constants from '../../config/const.js'
 
 var DEBUG = true;
 const HEADERS = 'method=set_entry&input_type=JSON&response_type=JSON&rest_data=';
@@ -14,9 +15,11 @@ export class ProspectEditScreen extends Component {
     this.state= {
         session: null,
         isPushing: false,
+        saveSucceed: undefined,
+        hasModifications: false,
         last_name: null,
         first_name: null,
-        function: null,
+        title: null,
         service: null,
         account_name: null,
         phone_number: null,
@@ -27,25 +30,20 @@ export class ProspectEditScreen extends Component {
         description: null,
         };
   }
-  
-  handleCancel(){
-	Alert.alert('Abandonner', "Êtes vous sur de vouloir abandonner vos modifications ?",
-        [
-        	{text: 'Non', },
-          {text: 'Oui', onPress: () => this.props.navigator.pop()},
-        ]
-    )
-  }
-
-
 
   pushToServer() {
-    var updatedData = {session:"l1qdp6d49lasu3a6sd1n8ahsa5",
+    var updatedData = {session: this.props.session,
                         module_name:"Leads",
                         name_value_list:[
                                             {name:"id", value: this.props.item.name_value_list.id.value},
                                             {name:"last_name", value: this.state.last_name},
-                                            {name:"first_name", value: this.state.first_name}
+                                            {name:"first_name", value: this.state.first_name},
+                                            {name:"title", value: this.state.title},
+                                            {name:"department", value: this.state.service},
+                                            {name:"account_name", value: this.state.account_name},
+                                            {name:"phone_work", value: this.state.phone_number},
+                                            {name:"phone_mobile", value: this.state.mobile_phone_number},
+                                            {name:"email1", value: this.state.email},
                                         ]
                       }
 
@@ -64,10 +62,21 @@ export class ProspectEditScreen extends Component {
     fetch('http://'+ this.props.ip +'/SuiteCRM/service/v3_1/rest.php', dataToSend)  
     .then((response) => response.json())
     .then((responseData) => {
-     
+      
       this.setState({isPushing: false});
       if(responseData.entry_list){
-        this.setState({success: true});
+          this.setState({hasModifications: false});
+          Alert.alert('Succès', "Le prospect à bien été enregistré dans votre CRM",
+                [ 
+                    {text: 'OK', onPress: () => this.props.navigator.pop()},
+                ]
+          )          
+      } else {
+          Alert.alert('Erreur', "Le prospect n'a pas pu être enregistré dans votre CRM",
+                [ 
+                    {text: 'OK', },
+                ]
+          )
       }
       if(DEBUG){
         console.log("(EditScreen)");
@@ -77,13 +86,28 @@ export class ProspectEditScreen extends Component {
     .done();
   }
 
+
+  handleCancel(){
+
+    var possibilities =  [
+                {text: 'Non', },
+                {text: 'Oui', onPress: () => this.props.navigator.pop()},
+            ];
+
+    if(this.state.hasModifications){
+        Alert.alert('Abandonner', "Êtes vous sur de vouloir abandonner vos modifications ?", possibilities);
+    } else {
+        this.props.navigator.pop()
+    }
+  
+  }
+
   handleSave(){
-  	var success = true;
 
     if(DEBUG){
       console.log("Nom: "+ this.state.last_name);
       console.log("Prenom: "+ this.state.first_name);
-      console.log("Fonction: "+ this.state.fonction);
+      console.log("Fonction: "+ this.state.title);
       console.log("Service: "+ this.state.service);
       console.log("Nom de compte: "+ this.state.account_name);
       console.log("Telephone: "+ this.state.phone_number);
@@ -93,7 +117,6 @@ export class ProspectEditScreen extends Component {
       console.log("Adresse: "+ this.state.address);
       console.log("Description: "+ this.state.description);
     }
-
 
     this.pushToServer();
 
@@ -118,7 +141,7 @@ export class ProspectEditScreen extends Component {
   }
 
   handleDelete(){
-    var success = true;
+   /* var success = true;
 
     if(success){
         Alert.alert('Succès', "Le prospect à bien été supprimé de votre CRM",
@@ -132,7 +155,7 @@ export class ProspectEditScreen extends Component {
             {text: 'OK', },
          ]
         )
-    }
+    }*/
   }
 
   setNavActions(){
@@ -147,7 +170,7 @@ export class ProspectEditScreen extends Component {
 
   renderLeftNavButton(){
       return (      
-                <Text style={styles.fontBasic2}>Back</Text>
+                <Text style={defaultStyles.fontNavBar}>Back</Text>
       );
   }
 
@@ -160,12 +183,12 @@ export class ProspectEditScreen extends Component {
 
 
   componentWillMount(){
-
+      this.setNavActions();
       if(this.props.item){
           this.setState({
                 last_name: this.props.item.name_value_list.last_name.value,
                 first_name: this.props.item.name_value_list.first_name.value,
-                fonction: this.props.item.name_value_list.title.value,
+                title: this.props.item.name_value_list.title.value,
                 service: this.props.item.name_value_list.department.value,
                 account_name: this.props.item.name_value_list.account_name.value,
                 phone_number: this.props.item.name_value_list.phone_work.value,
@@ -178,14 +201,12 @@ export class ProspectEditScreen extends Component {
       }
   }
 
-  update(){
-      this.setNavActions();
+  updateData(key, value){
+      key.value = value;
+      this.setState({[key]: value, hasModifications: true});
   }
 
-
   render() {
-    this.update();
-
     	return (
     		<View style={styles.container}>
     			
@@ -198,19 +219,23 @@ export class ProspectEditScreen extends Component {
             </View>
 
     				<View style={styles.bodyWrapper}>
-    					<ScrollView style={styles.scroll}>
-    						<InputLabelRow label='Nom' value = {this.state.last_name} onChangeText = {(text) => this.setState({last_name: text})} placeholder='enter data'/>
-    						<InputLabelRow label='Prénom' value = {this.state.first_name} onChangeText = {(text) => this.setState({first_name: text})} placeholder='enter data'/>
-    						<InputLabelRow label='Fonction' value = {this.state.fonction} onChangeText = {(text) => this.setState({fonction: text})} placeholder='enter data'/>
-    						<InputLabelRow label='Service' value = {this.state.service} onChangeText = {(text) => this.setState({service: text})} placeholder='enter data'/>
-    						<InputLabelRow label='Nom de compte' value = {this.state.account_name} onChangeText = {(text) => this.setState({account_name: text})} placeholder='enter data'/>
-    						<InputLabelRow label='Téléphone' value = {this.state.phone_number} onChangeText = {(text) => this.setState({phone_number: text})} placeholder='enter data'/>
-    						<InputLabelRow label='Mobile' value = {this.state.mobile_phone_number} onChangeText = {(text) => this.setState({mobile_phone_number: text})} placeholder='enter data'/>
-    						<InputLabelRow label='Site web' value = {this.state.website} onChangeText = {(text) => this.setState({website: text})} placeholder='enter data'/>
-    						<InputLabelRow label='E-mail' value = {this.state.email} onChangeText = {(text) => this.setState({email: text})} placeholder='enter data'/>
-    						<InputLabelRow label='Adresse' value = {this.state.address} onChangeText = {(text) => this.setState({address: text})} placeholder='enter data'/>
-    						<InputLabelRow label='Description' value = {this.state.description} onChangeText = {(text) => this.setState({description: text})} placeholder='enter data'/>
-    					</ScrollView>
+              {this.state.isPushing &&
+              <ActivityIndicator style={styles.headerWrapper} size="large" /> ||
+
+    					   <ScrollView style={styles.scroll}>
+    						      <InputLabelRow label='Nom' value = {this.state.last_name} onChangeText = {(text) => this.updateData("last_name" ,text)} placeholder='enter data'/>
+    						      <InputLabelRow label='Prénom' value = {this.state.first_name} onChangeText = {(text) => this.updateData("first_name", text)} placeholder='enter data'/>
+    						      <InputLabelRow label='Fonction' value = {this.state.title} onChangeText = {(text) => this.updateData("title",text)} placeholder='enter data'/>
+    						      <InputLabelRow label='Service' value = {this.state.service} onChangeText = {(text) => this.updateData("service", text)} placeholder='enter data'/>
+    						      <InputLabelRow label='Nom de compte' value = {this.state.account_name} onChangeText = {(text) => this.updateData("account_name", text)} placeholder='enter data'/>
+    					      	<InputLabelRow label='Téléphone' value = {this.state.phone_number} onChangeText = {(text) => this.updateData("phone_number", text)} placeholder='enter data'/>
+    					     	  <InputLabelRow label='Mobile' value = {this.state.mobile_phone_number} onChangeText = {(text) => this.updateData("mobile_phone_number", text)} placeholder='enter data'/>
+    						      <InputLabelRow label='Site web' value = {this.state.website} onChangeText = {(text) => this.updateData("website", text)} placeholder='enter data'/>
+    						      <InputLabelRow label='E-mail' value = {this.state.email} onChangeText = {(text) => this.updateData("email", text)} placeholder='enter data'/>
+    						      <InputLabelRow label='Adresse' value = {this.state.address} onChangeText = {(text) => this.updateData("address", text)} placeholder='enter data'/>
+    						      <InputLabelRow label='Description' value = {this.state.description} onChangeText = {(text) => this.updateData("description", text)} placeholder='enter data'/>
+    					   </ScrollView>
+              }
     				</View>
     			
             {/*Only display the delete button when the screen is accessed from an existing prospect*/}
@@ -221,7 +246,7 @@ export class ProspectEditScreen extends Component {
               				  onPress={() => this.handleDelete()}
              					  title= "Delete"
               				  color="red"
-              				  accessibilityLabel="Delete a the prospect"
+              				  accessibilityLabel="Delete the current prospect"
             		    />
     				    </View>
     			  }
@@ -243,8 +268,8 @@ var InputLabelRow = React.createClass({
 				  alignItems: 'center',
 			  }}>
 
-				<Text style={styles.label}>{this.props.label}:</Text>
-				    <TextInput style={styles.input} value = {this.props.value} onChangeText = {this.props.onChangeText} placeholder={this.props.placeholder} />
+				<Text style={defaultStyles.fontBasicMedium}>{this.props.label}:</Text>
+				    <TextInput style={{flex: 1}} value = {this.props.value} onChangeText = {this.props.onChangeText} placeholder={this.props.placeholder} />
     		</View>
 
     	);
