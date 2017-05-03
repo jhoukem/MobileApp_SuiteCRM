@@ -47,4 +47,10 @@ export const styles = StyleSheet.create({
     	borderColor: '#CCCC',
 	},
 
+	icon: {
+		height: 30,
+		width: 50,
+		flex: 1,
+	},
+
 });

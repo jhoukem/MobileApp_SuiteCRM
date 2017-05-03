@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, ScrollView, View, Button, TextInput, Alert } from 'react-native';
+import { Text, ScrollView, View, Button, TextInput, Alert, Image } from 'react-native';
 
 import { styles, images } from './index.js'
 
@@ -14,8 +14,8 @@ export class ProspectEditScreen extends Component {
     this.state= {
         session: null,
         isPushing: false,
-        surname: null,
-        name: null,
+        last_name: null,
+        first_name: null,
         function: null,
         service: null,
         account_name: null,
@@ -43,15 +43,13 @@ export class ProspectEditScreen extends Component {
     var updatedData = {session:"l1qdp6d49lasu3a6sd1n8ahsa5",
                         module_name:"Leads",
                         name_value_list:[
-                                            {name:"id",value:"cccc4d36-a5c7-8569-d6f2-5908ec783f7d"},
-                                            {name:"last_name",value:"OUKEM"},
-                                            {name:"first_name",value:"Jean"}
+                                            {name:"id", value: this.props.item.name_value_list.id.value},
+                                            {name:"last_name", value: this.state.last_name},
+                                            {name:"first_name", value: this.state.first_name}
                                         ]
                       }
 
     var updatedDataJson = JSON.stringify(updatedData);                      
-
-
     var dataToSend = {  
         method: 'POST',
         headers: {
@@ -83,8 +81,8 @@ export class ProspectEditScreen extends Component {
   	var success = true;
 
     if(DEBUG){
-      console.log("Nom: "+ this.state.surname);
-      console.log("Prenom: "+ this.state.name);
+      console.log("Nom: "+ this.state.last_name);
+      console.log("Prenom: "+ this.state.first_name);
       console.log("Fonction: "+ this.state.fonction);
       console.log("Service: "+ this.state.service);
       console.log("Nom de compte: "+ this.state.account_name);
@@ -97,7 +95,7 @@ export class ProspectEditScreen extends Component {
     }
 
 
-    //pushToServer();
+    this.pushToServer();
 
 
     /*
@@ -139,13 +137,51 @@ export class ProspectEditScreen extends Component {
 
   setNavActions(){
     var navigator = this.props.navigator;
+
+    navigator.__renderLeftNavButton = this.renderLeftNavButton.bind(this);
+    navigator.__renderRightNavButton = this.renderRightNavButton.bind(this);
+
     navigator.__onLeftNavButtonPressed = this.handleCancel.bind(this);
     navigator.__onRightNavButtonPressed = this.handleSave.bind(this);
+  }
+
+  renderLeftNavButton(){
+      return (      
+                <Text style={styles.fontBasic2}>Back</Text>
+      );
+  }
+
+  renderRightNavButton(){
+      return (
+         <Image source={require('../../images/icon_save.png')} style={styles.icon} />
+               
+      );
+  }
+
+
+  componentWillMount(){
+
+      if(this.props.item){
+          this.setState({
+                last_name: this.props.item.name_value_list.last_name.value,
+                first_name: this.props.item.name_value_list.first_name.value,
+                fonction: this.props.item.name_value_list.title.value,
+                service: this.props.item.name_value_list.department.value,
+                account_name: this.props.item.name_value_list.account_name.value,
+                phone_number: this.props.item.name_value_list.phone_work.value,
+                mobile_phone_number: this.props.item.name_value_list.phone_mobile.value,
+                //website: this.props.item.name_value_list.surname.value,
+                email: this.props.item.name_value_list.email1.value,
+                //address: this.props.item.name_value_list.surname.value,
+                description: this.props.item.name_value_list.description.value,
+          });
+      }
   }
 
   update(){
       this.setNavActions();
   }
+
 
   render() {
     this.update();
@@ -163,8 +199,8 @@ export class ProspectEditScreen extends Component {
 
     				<View style={styles.bodyWrapper}>
     					<ScrollView style={styles.scroll}>
-    						<InputLabelRow label='Nom' value = {this.state.surname} onChangeText = {(text) => this.setState({surname: text})} placeholder='enter data'/>
-    						<InputLabelRow label='Prénom' value = {this.state.name} onChangeText = {(text) => this.setState({name: text})} placeholder='enter data'/>
+    						<InputLabelRow label='Nom' value = {this.state.last_name} onChangeText = {(text) => this.setState({last_name: text})} placeholder='enter data'/>
+    						<InputLabelRow label='Prénom' value = {this.state.first_name} onChangeText = {(text) => this.setState({first_name: text})} placeholder='enter data'/>
     						<InputLabelRow label='Fonction' value = {this.state.fonction} onChangeText = {(text) => this.setState({fonction: text})} placeholder='enter data'/>
     						<InputLabelRow label='Service' value = {this.state.service} onChangeText = {(text) => this.setState({service: text})} placeholder='enter data'/>
     						<InputLabelRow label='Nom de compte' value = {this.state.account_name} onChangeText = {(text) => this.setState({account_name: text})} placeholder='enter data'/>

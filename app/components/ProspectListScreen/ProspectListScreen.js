@@ -51,11 +51,10 @@ export class ProspectListScreen extends Component {
 
   renderLeftNavButton(){
       return (      
-                <Text style={styles.fontBasic2}> Logout </Text>
+                <Text style={styles.fontBasic2}>Logout</Text>
       );
   }
 
-  // <Image source={require('../../images/icon_refetch_data.png')} style={style.icon} />
   renderRightNavButton(){
       return (
          <Image source={require('../../images/icon_refetch_data.png')} style={styles.icon} />
@@ -73,11 +72,7 @@ export class ProspectListScreen extends Component {
 
   // Bad workaround
   componentDidMount(){
-    cpt++;
-    if(cpt === 2){
-      console.log("OK");
       this.fetchProspectList();
-    }
   }
 
   fetchProspectList(){

@@ -36,11 +36,6 @@ export class LoginScreen extends Component {
 
   connect(){
 
-    if(this.state.session){
-      console.log("(UpdateMethod) -> Move to another screen");
-      this.navigate(constants.listScreen); 
-    }
-
     this.authentify(this.state.ip, this.state.login, MD5(this.state.password));
     
     if(DEBUG){
@@ -70,10 +65,16 @@ export class LoginScreen extends Component {
     .then((responseData) => {
      
       this.setState({isFetching: false, session: responseData.id});
-       // Wrong credential.
+      // Wrong credential.
       if(this.state.session === undefined){
         this.setState({status: 'Bad credential', session: null});
+      } 
+      // Got a session.
+      else if(this.state.session){
+        console.log("(LoginScreen) -> Move to list screen");
+        this.navigate(constants.listScreen); 
       }
+
       if(DEBUG){
         console.log("(LoginScreen)");
         console.log(responseData);
@@ -87,21 +88,6 @@ export class LoginScreen extends Component {
         }
     });
   }
-
-  update(){
-    // Successful connection.
-    if(this.state.session){
-      console.log("(UpdateMethod) -> Move to another screen");
-      this.navigate(constants.listScreen); 
-    }
-  }
-
- 
- /* componentNeedUpdate(){
-    console.log("Did mount Called");
-    
-  }*/
-
 
   render() {
 
