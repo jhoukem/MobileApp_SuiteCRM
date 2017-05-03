@@ -71,10 +71,6 @@ export class ProspectListScreen extends Component {
       this.fetchProspectList();
   }
 
-  componentWillUpdate(prevProps, prevState){
-    this.setNavActions();
-  }
-
   fetchProspectList(){
 
     if(DEBUG)
@@ -106,7 +102,7 @@ export class ProspectListScreen extends Component {
 
 
   render() {
-
+  this.setNavActions();
     	return (
     		<View style={styles.container}>
     
