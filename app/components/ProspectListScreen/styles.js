@@ -47,10 +47,24 @@ export const styles = StyleSheet.create({
 		backgroundColor: "white",
 	},
 
+	fontBasic2: {
+		color: 'black',
+		fontSize: 15,
+		fontFamily: 'sans-serif',
+		padding: 10,
+		backgroundColor: '#1F94B7',
+	},
+
 	fontProspect: {
 		color: 'black',
 		fontSize: 25,
 		backgroundColor: "white",
+	},
+
+	icon: {
+		height: 30,
+		width: 50,
+		flex: 1,
 	},
 
 });

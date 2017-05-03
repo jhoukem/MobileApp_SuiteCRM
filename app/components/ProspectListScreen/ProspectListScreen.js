@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { Text, ScrollView, View, Button, FlatList, ListItem, TouchableHighlight, ActivityIndicator } from 'react-native';
+import { Text, ScrollView, View, Button, FlatList, ListItem, TouchableHighlight, ActivityIndicator, Image } from 'react-native';
 
 import { styles, images } from './index.js'
 import * as constants from '../../config/const.js'
 
 
-const HEADERS = "method=get_entry_list&input_type=JSON&response_type=JSON&rest_data=";
 
-var DEBUG = true;
 var cpt = 0;
+var DEBUG = true;
+const HEADERS = "method=get_entry_list&input_type=JSON&response_type=JSON&rest_data=";
 
 export class ProspectListScreen extends Component {
 
@@ -20,12 +20,12 @@ export class ProspectListScreen extends Component {
   }
 
   /*isEdition is used to know if the delete button should be present on the entry.*/
-  navigate(route, isEdition, itemID=undefined){
+  navigate(route, item=null){
     	this.props.navigator.push({
     		  id: route,
           passProp: {
-              isEdition: isEdition,
-              itemID: itemID,
+              item: item,
+              ip: this.props.ip,
           },
     	}); 
   }
@@ -34,32 +34,50 @@ export class ProspectListScreen extends Component {
     this.props.navigator.pop();
   }
 
-  goToEdit(itemID){
-    this.navigate(constants.editScreen, true, itemID);
+  goToEdit(item){
+    this.navigate(constants.editScreen, item);
   }
   
   setNavActions(){
     var navigator = this.props.navigator;
+   
+    navigator.__renderLeftNavButton = this.renderLeftNavButton.bind(this);
+    navigator.__renderRightNavButton = this.renderRightNavButton.bind(this);
+   
     navigator.__onLeftNavButtonPressed = this.logout.bind(this);
-    navigator.__onRightNavButtonPressed = undefined;
+    navigator.__onRightNavButtonPressed = this.reload.bind(this);
+  }
+
+
+  renderLeftNavButton(){
+      return (      
+                <Text style={styles.fontBasic2}> Logout </Text>
+      );
+  }
+
+  // <Image source={require('../../images/icon_refetch_data.png')} style={style.icon} />
+  renderRightNavButton(){
+      return (
+         <Image source={require('../../images/icon_refetch_data.png')} style={styles.icon} />
+               
+      );
+  }
+
+  reload(){
+    this.fetchProspectList();
   }
 
   update(){
     this.setNavActions();
   }
 
-  /*componentWillMount(){ console.log("WillMount called");}
-  componentDidMount(){ console.log("DidMount called");}
-  componentWillUnmount(){ console.log("Unmount called");}
-  */
-
-
+  // Bad workaround
   componentDidMount(){
     cpt++;
     if(cpt === 2){
-    console.log("OK");
-    this.fetchProspectList();
-    } 
+      console.log("OK");
+      this.fetchProspectList();
+    }
   }
 
   fetchProspectList(){
@@ -79,7 +97,7 @@ export class ProspectListScreen extends Component {
 
     this.setState({isFetching: true});
 
-    fetch('http://10.32.15.51/SuiteCRM/service/v3_1/rest.php', dataToSend)  
+    fetch('http://'+ this.props.ip +'/SuiteCRM/service/v3_1/rest.php', dataToSend)  
     .then((response) => response.json())
     .then((responseData) => {
         if(DEBUG){
@@ -87,18 +105,15 @@ export class ProspectListScreen extends Component {
           console.log(responseData);
         }
         this.setState({isFetching: false, prospectList: responseData.entry_list});
-        if(DEBUG){
-          console.log("(ListScreen) state prospect List");
-          console.log(this.state.prospectList);
-        }
     })
     .done();
   }
 
 
   render() {
-    this.update();
     
+    this.update();
+
     	return (
     		<View style={styles.container}>
     
@@ -112,23 +127,28 @@ export class ProspectListScreen extends Component {
     				{/*Body Part*/}
     				<View style={styles.bodyWrapper}>
 
-    				      <ScrollView style={styles.scroll}>
-                      <FlatList 
-                      data={this.state.prospectList} 
-                      renderItem={({item}) =>
-                          <TouchableHighlight onPress={() => this.goToEdit(item.key)}>
-                              <Text style={styles.fontProspect}>{item.name_value_list.name.value}</Text>
-                          </TouchableHighlight>
-                      }
-                      />
-          			  </ScrollView>
-    				</View>
+                { this.state.isFetching &&
+                   <ActivityIndicator style={styles.activityIndicator} size="large" /> ||
+
+                    <ScrollView style={styles.scroll}>
+                        <FlatList 
+                            data={this.state.prospectList}
+                            keyExtractor = {(item, index) => item.name_value_list.id.value}
+                            renderItem={({item}) =>
+                            <TouchableHighlight onPress={() => this.goToEdit(item)}>
+                                <Text style={styles.fontProspect}>{item.name_value_list.name.value}</Text>
+                            </TouchableHighlight>
+                            }
+                        />
+          			    </ScrollView>
+    				    }
+            </View>
 
 
 	    			{/*Button Part*/}
     				<View style={styles.buttonWrapper}>
     				    <Button
-              			onPress={() => this.navigate(constants.editScreen, false)}
+              			onPress={() => this.navigate(constants.editScreen)}
              				title="Create a new prospect"
               			color="#1F94B7"
               			accessibilityLabel="Create a new prospect"

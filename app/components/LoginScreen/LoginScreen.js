@@ -4,7 +4,7 @@ import { Text, TextInput, Image, View, Button, ActivityIndicator } from 'react-n
 import { styles, images } from './index.js'
 import * as constants from '../../config/const.js'
 
-var DEBUG = false;
+var DEBUG = true;
 var MD5 = require("crypto-js/md5");
 const HEADERS = 'method=login&input_type=JSON&response_type=JSON&rest_data=';
 
@@ -12,33 +12,45 @@ export class LoginScreen extends Component {
 
   constructor(props) {
     super(props);
-    this.state= {status: '', session: null, isFetching: false};
     this.navigate = this.navigate.bind(this);
-  }
 
+    this.state={
+        status: '',
+        session: null,
+        isFetching: false,
+        ip: "10.32.15.51",
+        login: "admin",
+        password: "admin",
+        };
+  }
 
   navigate(route){
     this.props.navigator.push({
       id: route,
       passProp: {
       sessionID: this.state.session,
+      ip: this.state.ip,
       },
     })
   }
 
   connect(){
-    this.authentify('admin', MD5('admin'));
+
+    if(this.state.session){
+      console.log("(UpdateMethod) -> Move to another screen");
+      this.navigate(constants.listScreen); 
+    }
+
+    this.authentify(this.state.ip, this.state.login, MD5(this.state.password));
+    
+    if(DEBUG){
+      console.log("ip = " + this.state.ip);
+      console.log("login = " + this.state.login);
+      console.log("passwd = " + this.state.password);
+    }
   }
 
-
-    /*    création/update si name= id.
-    {"session": "28cs3kenqt4ifec6ghd6a0buj7", "module_name":"Prospects","name_value_list":{"name":"test","name":"ok","assigned_user_name":"toto"}}
-    
-    pr delete il suffit de mettre le flag delete a true
-
-    module-> prospects, method: get_entry_list
-    **/
-  authentify(login, password){
+  authentify(ip, login, password){
 
     var credential = '{"user_auth":{"user_name":"'+ login +'","password":"'+ password +'"}}';
 
@@ -53,38 +65,45 @@ export class LoginScreen extends Component {
 
     this.setState({isFetching: true});
 
-    fetch('http://10.32.15.51/SuiteCRM/service/v3_1/rest.php', dataToSend)  
+    fetch('http://'+ ip +'/SuiteCRM/service/v3_1/rest.php', dataToSend)  
     .then((response) => response.json())
     .then((responseData) => {
+     
+      this.setState({isFetching: false, session: responseData.id});
+       // Wrong credential.
+      if(this.state.session === undefined){
+        this.setState({status: 'Bad credential', session: null});
+      }
       if(DEBUG){
         console.log("(LoginScreen)");
         console.log(responseData);
-      }
-      this.setState({isFetching: false, session: responseData.id});
-      if(DEBUG){
         console.log("(LoginScreen) fetched session id = " + this.state.session);
       }
     })
-    .done();
+    .catch((error) => {
+        this.setState({isFetching: false, status: "Server unreachable", session: null});
+        if(DEBUG){
+            console.warning(error);
+        }
+    });
   }
 
   update(){
-    
-    // Wrong credential.
-    if(this.state.session === undefined && this.state.status === ""){
-       this.setState({status: 'Cannot connect to the given server', session: null});
-    }
     // Successful connection.
-    else if(this.state.session){
-        this.navigate(constants.listScreen); 
+    if(this.state.session){
+      console.log("(UpdateMethod) -> Move to another screen");
+      this.navigate(constants.listScreen); 
     }
   }
 
-  
+ 
+ /* componentNeedUpdate(){
+    console.log("Did mount Called");
+    
+  }*/
+
 
   render() {
-
-    this.update();
 
     return (
     <View style={styles.container}>
@@ -103,9 +122,11 @@ export class LoginScreen extends Component {
                 </View>
                 <TextInput 
                   maxLength = {15}
+                  onChangeText = { (text) => this.setState({ip: text})}
+                  value = {this.state.ip }
                   keyboardType = "numeric"
-                  placeholder="IP server" 
-                  placeholderTextColor="#CCC"
+                  placeholder = "IP server" 
+                  placeholderTextColor = "#CCC"
                   style={styles.input} 
                 />
             </View>
@@ -117,6 +138,8 @@ export class LoginScreen extends Component {
                 </View>
                 <TextInput 
                   maxLength = {20}
+                  onChangeText = { (text) => this.setState({login: text})}
+                  value = {this.state.login}
                   placeholder="Username" 
                   placeholderTextColor="#CCC"
                   style={styles.input} 
@@ -130,6 +153,8 @@ export class LoginScreen extends Component {
                 </View>
                 <TextInput 
                   secureTextEntry={true}
+                  onChangeText = { (text) => this.setState({password: text})}
+                  value = {this.state.password}
                   placeholder="Password" 
                   placeholderTextColor="#CCC"
                   style={styles.input} 
