@@ -154,6 +154,7 @@ export class LoginScreen extends Component {
               onPress={() => this.connect()}
               title="Connection"
               color="#1F94B7"
+              disabled={this.state.isFetching}
               accessibilityLabel="Connect to the CRM server"
             />
         </View>

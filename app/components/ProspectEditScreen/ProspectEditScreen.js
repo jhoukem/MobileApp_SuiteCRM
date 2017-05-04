@@ -41,20 +41,24 @@ export class ProspectEditScreen extends Component {
     if(this.props.item){
         itemID = this.props.item.name_value_list.id.value;
     }
+
+    var nameValueList = [
+                            // name:name only used to update the list screen with a proper value
+                            {name:"name", value:''},
+                            {name:"id", value: (itemID) ? itemID : ''},
+                            {name:"last_name", value: this.state.last_name},
+                            {name:"first_name", value: this.state.first_name},
+                            {name:"title", value: this.state.title},
+                            {name:"department", value: this.state.service},
+                            {name:"account_name", value: this.state.account_name},
+                            {name:"phone_work", value: this.state.phone_number},
+                            {name:"phone_mobile", value: this.state.mobile_phone_number},
+                            {name:"email1", value: this.state.email},
+                            {name:"deleted", value: this.state.deleted},
+                        ]
     var updatedData = {session: this.props.session,
                         module_name:"Leads",
-                        name_value_list:[
-                                            {name:"id", value: (itemID) ? itemID : ''},
-                                            {name:"last_name", value: this.state.last_name},
-                                            {name:"first_name", value: this.state.first_name},
-                                            {name:"title", value: this.state.title},
-                                            {name:"department", value: this.state.service},
-                                            {name:"account_name", value: this.state.account_name},
-                                            {name:"phone_work", value: this.state.phone_number},
-                                            {name:"phone_mobile", value: this.state.mobile_phone_number},
-                                            {name:"email1", value: this.state.email},
-                                            {name:"deleted", value: this.state.deleted},
-                                        ]
+                        name_value_list: nameValueList,
                       }
 
     var updatedDataJson = JSON.stringify(updatedData);                      
@@ -65,13 +69,17 @@ export class ProspectEditScreen extends Component {
         this.setState({isPushing: false});
         if(responseData.entry_list){
             this.setState({hasModifications: false});
+            
             Alert.alert('Succès', onSuccessMessage,
                   [ 
-                      {text: 'OK', onPress: () => this.props.navigator.pop()},
+                      {text: 'OK', onPress: () => {
+                        this.props.route.passProp.callback(responseData.entry_list);
+                        this.props.navigator.pop();
+                      }},
                   ]
             )          
         } else {
-            Alert.alert('Echec', onFailureMessage,
+            Alert.alert('Échec', onFailureMessage,
                   [ 
                       {text: 'OK', },
                   ]
@@ -86,7 +94,6 @@ export class ProspectEditScreen extends Component {
     restCall("set_entry", updatedDataJson, this.props.ip, onSuccess.bind(this), onFailure.bind(this));
   
   }
-
 
   handleCancel(){
 
@@ -104,7 +111,7 @@ export class ProspectEditScreen extends Component {
   }
 
   handleSave(){
-
+   
     this.state.deleted = 0;
     this.pushToServer("Le prospect à bien été enregistré dans votre CRM",
         "Le prospect n'a pas pu être enregistré dans votre CRM");
@@ -220,6 +227,7 @@ export class ProspectEditScreen extends Component {
              					  title= "Delete"
               				  color="red"
               				  accessibilityLabel="Delete the current prospect"
+                        disabled={this.state.isPushing}
             		    />
     				    </View>
     			  }

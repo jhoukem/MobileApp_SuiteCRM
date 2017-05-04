@@ -7,13 +7,13 @@ import * as constants from '../../config/const.js'
 import { restCall } from '../../lib/rest_api.js'
 
 
-var DEBUG = false;
+var DEBUG = true;
 
 export class ProspectListScreen extends Component {
 
   constructor(props) {
     super(props);
-    this.state= {session: undefined, error: false, isFetching: false, prospectList: []};
+    this.state= {session: undefined, error: false, isFetching: false, flatListNeedUpdate: 1,prospectList: []};
     this.navigate = this.navigate.bind(this);
     
   }
@@ -26,8 +26,71 @@ export class ProspectListScreen extends Component {
               item: item,
               ip: this.props.ip,
               sessionID: this.props.session,
+              callback: this.updateProspect.bind(this),
           },
     	}); 
+  }
+
+  updateProspect(entry_list){
+    
+    // Return the index in the list of the item to be updated.
+    var returnedItemID = entry_list["id"].value;
+
+    var itemIndex = this.state.prospectList.findIndex((obj) => {return obj.name_value_list.id.value == returnedItemID}); 
+    var item;
+    var new_data;
+
+    console.log("index = "+itemIndex);
+    
+
+    if(DEBUG){
+        console.log("item index = "+itemIndex);
+        console.log("item");
+        console.log(item);
+    }
+
+    // It was a prospect creation since it doesn't exist in the list.
+    if(itemIndex === -1){
+        new_data = new Object();
+        item = new Object();
+        item.id = returnedItemID;
+        item.module_name = "Leads";
+        this.state.prospectList.push(item);
+    }
+    // It was a prospect update.
+    else {
+        item = this.state.prospectList[itemIndex];
+        new_data = item.name_value_list;
+    }
+        // The prospect has been deleted. It is removed from the list.
+        if(entry_list.deleted.value === 1 && itemIndex !== -1){
+          this.state.prospectList.splice(itemIndex, 1);
+        }
+        // The prospect has been updated.
+        else {
+            for (var key in entry_list) {
+                if (entry_list.hasOwnProperty(key)) {
+                    if(DEBUG){
+                        console.log("new_data["+ key +"]="+ this.state[key] +" -> "+ key + "=" + entry_list[key].value);
+                    }
+                    // Set all the updated values.
+                    new_data[key].value = entry_list[key].value;
+                }
+            }
+        }
+
+    item.name_value_list = new_data;
+
+
+    if(DEBUG){
+        console.log("updated item: ");
+        console.log(item);
+        console.log("this.prospectList["+itemIndex+"].name_value_list.name.value ");
+        console.log(this.state.prospectList[itemIndex].name_value_list.name.value);
+    }
+
+    // Usefull to rerender the flatList because it is a PureComponent.
+    this.setState({flatListNeedUpdate: (-this.state.flatListNeedUpdate)});
   }
 
   setNavActions(){
@@ -38,6 +101,7 @@ export class ProspectListScreen extends Component {
    
     navigator.__onLeftNavButtonPressed = this.logout.bind(this);
     navigator.__onRightNavButtonPressed = this.reload.bind(this);
+
   }
 
   renderLeftNavButton(){
@@ -77,11 +141,17 @@ export class ProspectListScreen extends Component {
     var param = '{"session":"'+ this.props.session +'","module_name":"Leads","query":"","max_results":"100" }';
 
     this.setState({isFetching: true});
+    navigator.__leftNavButtonDisabled = true;
+    navigator.__rightNavButtonDisabled = true;
 
     var onSuccess = function(responseData){
+        navigator.__leftNavButtonDisabled = false;
+        navigator.__rightNavButtonDisabled = false;
         this.setState({isFetching: false, error: false, prospectList: responseData.entry_list});
     }
     var onFailure = function(error){
+        navigator.__leftNavButtonDisabled = false;
+        navigator.__rightNavButtonDisabled = false;
         this.setState({isFetching: false, error: true});
     }
 
@@ -112,6 +182,7 @@ export class ProspectListScreen extends Component {
                         <FlatList 
                             data={this.state.prospectList}
                             keyExtractor = {(item, index) => item.name_value_list.id.value}
+                            extraData = {this.state.flatListNeedUpdate}
                             renderItem={({item}) =>
                             <TouchableHighlight onPress={() => this.goToEdit(item)}>
                                 <Text style={defaultStyles.fontBasicBig}>{item.name_value_list.name.value}</Text>
@@ -129,6 +200,7 @@ export class ProspectListScreen extends Component {
              				title="Créer un nouveau prospect"
               			color="#1F94B7"
               			accessibilityLabel="Créer un nouveau prospect"
+                    disabled={this.state.isFetching}
             	  />
     				</View>
 

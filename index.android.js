@@ -17,7 +17,7 @@ var mapper = {
                   if(route.id !== constants.loginScreen){
                       return (
                           <View style={styles.mainStyle}>
-                              <TouchableHighlight onPress={() => navigator.__onLeftNavButtonPressed()}>
+                              <TouchableHighlight disabled={navigator.__leftNavButtonDisabled} onPress={() => navigator.__onLeftNavButtonPressed()}>
                                   {navigator.__renderLeftNavButton()}
                               </TouchableHighlight>
                           </View>);
@@ -27,7 +27,7 @@ var mapper = {
                   if(route.id !== constants.loginScreen){
                       return (
                           <View style={styles.mainStyle}>
-                              <TouchableHighlight onPress={() => navigator.__onRightNavButtonPressed()}>
+                              <TouchableHighlight disabled={navigator.__rightNavButtonDisabled} onPress={() => navigator.__onRightNavButtonPressed()}>
                                   {navigator.__renderRightNavButton()}
                               </TouchableHighlight>
                           </View>);
@@ -94,7 +94,7 @@ class Main extends Component {
       case constants.listScreen:
           return <ProspectListScreen navigator={navigator} ip={route.passProp.ip} session={route.passProp.sessionID} />
       case constants.editScreen:
-        return <ProspectEditScreen navigator={navigator} ip={route.passProp.ip} session={route.passProp.sessionID} item={route.passProp.item} />
+        return <ProspectEditScreen navigator={navigator} ip={route.passProp.ip} session={route.passProp.sessionID} item={route.passProp.item} route={route}/>
     }
 	}
 }
