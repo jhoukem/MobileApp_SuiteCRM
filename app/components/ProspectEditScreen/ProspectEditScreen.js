@@ -4,9 +4,9 @@ import { Text, ScrollView, View, Button, TextInput, Alert, Image, ActivityIndica
 import { styles as defaultStyles } from '../../layout/styles.js'
 import { styles, images } from './index.js'
 import * as constants from '../../config/const.js'
+import { restCall } from '../../lib/rest_api.js'
 
 var DEBUG = true;
-const HEADERS = 'method=set_entry&input_type=JSON&response_type=JSON&rest_data=';
 
 export class ProspectEditScreen extends Component {
 
@@ -28,14 +28,23 @@ export class ProspectEditScreen extends Component {
         email: null,
         address: null,
         description: null,
+        deleted: 0,
         };
   }
 
-  pushToServer() {
+  pushToServer(onSuccessMessage, onFailureMessage) {
+    
+    if(DEBUG){
+      this.debugState();
+    }
+    var itemID = null;
+    if(this.props.item){
+        itemID = this.props.item.name_value_list.id.value;
+    }
     var updatedData = {session: this.props.session,
                         module_name:"Leads",
                         name_value_list:[
-                                            {name:"id", value: this.props.item.name_value_list.id.value},
+                                            {name:"id", value: (itemID) ? itemID : ''},
                                             {name:"last_name", value: this.state.last_name},
                                             {name:"first_name", value: this.state.first_name},
                                             {name:"title", value: this.state.title},
@@ -44,46 +53,38 @@ export class ProspectEditScreen extends Component {
                                             {name:"phone_work", value: this.state.phone_number},
                                             {name:"phone_mobile", value: this.state.mobile_phone_number},
                                             {name:"email1", value: this.state.email},
+                                            {name:"deleted", value: this.state.deleted},
                                         ]
                       }
 
     var updatedDataJson = JSON.stringify(updatedData);                      
-    var dataToSend = {  
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: HEADERS.concat(updatedDataJson),
+    
+    this.setState({isPushing: true});
+    var onSuccess = function(responseData){
+
+        this.setState({isPushing: false});
+        if(responseData.entry_list){
+            this.setState({hasModifications: false});
+            Alert.alert('Succès', onSuccessMessage,
+                  [ 
+                      {text: 'OK', onPress: () => this.props.navigator.pop()},
+                  ]
+            )          
+        } else {
+            Alert.alert('Echec', onFailureMessage,
+                  [ 
+                      {text: 'OK', },
+                  ]
+            )
+        }
     }
 
-    this.setState({isPushing: true});
-
-    fetch('http://'+ this.props.ip +'/SuiteCRM/service/v3_1/rest.php', dataToSend)  
-    .then((response) => response.json())
-    .then((responseData) => {
-      
-      this.setState({isPushing: false});
-      if(responseData.entry_list){
-          this.setState({hasModifications: false});
-          Alert.alert('Succès', "Le prospect à bien été enregistré dans votre CRM",
-                [ 
-                    {text: 'OK', onPress: () => this.props.navigator.pop()},
-                ]
-          )          
-      } else {
-          Alert.alert('Erreur', "Le prospect n'a pas pu être enregistré dans votre CRM",
-                [ 
-                    {text: 'OK', },
-                ]
-          )
-      }
-      if(DEBUG){
-        console.log("(EditScreen)");
-        console.log(responseData);
-      }
-    })
-    .done();
+    var onFailure = function(error){
+        this.setState({isPushing: false, error: true});
+    }
+  
+    restCall("set_entry", updatedDataJson, this.props.ip, onSuccess.bind(this), onFailure.bind(this));
+  
   }
 
 
@@ -104,7 +105,20 @@ export class ProspectEditScreen extends Component {
 
   handleSave(){
 
-    if(DEBUG){
+    this.state.deleted = 0;
+    this.pushToServer("Le prospect à bien été enregistré dans votre CRM",
+        "Le prospect n'a pas pu être enregistré dans votre CRM");
+  }
+
+  handleDelete(){
+
+    this.state.deleted = 1;
+    this.pushToServer("Le prospect à bien été supprimé de votre CRM",
+        "Le prospect n'a pas pu être supprimé de votre CRM");
+  }
+
+  debugState(){
+      console.log("Deleted: "+ this.state.deleted);
       console.log("Nom: "+ this.state.last_name);
       console.log("Prenom: "+ this.state.first_name);
       console.log("Fonction: "+ this.state.title);
@@ -116,28 +130,6 @@ export class ProspectEditScreen extends Component {
       console.log("email: "+ this.state.email);
       console.log("Adresse: "+ this.state.address);
       console.log("Description: "+ this.state.description);
-    }
-
-    this.pushToServer();
-  }
-
-  //{"name":"deleted","value":"1"}]}
-  handleDelete(){
-   /* var success = true;
-
-    if(success){
-        Alert.alert('Succès', "Le prospect à bien été supprimé de votre CRM",
-         [ 
-            {text: 'OK', onPress: () => this.props.navigator.pop()},
-         ]
-        )
-    } else {
-        Alert.alert('Erreur', "Le prospect n'a pas pu être supprimé de votre CRM",
-         [ 
-            {text: 'OK', },
-         ]
-        )
-    }*/
   }
 
   setNavActions(){
@@ -152,14 +144,13 @@ export class ProspectEditScreen extends Component {
 
   renderLeftNavButton(){
       return (      
-                <Text style={defaultStyles.fontNavBar}>Back</Text>
+          <Text style={defaultStyles.fontNavBar}>Back</Text>
       );
   }
 
   renderRightNavButton(){
       return (
-         <Image source={require('../../images/icon_save.png')} style={styles.icon} />
-               
+          <Image source={images.saveIcon} style={styles.icon} />
       );
   }
 

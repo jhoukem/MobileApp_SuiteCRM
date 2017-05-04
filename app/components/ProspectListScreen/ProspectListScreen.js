@@ -4,23 +4,21 @@ import { Text, ScrollView, View, Button, FlatList, ListItem, TouchableHighlight,
 import { styles as defaultStyles } from '../../layout/styles.js'
 import { styles, images } from './index.js'
 import * as constants from '../../config/const.js'
+import { restCall } from '../../lib/rest_api.js'
 
 
-
-var cpt = 0;
 var DEBUG = false;
-const HEADERS = "method=get_entry_list&input_type=JSON&response_type=JSON&rest_data=";
 
 export class ProspectListScreen extends Component {
 
   constructor(props) {
     super(props);
-    this.state= {session: undefined, isFetching: false, prospectList: []};
+    this.state= {session: undefined, error: false, isFetching: false, prospectList: []};
     this.navigate = this.navigate.bind(this);
     
   }
 
-  /*isEdition is used to know if the delete button should be present on the entry.*/
+  /*item is used to know if the delete button should be present on the entry.*/
   navigate(route, item=null){
     	this.props.navigator.push({
     		  id: route,
@@ -67,36 +65,27 @@ export class ProspectListScreen extends Component {
   }
 
   componentDidMount(){
-      this.fetchProspectList();
+    this.fetchProspectList();
   }
 
   fetchProspectList(){
 
-    if(DEBUG)
+    if(DEBUG){
       console.log("(ListScreen) Session id received = " + this.props.session);
+    }
 
     var param = '{"session":"'+ this.props.session +'","module_name":"Leads","query":"","max_results":"100" }';
-    var dataToSend = {  
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: HEADERS.concat(param),
-    }
 
     this.setState({isFetching: true});
 
-    fetch('http://'+ this.props.ip +'/SuiteCRM/service/v3_1/rest.php', dataToSend)  
-    .then((response) => response.json())
-    .then((responseData) => {
-        if(DEBUG){
-          console.log("(ListScreen) response data received");
-          console.log(responseData);
-        }
-        this.setState({isFetching: false, prospectList: responseData.entry_list});
-    })
-    .done();
+    var onSuccess = function(responseData){
+        this.setState({isFetching: false, error: false, prospectList: responseData.entry_list});
+    }
+    var onFailure = function(error){
+        this.setState({isFetching: false, error: true});
+    }
+
+    restCall("get_entry_list", param, this.props.ip, onSuccess.bind(this), onFailure.bind(this));
   }
 
 
@@ -107,7 +96,10 @@ export class ProspectListScreen extends Component {
     
     				{/*Header Part*/}
     				<View style={styles.headerWrapper}>
-    					<Text style={defaultStyles.fontBasicNote}>Selectionnez un prospect pour le modifier</Text>
+              {this.state.error && 
+                  <Text style={defaultStyles.fontBasicError}>Erreur de réseau</Text> ||
+    					         <Text style={defaultStyles.fontBasicNote}>Selectionnez un prospect pour le modifier</Text>
+              }
     				</View>
 
     				{/*Body Part*/}

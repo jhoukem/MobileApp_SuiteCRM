@@ -1,31 +1,36 @@
-var api_url = "<SUGAR_URL>/service/v2/rest.php";
-var user_name = '<USERNAME>';    //SugarCRM username
-var password = '<PASSWORD>';    //SugarCRM password
+const DEBUG = false;
 
-var params = {
-    user_auth:{
-        user_name:user_name,
-        password:password,
-        encryption:'PLAIN'
-    },
-    application: 'SugarCRM RestAPI Example'
-};
-var json = JSON.stringify(params);
-$.ajax({
-        url: api_url,
-        type: "POST",
-        data: { method: "login", input_type: "JSON", response_type: "JSON", rest_data: json },
-        dataType: "json",
-        success: function(result) {
-             if(result.id) {
-                    //HERE: you will have out put from rest
-                alert("sucessfully LOGIN Your session ID is : " + result.id);
-             }
-             else
-                 alert("Error");
-              
+export var restCall = function(method, parameters, url, functionOnSuccess, functionOnFailure){
+
+   var arg = 'method='+ method +'&input_type=JSON&response_type=JSON&rest_data=';
+
+   var dataToSend = {  
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
         },
-        error: function(result) {
-           alert("Error");
+        body: arg.concat(parameters),
+    }
+
+    if(DEBUG){
+        console.log("URL="+ url);
+        console.log("Data to send: ");
+        console.log(dataToSend);
+    }
+
+    fetch('http://'+ url +'/SuiteCRM/service/v3_1/rest.php', dataToSend)  
+    .then((response) => response.json())
+    .then((responseData) => {
+        functionOnSuccess(responseData);
+        if(DEBUG){
+            console.log(responseData);
         }
-});
+    })
+    .catch((error) => {
+        functionOnFailure(error);
+        if(DEBUG){
+            console.log(error);
+        }
+    });
+} 

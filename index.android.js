@@ -87,7 +87,7 @@ class Main extends Component {
 
 	renderScene(route, navigator) {
     _navigator = navigator;
-    console.log(route.id);
+    console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 		switch(route.id){
       case constants.loginScreen:
           return <LoginScreen navigator={navigator} />
