@@ -38,11 +38,9 @@ export class ProspectListScreen extends Component {
 
     var itemIndex = this.state.prospectList.findIndex((obj) => {return obj.name_value_list.id.value == returnedItemID}); 
     var item;
-    var new_data;
 
     // It was a prospect creation since it doesn't exist in the list.
     if(itemIndex === -1){
-        new_data = new Object();
         item = new Object();
         item.id = returnedItemID;
         item.module_name = "Leads";
@@ -51,42 +49,35 @@ export class ProspectListScreen extends Component {
     // It was a prospect update.
     else {
         item = this.state.prospectList[itemIndex];
-        new_data = item.name_value_list;
     }
+    
+    // We update the name_value_list.
+    item.name_value_list = entry_list;
+
+
         // The prospect has been deleted. It is removed from the list.
         if(entry_list.deleted.value === 1 && itemIndex !== -1){
           this.state.prospectList.splice(itemIndex, 1);
         }
         // The prospect has been updated.
         else {
-            for (var key in entry_list) {
-                if (entry_list.hasOwnProperty(key)) {
-                    if(DEBUG){
-                        console.log("new_data["+ key +"]="+ this.state[key] +" -> "+ key + "=" + entry_list[key].value);
+            if(DEBUG){
+                console.log("updated item: ");
+                console.log(item);
+                // If it wasn't deleted then we display its value in the list.
+                if(entry_list.deleted.value !== 1){
+                    if(itemIndex !== -1){
+                        console.log("this.prospectList["+itemIndex+"].name_value_list.name.value ");
+                        console.log(this.state.prospectList[itemIndex].name_value_list.name.value);
+                    } else {
+                        console.log("this.prospectList["+(this.state.prospectList.length - 1)+"].name_value_list.name.value ");
+                        console.log(this.state.prospectList[this.state.prospectList.length - 1].name_value_list.name.value);
                     }
-                    // Set all the updated values.
-                    new_data[key] = {name:"", value:""};
-                    new_data[key].name = key;
-                    new_data[key].value = entry_list[key].value;
                 }
             }
         }
 
-    item.name_value_list = new_data;
-
-
-    if(DEBUG){
-        console.log("updated item: ");
-        console.log(item);
-        if(itemIndex !== -1){
-            console.log("this.prospectList["+itemIndex+"].name_value_list.name.value ");
-            console.log(this.state.prospectList[itemIndex].name_value_list.name.value);
-        } else {
-          console.log("this.prospectList["+(this.state.prospectList.length - 1)+"].name_value_list.name.value ");
-          console.log(item);
-        }
-    }
-
+    console.log("List length = "+this.state.prospectList.length);
     // Usefull to re-render the flatList because it is a PureComponent.
     this.setState({flatListNeedUpdate: (-this.state.flatListNeedUpdate)});
   }
