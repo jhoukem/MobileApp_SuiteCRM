@@ -40,15 +40,6 @@ export class ProspectListScreen extends Component {
     var item;
     var new_data;
 
-    console.log("index = "+itemIndex);
-    
-
-    if(DEBUG){
-        console.log("item index = "+itemIndex);
-        console.log("item");
-        console.log(item);
-    }
-
     // It was a prospect creation since it doesn't exist in the list.
     if(itemIndex === -1){
         new_data = new Object();
@@ -74,6 +65,8 @@ export class ProspectListScreen extends Component {
                         console.log("new_data["+ key +"]="+ this.state[key] +" -> "+ key + "=" + entry_list[key].value);
                     }
                     // Set all the updated values.
+                    new_data[key] = {name:"", value:""};
+                    new_data[key].name = key;
                     new_data[key].value = entry_list[key].value;
                 }
             }
@@ -85,11 +78,16 @@ export class ProspectListScreen extends Component {
     if(DEBUG){
         console.log("updated item: ");
         console.log(item);
-        console.log("this.prospectList["+itemIndex+"].name_value_list.name.value ");
-        console.log(this.state.prospectList[itemIndex].name_value_list.name.value);
+        if(itemIndex !== -1){
+            console.log("this.prospectList["+itemIndex+"].name_value_list.name.value ");
+            console.log(this.state.prospectList[itemIndex].name_value_list.name.value);
+        } else {
+          console.log("this.prospectList["+(this.state.prospectList.length - 1)+"].name_value_list.name.value ");
+          console.log(item);
+        }
     }
 
-    // Usefull to rerender the flatList because it is a PureComponent.
+    // Usefull to re-render the flatList because it is a PureComponent.
     this.setState({flatListNeedUpdate: (-this.state.flatListNeedUpdate)});
   }
 

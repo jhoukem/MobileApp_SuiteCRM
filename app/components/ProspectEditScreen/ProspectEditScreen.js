@@ -65,9 +65,13 @@ export class ProspectEditScreen extends Component {
     
     this.setState({isPushing: true});
     var onSuccess = function(responseData){
+        
 
         this.setState({isPushing: false});
         if(responseData.entry_list){
+
+            console.log("(EditScreen received item) :");
+            console.log(responseData.entry_list);
             this.setState({hasModifications: false});
             
             Alert.alert('Succès', onSuccessMessage,
@@ -166,17 +170,17 @@ export class ProspectEditScreen extends Component {
       this.setNavActions();
       if(this.props.item){
           this.setState({
-                last_name: this.props.item.name_value_list.last_name.value,
-                first_name: this.props.item.name_value_list.first_name.value,
-                title: this.props.item.name_value_list.title.value,
-                service: this.props.item.name_value_list.department.value,
-                account_name: this.props.item.name_value_list.account_name.value,
-                phone_number: this.props.item.name_value_list.phone_work.value,
-                mobile_phone_number: this.props.item.name_value_list.phone_mobile.value,
+                last_name: this.props.item.name_value_list.last_name ? this.props.item.name_value_list.last_name.value : "",
+                first_name: this.props.item.name_value_list.first_name ? this.props.item.name_value_list.first_name.value : "",
+                title: this.props.item.name_value_list.title ? this.props.item.name_value_list.title.value : "",
+                service: this.props.item.name_value_list.department ? this.props.item.name_value_list.department.value : "",
+                account_name: this.props.item.name_value_list.account_name ? this.props.item.name_value_list.account_name.value : "",
+                phone_number: this.props.item.name_value_list.phone_work ? this.props.item.name_value_list.phone_work.value : "",
+                mobile_phone_number: this.props.item.name_value_list.phone_mobile? this.props.item.name_value_list.phone_mobile.value : "",
                 //website: this.props.item.name_value_list.surname.value,
-                email: this.props.item.name_value_list.email1.value,
+                email: this.props.item.name_value_list.email1 ? this.props.item.name_value_list.email1.value : "",
                 //address: this.props.item.name_value_list.surname.value,
-                description: this.props.item.name_value_list.description.value,
+                description: this.props.item.name_value_list.description? this.props.item.name_value_list.description.value : "",
           });
       }
   }
