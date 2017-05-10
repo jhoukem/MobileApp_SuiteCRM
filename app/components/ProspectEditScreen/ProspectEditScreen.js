@@ -10,6 +10,10 @@ var DEBUG = true;
 
 export class ProspectEditScreen extends Component {
 
+  static navigationOptions = {
+    title: 'Édition de prospects',
+  };
+
   constructor(props) {
     super(props);
     this.state= {
@@ -80,7 +84,8 @@ export class ProspectEditScreen extends Component {
                         this.props.route.passProp.callback(responseData.entry_list);
                         this.props.navigator.pop();
                       }},
-                  ]
+                  ],
+                  {cancelable: false},
             )          
         } else {
             Alert.alert('Échec', onFailureMessage,
@@ -116,16 +121,19 @@ export class ProspectEditScreen extends Component {
 
   handleSave(){
    
-    this.state.deleted = 0;
-    this.pushToServer("Le prospect à bien été enregistré dans votre CRM",
+   if(!this.state.isPushing){
+      this.state.deleted = 0;
+      this.pushToServer("Le prospect à bien été enregistré dans votre CRM",
         "Le prospect n'a pas pu être enregistré dans votre CRM");
+    }
   }
 
   handleDelete(){
-
-    this.state.deleted = 1;
-    this.pushToServer("Le prospect à bien été supprimé de votre CRM",
+    if(!this.state.isPushing){
+      this.state.deleted = 1;
+      this.pushToServer("Le prospect à bien été supprimé de votre CRM",
         "Le prospect n'a pas pu être supprimé de votre CRM");
+    }
   }
 
   debugState(){
@@ -177,7 +185,7 @@ export class ProspectEditScreen extends Component {
                 account_name: this.props.item.name_value_list.account_name ? this.props.item.name_value_list.account_name.value : "",
                 phone_number: this.props.item.name_value_list.phone_work ? this.props.item.name_value_list.phone_work.value : "",
                 mobile_phone_number: this.props.item.name_value_list.phone_mobile? this.props.item.name_value_list.phone_mobile.value : "",
-                //website: this.props.item.name_value_list.surname.value,
+                //website: this.props.item.name_value_list.surname ? this.props.item.name_value_list.surname.value : "",
                 email: this.props.item.name_value_list.email1 ? this.props.item.name_value_list.email1.value : "",
                 //address: this.props.item.name_value_list.surname.value,
                 description: this.props.item.name_value_list.description? this.props.item.name_value_list.description.value : "",
@@ -193,7 +201,6 @@ export class ProspectEditScreen extends Component {
   render() {
     	return (
     		<View style={styles.container}>
-    			
     					
     				<View style={styles.headerWrapper}>
                 {/*Only display the prospect ID field if it exists*/}

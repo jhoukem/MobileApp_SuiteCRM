@@ -8,4 +8,7 @@ export const images = {
 	reloadIcon: require('../../images/icon_refetch_data.png'),
 	saveIcon: require('../../images/icon_save.png'),
 	logoutIcon: require('../../images/icon_logout.png'),
+	searchIcon: require("../../images/search_icon.png"),
+	searchbarCloseButtonIcon: require('../../images/searchbar_close.png'),
+	searchbarBackButtonIcon: require('../../images/searchbar_back.png'),
 };

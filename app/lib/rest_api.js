@@ -22,15 +22,19 @@ export var restCall = function(method, parameters, url, functionOnSuccess, funct
     fetch('http://'+ url +'/SuiteCRM/service/v3_1/rest.php', dataToSend)  
     .then((response) => response.json())
     .then((responseData) => {
-        functionOnSuccess(responseData);
+        if(functionOnSuccess){
+            functionOnSuccess(responseData);
+        }
         if(DEBUG){
             console.log(responseData);
         }
     })
     .catch((error) => {
-        functionOnFailure(error);
-        if(DEBUG){
-            console.log(error);
+        if(functionOnFailure){
+            functionOnFailure(error);
         }
+        //if(DEBUG){
+            console.log("Fetch error: " + error);
+        //}
     });
 } 

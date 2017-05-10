@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { StackNavigator } from 'react-navigation';
 import { Text, TextInput, Image, View, Button, ActivityIndicator } from 'react-native';
 
 import { styles as defaultStyles } from '../../layout/styles.js'
@@ -6,13 +7,18 @@ import { styles, images } from './index.js'
 import * as constants from '../../config/const.js'
 import { restCall } from '../../lib/rest_api.js'
 
-
-
 var DEBUG = false;
 var MD5 = require("crypto-js/md5");
 const HEADERS = 'method=login&input_type=JSON&response_type=JSON&rest_data=';
 
+
+
 export class LoginScreen extends Component {
+
+  static navigationOptions = {
+    title: 'ExelciaCRM Prospect Manager',
+  };
+
 
   constructor(props) {
     super(props);
@@ -29,14 +35,14 @@ export class LoginScreen extends Component {
   }
 
   navigate(route){
+    const { navigate } = this.props.navigation;
 
-    this.props.navigator.push({
-      id: route,
-      passProp: {
-          sessionID: this.state.session,
+    var params = {
+          session: this.state.session,
           ip: this.state.ip,
-      },
-    })
+    };
+
+    navigate("List", params);
   }
 
   connect(){

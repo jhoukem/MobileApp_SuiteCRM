@@ -9,14 +9,20 @@ export const styles = StyleSheet.create({
 	},
 
 	headerWrapper: {
-		flex: 0.05,
+		flex: 0.04,
 		justifyContent: 'center',
 		alignItems: 'flex-start',
 		padding: 10,
 	},
 
+	searchWrapper: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'flex-start',
+	},
+
 	bodyWrapper: {
-		flex: 0.6,
+		flex: 0.4,
 		padding: 20,
 	},
 
@@ -28,7 +34,7 @@ export const styles = StyleSheet.create({
 	},
 
 	buttonWrapper: {
-		flex: 0.05,
+		flex: 0.1,
 		flexDirection: 'row',
 		justifyContent: 'space-around',
 		alignItems: 'center',
