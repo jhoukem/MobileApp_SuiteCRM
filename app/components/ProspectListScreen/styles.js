@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
 	},
 
 	bodyWrapper: {
-		flex: 0.4,
+		flex: 0.5,
 		padding: 20,
 	},
 
@@ -33,7 +33,7 @@ export const styles = StyleSheet.create({
 	},
 
 	buttonWrapper: {
-		flex: 0.1,
+		flex: 0.05,
 		flexDirection: 'row',
 		justifyContent: 'space-around',
 		alignItems: 'center',

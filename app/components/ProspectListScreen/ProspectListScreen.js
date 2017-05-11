@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Text, ScrollView, View, Button, FlatList, ListItem, TouchableHighlight, ActivityIndicator, Image } from 'react-native';
-import { Toolbar, ThemeProvider } from 'react-native-material-ui';
+import { Text, ScrollView, View, Button, FlatList, ListItem, TouchableHighlight, ActivityIndicator } from 'react-native';
+import { Toolbar, ThemeProvider, IconToggle } from 'react-native-material-ui';
 
 import { styles as defaultStyles } from '../../layout/styles.js'
 import { styles, images } from './index.js'
@@ -112,6 +112,7 @@ export class ProspectListScreen extends Component {
   }
 
   reload(){
+    console.log("RELOAD!!!!");
     this.fetchProspectList();
   }
 
@@ -152,7 +153,7 @@ export class ProspectListScreen extends Component {
 
 
   search(){
-    //console.log("is Searching = " + this.toolbar.isSearchActive);
+    console.log("is Searching = " + this.toolbar.isSearchActive);
   }
 
 
@@ -168,11 +169,11 @@ export class ProspectListScreen extends Component {
                     key="toolbar"
                     leftElement="exit-to-app"
                     onLeftElementPress={this.logout}
-                    rightElement="cloud-download"
-                    onRightElementPress={this.reload}
+                    rightElement={<IconToggle name="cloud-download" color="white" onPress={this.reload} disabled={this.state.isFetching}/>}
                     centerElement="Liste des prospects"
                     searchable={{ autoFocus: true,
                                   placeholder: 'Search',
+                                  
                                 }}
                   />
 

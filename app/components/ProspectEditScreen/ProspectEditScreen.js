@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, ScrollView, View, Button, TextInput, Alert, Image, ActivityIndicator } from 'react-native';
-import { Toolbar, ThemeProvider } from 'react-native-material-ui';
+import { Toolbar, ThemeProvider, IconToggle } from 'react-native-material-ui';
 
 import { styles as defaultStyles } from '../../layout/styles.js'
 import { styles, images } from './index.js'
@@ -204,10 +204,9 @@ export class ProspectEditScreen extends Component {
                 <Toolbar
                     ref={toolbarComponent => this.toolbar = toolbarComponent}
                     key="toolbar"
-                    leftElement="arrow-back"
+                    leftElement="navigate-before"
                     onLeftElementPress={this.handleCancel}
-                    rightElement="save"
-                    onRightElementPress={this.handleSave}
+                    rightElement={<IconToggle name="save" color="white" onPress={this.handleSave} disabled={this.state.isPushing}/>}
                     centerElement="Edition du prospect"
                 />
 
