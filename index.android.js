@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { AppRegistry, View, Text, Navigator, Button, TouchableHighlight, BackAndroid } from 'react-native';
+import { AppRegistry, View, Text, Button, TouchableHighlight, BackAndroid } from 'react-native';
+import { Navigator } from 'react-native-deprecated-custom-components';
 
 import { LoginScreen } from './app/components/LoginScreen/LoginScreen.js'
 import { ProspectListScreen } from './app/components/ProspectListScreen/ProspectListScreen.js'
@@ -51,20 +52,8 @@ class Main extends Component {
  constructor(props) {
     super(props);
     this.renderScene = this.renderScene.bind(this);
-    this.handleAndroidBackButton();
   }
-
-  handleAndroidBackButton(){
-      BackAndroid.addEventListener('hardwareBackPress', () => {
-          if (_navigator.getCurrentRoutes().length === 1 ) {
-              return false;
-          } else {
-              _navigator.pop();
-              return true;
-          }
-      });
-  }
-
+  
   configureScene(route, routeStack){
    return Navigator.SceneConfigs.FloatFromRight;
   }
