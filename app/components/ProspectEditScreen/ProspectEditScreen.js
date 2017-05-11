@@ -11,7 +11,7 @@ var DEBUG = true;
 export class ProspectEditScreen extends Component {
 
   static navigationOptions = {
-    title: 'Édition de prospects',
+        header: null,
   };
 
   constructor(props) {

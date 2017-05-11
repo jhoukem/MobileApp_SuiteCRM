@@ -6,10 +6,27 @@ import { ProspectListScreen } from './app/components/ProspectListScreen/Prospect
 import { ProspectEditScreen } from './app/components/ProspectEditScreen/ProspectEditScreen.js'
 //import * as constants from '../../config/const.js'
 
+
+const options = {
+		navigationOptions: {
+		        title: "ExelciaCRM Prospect Manager",
+		        headerStyle: {
+								backgroundColor: '#1F94B7',
+		        			 },
+		        headerTitleStyle: {
+		        					color: 'white',
+		        					alignSelf: 'center',
+		        				  },
+    }
+  };
+
+
 const Navigator = StackNavigator({
-  Login: { screen: LoginScreen },
-  List: { screen: ProspectListScreen },
-  Edit: { screen: ProspectEditScreen },
-});
+			Login: { screen: LoginScreen },
+			List: { screen: ProspectListScreen },
+			Edit: { screen: ProspectEditScreen },
+		},
+		options
+);
 
 AppRegistry.registerComponent('CRM_Prospect', () => Navigator);

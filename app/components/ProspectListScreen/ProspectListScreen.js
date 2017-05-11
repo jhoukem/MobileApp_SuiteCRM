@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Text, ScrollView, View, Button, FlatList, ListItem, TouchableHighlight, ActivityIndicator, Image } from 'react-native';
-import SearchBar from 'react-native-searchbar'
 
 
 import { styles as defaultStyles } from '../../layout/styles.js'
@@ -12,42 +11,17 @@ var DEBUG = false;
 
 export class ProspectListScreen extends Component {
 
+  static navigationOptions = {
+        header: null,
+  };
 
   constructor(props) {
     super(props);
-    //this.state = {session: undefined, error: false, isFetching: false, flatListNeedUpdate: 1, isSearching: false, prospectList: [], prospectSearch: []};
-    this.state = this.props.navigation.state.params;
+    this.state = { error: false, isFetching: false, flatListNeedUpdate: 1, isSearching: false, prospectList: [], prospectSearch: []};
     this.navigate = this.navigate.bind(this);
     this.reload = this.reload.bind(this);
+    this.logout = this.logout.bind(this);
   }
-
-  componentWillMount(){
-    // Set the NavBar Actions.
-    const { state, setParams } = this.props.navigation;
-    setParams({error: false, isFetching: false, flatListNeedUpdate: 1, isSearching: false, prospectList: [], prospectSearch: []});
-    setParams({listScreen:{rightButton: this.reload.bind(this)}});
-    setParams({listScreen:{leftButton: this.logout.bind(this)}});
-  }
-
-  static navigationOptions = ({ navigation }) => {
-        const {state, setParams} = navigation;
-        return {
-            title: "Liste des prospects",
-            headerRight: (
-                    <Button
-                        title={"Reload"}
-                        disabled = { state.params.isFetching }
-                        onPress={() => state.params.listScreen.rightButton()}
-                    />
-            ),
-            headerLeft: (
-                    <Button
-                        title={"On"}
-                        onPress={() => {console.log("Is fetching ? " + state.params.isFetching);state.params.listScreen.rightButton()}}
-                    />
-            ),
-        };
-  };
 
   /*item is used to know if the delete button should be present on the entry.*/
   navigate(route, item=null){
@@ -115,24 +89,6 @@ export class ProspectListScreen extends Component {
     this.setState({flatListNeedUpdate: (-this.state.flatListNeedUpdate)});
   }
 
- /* renderLeftNavButton(){
-      return (   
-        <TouchableHighlight disabled={this.state.isFetching} onPress={() => this.logout.bind(this)}>
-            <Image source={images.logoutIcon} style={styles.icon} />
-        </TouchableHighlight>         
-      );
-  }
-
-  renderRightNavButton(){
-      return (
-        <TouchableHighlight onPress={() => this.test.bind(this)}>
-            <Image source={images.searchIcon} style={styles.icon} />
-        </TouchableHighlight>
-
-        
-      );
-  }*/
-
   logout(){
     var param = {session: this.props.session};
     var paramJSON = JSON.stringify(param);
@@ -144,32 +100,8 @@ export class ProspectListScreen extends Component {
     this.navigate(constants.editScreen, item);
   }
 
-  /*onSearch(){
-    console.log("on Search");
-    this.state.isSearching = !this.state.isSearching;
-    
-    this.state.isSearching ? this.searchBar.show() : this.searchBar.hide();
-    this.searchBar.show();
-  }*/
-
   reload(){
-
-    console.log("in reload !!!!!!!!!!!!!!!!!!!!!!");
-   
-    const { state, setParams } = this.props.navigation;
-    setParams({isFetching2: !state.params.isFetching});
-
-    //this.setState({isFetching: !this.state.isFetching});
-
-    /*
-    if(!this.state.isFetching){
-        this.fetchProspectList();
-    }
-    */
-   /* this.setState({isFetching: !this.state.isFetching});
-    this.disableNavButton(!this.props.navBar.leftNavButtonDisabled);
-    */
-    
+    this.fetchProspectList();
   }
 
   componentDidMount(){
@@ -177,15 +109,12 @@ export class ProspectListScreen extends Component {
   }
 
   fetchProspectList(){
-     const { navParams } = this.props.navigation.state;
-     console.log("Nav params = ");
-     console.log(navParams);
 
-    var ip = navParams.ip;
-    var session = navParams.session;
+    var ip = this.props.navigation.state.params.ip;
+    var session = this.props.navigation.state.params.session;
 
-      console.log("(ListScreen) Session id received = " + session);
     if(DEBUG){
+      console.log("(ListScreen) Session id received = " + session);
     }
 
     var param = '{"session":"'+ session +'","module_name":"Leads","query":"","max_results":"100" }';
@@ -210,16 +139,9 @@ export class ProspectListScreen extends Component {
     this.setState({flatListNeedUpdate: (-this.state.flatListNeedUpdate), prospectSearch: results});
   }
 
-  onBack(input){
-
-    this.setState({isSearching: false, flatListNeedUpdate: (-this.state.flatListNeedUpdate)});
-    this.searchBar.hide();
-    
-  }
 
 
   render() {
-    console.log("rendering");
     	return (
     		<View style={styles.container}>
     
@@ -227,18 +149,7 @@ export class ProspectListScreen extends Component {
     				<View style={styles.headerWrapper}>
               {this.state.error && 
                   <Text style={defaultStyles.fontBasicError}>Erreur de réseau</Text> ||
-
-                      <View>
-                            <SearchBar
-                            ref={(ref) => this.searchBar = ref}
-                            data={this.state.prospectList}
-                            handleResults={this.handleResults.bind(this)}
-                            onBack={this.onBack.bind(this)}
-                            backButton={<Image source={images.searchbarBackButtonIcon}/>}
-                            closeButton={<Image source={images.searchbarCloseButtonIcon}/>}
-                            />
-        					         <Text style={defaultStyles.fontBasicNote}>Selectionnez un prospect pour le modifier</Text>
-                       </View>
+  				        <Text style={defaultStyles.fontBasicNote}>Selectionnez un prospect pour le modifier</Text>
               }
     				</View>
 
