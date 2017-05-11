@@ -32,6 +32,7 @@ export class ProspectListScreen extends Component {
     this.navigate = this.navigate.bind(this);
     this.reload = this.reload.bind(this);
     this.logout = this.logout.bind(this);
+    this.setSearching = this.setSearching.bind(this);
   }
 
   /*item is used to know if the delete button should be present on the entry.*/
@@ -147,18 +148,23 @@ export class ProspectListScreen extends Component {
   }
 
 
-  handleResults(results){
+  handleSearch(pattern){
+    var results = new Array();
+
+    for(idx in this.state.prospectList){
+        var name = this.state.prospectList[idx].name_value_list.name.value;
+        if(name.contains(pattern)){
+          results.push(this.state.prospectList[idx]);
+        }
+    }
     this.setState({flatListNeedUpdate: (-this.state.flatListNeedUpdate), prospectSearch: results});
   }
 
-
-  search(){
-    console.log("is Searching = " + this.toolbar.isSearchActive);
+  setSearching(bool){
+    this.setState({isSearching: bool, prospectSearch: null});
   }
 
-
   render() {
-
 
     	return (
         <ThemeProvider uiTheme={uiTheme}>
@@ -173,7 +179,9 @@ export class ProspectListScreen extends Component {
                     centerElement="Liste des prospects"
                     searchable={{ autoFocus: true,
                                   placeholder: 'Search',
-                                  
+                                  onSearchPressed: () => this.setSearching(true),
+                                  onSearchClosed: () => this.setSearching(false),
+                                  onChangeText: (text) => this.handleSearch(text),
                                 }}
                   />
 
@@ -209,7 +217,7 @@ export class ProspectListScreen extends Component {
     	    			{/*Button Part*/}
         				<View style={styles.buttonWrapper}>
         				    <Button
-                  			onPress={ () => this.navigate(constants.editScreen)}
+                  			onPress={() => this.navigate(constants.editScreen)}
                  				title="Créer un nouveau prospect"
                   			color="#1F94B7"
                   			accessibilityLabel="Créer un nouveau prospect"
