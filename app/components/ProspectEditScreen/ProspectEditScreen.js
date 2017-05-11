@@ -1,12 +1,25 @@
 import React, { Component } from 'react';
 import { Text, ScrollView, View, Button, TextInput, Alert, Image, ActivityIndicator } from 'react-native';
+import { Toolbar, ThemeProvider } from 'react-native-material-ui';
 
 import { styles as defaultStyles } from '../../layout/styles.js'
 import { styles, images } from './index.js'
 import * as constants from '../../config/const.js'
 import { restCall } from '../../lib/rest_api.js'
 
-var DEBUG = true;
+var DEBUG = false;
+
+const uiTheme = {
+    palette: {
+        primaryColor: '#1F94B7',
+    },
+    toolbar: {
+        container: {
+            height: 50,
+        },
+    },
+  };
+
 
 export class ProspectEditScreen extends Component {
 
@@ -16,8 +29,7 @@ export class ProspectEditScreen extends Component {
 
   constructor(props) {
     super(props);
-    this.state= {
-        session: null,
+    this.state = {
         isPushing: false,
         saveSucceed: undefined,
         hasModifications: false,
@@ -34,6 +46,8 @@ export class ProspectEditScreen extends Component {
         description: null,
         deleted: 0,
         };
+    this.handleCancel = this.handleCancel.bind(this);
+    this.handleSave = this.handleSave.bind(this);
   }
 
   pushToServer(onSuccessMessage, onFailureMessage) {
@@ -41,9 +55,15 @@ export class ProspectEditScreen extends Component {
     if(DEBUG){
       this.debugState();
     }
+    var ip = this.props.navigation.state.params.ip;
+    var session = this.props.navigation.state.params.session;
+
+    console.log("ip = " + ip + "  session = "+ session);
     var itemID = null;
-    if(this.props.item){
-        itemID = this.props.item.name_value_list.id.value;
+    var updateListScreenFlatList = this.props.navigation.state.params.callback;
+
+    if(this.props.navigation.state.params.item){
+        itemID = this.props.navigation.state.params.item.name_value_list.id.value;
     }
 
     var nameValueList = [
@@ -60,7 +80,7 @@ export class ProspectEditScreen extends Component {
                             {name:"email1", value: this.state.email},
                             {name:"deleted", value: this.state.deleted},
                         ]
-    var updatedData = {session: this.props.session,
+    var updatedData = {session: session,
                         module_name:"Leads",
                         name_value_list: nameValueList,
                       }
@@ -68,9 +88,8 @@ export class ProspectEditScreen extends Component {
     var updatedDataJson = JSON.stringify(updatedData);                      
     
     this.setState({isPushing: true});
-    var onSuccess = function(responseData){
-        
 
+    var onSuccess = function(responseData){
         this.setState({isPushing: false});
         if(responseData.entry_list){
 
@@ -81,8 +100,8 @@ export class ProspectEditScreen extends Component {
             Alert.alert('Succès', onSuccessMessage,
                   [ 
                       {text: 'OK', onPress: () => {
-                        this.props.route.passProp.callback(responseData.entry_list);
-                        this.props.navigator.pop();
+                        updateListScreenFlatList(responseData.entry_list);
+                        this.props.navigation.goBack();
                       }},
                   ],
                   {cancelable: false},
@@ -100,7 +119,7 @@ export class ProspectEditScreen extends Component {
         this.setState({isPushing: false, error: true});
     }
   
-    restCall("set_entry", updatedDataJson, this.props.ip, onSuccess.bind(this), onFailure.bind(this));
+    restCall("set_entry", updatedDataJson, ip, onSuccess.bind(this), onFailure.bind(this));
   
   }
 
@@ -108,13 +127,13 @@ export class ProspectEditScreen extends Component {
 
     var possibilities =  [
                 {text: 'Non', },
-                {text: 'Oui', onPress: () => this.props.navigator.pop()},
+                {text: 'Oui', onPress: () => this.props.navigation.goBack()},
             ];
 
     if(this.state.hasModifications){
         Alert.alert('Abandonner', "Êtes vous sur de vouloir abandonner vos modifications ?", possibilities);
     } else {
-        this.props.navigator.pop()
+        this.props.navigation.goBack();
     }
   
   }
@@ -151,44 +170,23 @@ export class ProspectEditScreen extends Component {
       console.log("Description: "+ this.state.description);
   }
 
-  setNavActions(){
-    var navigator = this.props.navigator;
-
-    navigator.__renderLeftNavButton = this.renderLeftNavButton.bind(this);
-    navigator.__renderRightNavButton = this.renderRightNavButton.bind(this);
-
-    navigator.__onLeftNavButtonPressed = this.handleCancel.bind(this);
-    navigator.__onRightNavButtonPressed = this.handleSave.bind(this);
-  }
-
-  renderLeftNavButton(){
-      return (      
-          <Text style={defaultStyles.fontNavBar}>Back</Text>
-      );
-  }
-
-  renderRightNavButton(){
-      return (
-          <Image source={images.saveIcon} style={styles.icon} />
-      );
-  }
-
-
   componentWillMount(){
-      this.setNavActions();
-      if(this.props.item){
+      var item = null;
+      item = this.props.navigation.state.params.item;
+
+      if(item){
           this.setState({
-                last_name: this.props.item.name_value_list.last_name ? this.props.item.name_value_list.last_name.value : "",
-                first_name: this.props.item.name_value_list.first_name ? this.props.item.name_value_list.first_name.value : "",
-                title: this.props.item.name_value_list.title ? this.props.item.name_value_list.title.value : "",
-                service: this.props.item.name_value_list.department ? this.props.item.name_value_list.department.value : "",
-                account_name: this.props.item.name_value_list.account_name ? this.props.item.name_value_list.account_name.value : "",
-                phone_number: this.props.item.name_value_list.phone_work ? this.props.item.name_value_list.phone_work.value : "",
-                mobile_phone_number: this.props.item.name_value_list.phone_mobile? this.props.item.name_value_list.phone_mobile.value : "",
+                last_name: item.name_value_list.last_name ? item.name_value_list.last_name.value : "",
+                first_name: item.name_value_list.first_name ? item.name_value_list.first_name.value : "",
+                title: item.name_value_list.title ? item.name_value_list.title.value : "",
+                service: item.name_value_list.department ? item.name_value_list.department.value : "",
+                account_name: item.name_value_list.account_name ? item.name_value_list.account_name.value : "",
+                phone_number: item.name_value_list.phone_work ? item.name_value_list.phone_work.value : "",
+                mobile_phone_number: item.name_value_list.phone_mobile ? item.name_value_list.phone_mobile.value : "",
                 //website: this.props.item.name_value_list.surname ? this.props.item.name_value_list.surname.value : "",
-                email: this.props.item.name_value_list.email1 ? this.props.item.name_value_list.email1.value : "",
+                email: item.name_value_list.email1 ? item.name_value_list.email1.value : "",
                 //address: this.props.item.name_value_list.surname.value,
-                description: this.props.item.name_value_list.description? this.props.item.name_value_list.description.value : "",
+                description: item.name_value_list.description ? item.name_value_list.description.value : "",
           });
       }
   }
@@ -200,49 +198,61 @@ export class ProspectEditScreen extends Component {
 
   render() {
     	return (
-    		<View style={styles.container}>
-    					
-    				<View style={styles.headerWrapper}>
-                {/*Only display the prospect ID field if it exists*/}
-                {this.props.item &&
-    					       <Text>Prospect ID: {this.props.item.name_value_list.id.value} </Text>
-    				    }
-            </View>
+        <ThemeProvider uiTheme={uiTheme}>
+        		<View style={styles.container}>
+        					
+                <Toolbar
+                    ref={toolbarComponent => this.toolbar = toolbarComponent}
+                    key="toolbar"
+                    leftElement="arrow-back"
+                    onLeftElementPress={this.handleCancel}
+                    rightElement="save"
+                    onRightElementPress={this.handleSave}
+                    centerElement="Edition du prospect"
+                />
 
-    				<View style={styles.bodyWrapper}>
-              {this.state.isPushing &&
-              <ActivityIndicator style={styles.headerWrapper} size="large" /> ||
+        				<View style={styles.headerWrapper}>
+                    {/*Only display the prospect ID field if it exists*/}
+                    {this.props.navigation.state.params.item &&
+        					       <Text>Prospect ID: {this.props.navigation.state.params.item.name_value_list.id.value} </Text>
+        				    }
+                </View>
 
-    					   <ScrollView style={styles.scroll}>
-    						      <InputLabelRow label='Nom' value = {this.state.last_name} onChangeText = {(text) => this.updateData("last_name" ,text)} placeholder='enter data'/>
-    						      <InputLabelRow label='Prénom' value = {this.state.first_name} onChangeText = {(text) => this.updateData("first_name", text)} placeholder='enter data'/>
-    						      <InputLabelRow label='Fonction' value = {this.state.title} onChangeText = {(text) => this.updateData("title",text)} placeholder='enter data'/>
-    						      <InputLabelRow label='Service' value = {this.state.service} onChangeText = {(text) => this.updateData("service", text)} placeholder='enter data'/>
-    						      <InputLabelRow label='Nom de compte' value = {this.state.account_name} onChangeText = {(text) => this.updateData("account_name", text)} placeholder='enter data'/>
-    					      	<InputLabelRow label='Téléphone' value = {this.state.phone_number} onChangeText = {(text) => this.updateData("phone_number", text)} placeholder='enter data'/>
-    					     	  <InputLabelRow label='Mobile' value = {this.state.mobile_phone_number} onChangeText = {(text) => this.updateData("mobile_phone_number", text)} placeholder='enter data'/>
-    						      <InputLabelRow label='Site web' value = {this.state.website} onChangeText = {(text) => this.updateData("website", text)} placeholder='enter data'/>
-    						      <InputLabelRow label='E-mail' value = {this.state.email} onChangeText = {(text) => this.updateData("email", text)} placeholder='enter data'/>
-    						      <InputLabelRow label='Adresse' value = {this.state.address} onChangeText = {(text) => this.updateData("address", text)} placeholder='enter data'/>
-    						      <InputLabelRow label='Description' value = {this.state.description} onChangeText = {(text) => this.updateData("description", text)} placeholder='enter data'/>
-    					   </ScrollView>
-              }
-    				</View>
-    			
-            {/*Only display the delete button when the screen is accessed from an existing prospect*/}
-            {this.props.item &&
+        				<View style={styles.bodyWrapper}>
+                  {this.state.isPushing &&
+                  <ActivityIndicator style={styles.headerWrapper} size="large" /> ||
 
-    				    <View style={styles.buttonWrapper}>
-    						    <Button
-              				  onPress={() => this.handleDelete()}
-             					  title= "Delete"
-              				  color="red"
-              				  accessibilityLabel="Delete the current prospect"
-                        disabled={this.state.isPushing}
-            		    />
-    				    </View>
-    			  }
-    		</View>
+        					   <ScrollView style={styles.scroll}>
+        						      <InputLabelRow label='Nom' value = {this.state.last_name} onChangeText = {(text) => this.updateData("last_name" ,text)} placeholder='enter data'/>
+        						      <InputLabelRow label='Prénom' value = {this.state.first_name} onChangeText = {(text) => this.updateData("first_name", text)} placeholder='enter data'/>
+        						      <InputLabelRow label='Fonction' value = {this.state.title} onChangeText = {(text) => this.updateData("title",text)} placeholder='enter data'/>
+        						      <InputLabelRow label='Service' value = {this.state.service} onChangeText = {(text) => this.updateData("service", text)} placeholder='enter data'/>
+        						      <InputLabelRow label='Nom de compte' value = {this.state.account_name} onChangeText = {(text) => this.updateData("account_name", text)} placeholder='enter data'/>
+        					      	<InputLabelRow label='Téléphone' value = {this.state.phone_number} onChangeText = {(text) => this.updateData("phone_number", text)} placeholder='enter data'/>
+        					     	  <InputLabelRow label='Mobile' value = {this.state.mobile_phone_number} onChangeText = {(text) => this.updateData("mobile_phone_number", text)} placeholder='enter data'/>
+        						      <InputLabelRow label='Site web' value = {this.state.website} onChangeText = {(text) => this.updateData("website", text)} placeholder='enter data'/>
+        						      <InputLabelRow label='E-mail' value = {this.state.email} onChangeText = {(text) => this.updateData("email", text)} placeholder='enter data'/>
+        						      <InputLabelRow label='Adresse' value = {this.state.address} onChangeText = {(text) => this.updateData("address", text)} placeholder='enter data'/>
+        						      <InputLabelRow label='Description' value = {this.state.description} onChangeText = {(text) => this.updateData("description", text)} placeholder='enter data'/>
+        					   </ScrollView>
+                  }
+        				</View>
+        			
+                {/*Only display the delete button when the screen is accessed from an existing prospect*/}
+                {this.props.navigation.state.params.item &&
+
+        				    <View style={styles.buttonWrapper}>
+        						    <Button
+                  				  onPress={() => this.handleDelete()}
+                 					  title= "Delete"
+                  				  color="red"
+                  				  accessibilityLabel="Delete the current prospect"
+                            disabled={this.state.isPushing}
+                		    />
+        				    </View>
+        			  }
+        		</View>
+        </ThemeProvider>
     		);
   }
 

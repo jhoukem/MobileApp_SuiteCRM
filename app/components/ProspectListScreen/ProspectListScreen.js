@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, ScrollView, View, Button, FlatList, ListItem, TouchableHighlight, ActivityIndicator, Image } from 'react-native';
-
+import { Toolbar, ThemeProvider } from 'react-native-material-ui';
 
 import { styles as defaultStyles } from '../../layout/styles.js'
 import { styles, images } from './index.js'
@@ -8,6 +8,17 @@ import * as constants from '../../config/const.js'
 import { restCall } from '../../lib/rest_api.js'
 
 var DEBUG = false;
+
+  const uiTheme = {
+    palette: {
+        primaryColor: '#1F94B7',
+    },
+    toolbar: {
+        container: {
+            height: 50,
+        },
+    },
+  };
 
 export class ProspectListScreen extends Component {
 
@@ -25,20 +36,20 @@ export class ProspectListScreen extends Component {
 
   /*item is used to know if the delete button should be present on the entry.*/
   navigate(route, item=null){
-    	this.props.navigator.push({ 
-    		  id: route,
-          passProp: {
-              item: item,
-              ip: this.props.ip,
-              sessionID: this.props.session,
-              callback: this.updateProspectList.bind(this),
-          },
-    	}); 
+    const { navigate } = this.props.navigation;
+
+    var params = {
+          session: this.props.navigation.state.params.session,
+          ip: this.props.navigation.state.params.ip,
+          item: item,
+          callback: this.updateProspectList.bind(this),
+    };
+
+    navigate("Edit", params);
+
   }
 
   updateProspectList(entry_list){
-    // Set back the nav actions since the screen is going to be render again (navigator.pop())    
-    this.setNavActions();
     
     // Return the index in the list of the item to be updated.
     var returnedItemID = entry_list["id"].value;
@@ -93,7 +104,7 @@ export class ProspectListScreen extends Component {
     var param = {session: this.props.session};
     var paramJSON = JSON.stringify(param);
     restCall("logout", paramJSON, this.props.ip, null, null);
-    this.props.navigator.pop();
+    this.props.navigation.goBack();
   }
 
   goToEdit(item){
@@ -105,7 +116,7 @@ export class ProspectListScreen extends Component {
   }
 
   componentDidMount(){
-    //this.fetchProspectList();
+    this.fetchProspectList();
   }
 
   fetchProspectList(){
@@ -140,52 +151,73 @@ export class ProspectListScreen extends Component {
   }
 
 
+  search(){
+    //console.log("is Searching = " + this.toolbar.isSearchActive);
+  }
+
 
   render() {
+
+
     	return (
-    		<View style={styles.container}>
-    
-    				{/*Header Part*/}
-    				<View style={styles.headerWrapper}>
-              {this.state.error && 
-                  <Text style={defaultStyles.fontBasicError}>Erreur de réseau</Text> ||
-  				        <Text style={defaultStyles.fontBasicNote}>Selectionnez un prospect pour le modifier</Text>
-              }
-    				</View>
+        <ThemeProvider uiTheme={uiTheme}>
+        		<View style={styles.container}>
+        
+                  <Toolbar
+                    ref={toolbarComponent => this.toolbar = toolbarComponent}
+                    key="toolbar"
+                    leftElement="exit-to-app"
+                    onLeftElementPress={this.logout}
+                    rightElement="cloud-download"
+                    onRightElementPress={this.reload}
+                    centerElement="Liste des prospects"
+                    searchable={{ autoFocus: true,
+                                  placeholder: 'Search',
+                                }}
+                  />
 
-    				{/*Body Part*/}
-    				<View style={styles.bodyWrapper}>
+        				{/*Header Part*/}
+        				<View style={styles.headerWrapper}>
+                  {this.state.error && 
+                      <Text style={defaultStyles.fontBasicError}>Erreur de réseau</Text> ||
+      				        <Text style={defaultStyles.fontBasicNote}>Selectionnez un prospect pour le modifier</Text>
+                  }
+        				</View>
 
-                { this.state.isFetching &&
-                   <ActivityIndicator style={styles.activityIndicator} size="large" /> ||
+        				{/*Body Part*/}
+        				<View style={styles.bodyWrapper}>
 
-                        <ScrollView style={styles.scroll}>
-                            <FlatList 
-                                data={this.state.isSearching ? this.state.prospectSearch : this.state.prospectList}
-                                keyExtractor = {(item, index) => item.name_value_list.id.value}
-                                extraData = {this.state.flatListNeedUpdate}
-                                renderItem={({item}) =>
-                                <TouchableHighlight onPress={() => this.goToEdit(item)}>
-                                    <Text style={defaultStyles.fontBasicBig}>{item.name_value_list.name.value}</Text>
-                                </TouchableHighlight>
-                                }
-                            />
-              			    </ScrollView>
-    				    }
-            </View>
+                    { this.state.isFetching &&
+                       <ActivityIndicator style={styles.activityIndicator} size="large" /> ||
 
-	    			{/*Button Part*/}
-    				<View style={styles.buttonWrapper}>
-    				    <Button
-              			onPress={() => this.navigate(constants.editScreen)}
-             				title="Créer un nouveau prospect"
-              			color="#1F94B7"
-              			accessibilityLabel="Créer un nouveau prospect"
-                    disabled={this.state.isFetching}
-            	  />
-    				</View>
+                            <ScrollView style={styles.scroll}>
+                                <FlatList 
+                                    data={this.state.isSearching ? this.state.prospectSearch : this.state.prospectList}
+                                    keyExtractor = {(item, index) => item.name_value_list.id.value}
+                                    extraData = {this.state.flatListNeedUpdate}
+                                    renderItem={({item}) =>
+                                    <TouchableHighlight onPress={() => this.goToEdit(item)}>
+                                        <Text style={defaultStyles.fontBasicBig}>{item.name_value_list.name.value}</Text>
+                                    </TouchableHighlight>
+                                    }
+                                />
+                  			    </ScrollView>
+        				    }
+                </View>
 
-    		</View>
+    	    			{/*Button Part*/}
+        				<View style={styles.buttonWrapper}>
+        				    <Button
+                  			onPress={ () => this.navigate(constants.editScreen)}
+                 				title="Créer un nouveau prospect"
+                  			color="#1F94B7"
+                  			accessibilityLabel="Créer un nouveau prospect"
+                        disabled={this.state.isFetching}
+                	  />
+        				</View>
+
+        		</View>
+        </ThemeProvider>
   		);
   }
 }
