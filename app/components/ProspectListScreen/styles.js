@@ -37,7 +37,9 @@ export const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-around',
 		alignItems: 'center',
-		padding: 20,
+		paddingRight: 20,
+		paddingLeft: 20,
+		paddingBottom: 20,
 		//backgroundColor: 'black',
 	},
 
@@ -45,6 +47,11 @@ export const styles = StyleSheet.create({
 		borderWidth: 2,
     	borderColor: '#CCCC',
 	},
+
+	inputListIcon: {
+		padding: 10,
+	},
+
 
 	icon: {
 		height: 30,

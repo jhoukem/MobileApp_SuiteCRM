@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Text, ScrollView, View, Button, FlatList, ListItem, TouchableHighlight, ActivityIndicator } from 'react-native';
-import { Toolbar, ThemeProvider, IconToggle } from 'react-native-material-ui';
+import { Text, ScrollView, View, Button, FlatList, TouchableHighlight, ActivityIndicator } from 'react-native';
+import { Toolbar, ThemeProvider, Icon, IconToggle, Avatar} from 'react-native-material-ui';
 
 import { styles as defaultStyles } from '../../layout/styles.js'
 import { styles, images } from './index.js'
@@ -37,7 +37,6 @@ export class ProspectListScreen extends Component {
 
   /*item is used to know if the delete button should be present on the entry.*/
   navigate(route, item=null){
-    const { navigate } = this.props.navigation;
 
     var params = {
           session: this.props.navigation.state.params.session,
@@ -46,8 +45,7 @@ export class ProspectListScreen extends Component {
           callback: this.updateProspectList.bind(this),
     };
 
-    navigate("Edit", params);
-
+    this.props.navigation.navigate(route, params);
   }
 
   updateProspectList(entry_list){
@@ -95,16 +93,21 @@ export class ProspectListScreen extends Component {
              }
          }
      }
-
-    console.log("List length = "+this.state.prospectList.length);
+     if(DEBUG){
+        console.log("List length = "+this.state.prospectList.length);
+     }
     // Usefull to re-render the flatList because it is a PureComponent.
     this.setState({flatListNeedUpdate: (-this.state.flatListNeedUpdate)});
   }
 
   logout(){
-    var param = {session: this.props.session};
+    var ip = this.props.navigation.state.params.ip;
+    var session = this.props.navigation.state.params.session;
+
+    var param = {session: session};
     var paramJSON = JSON.stringify(param);
-    restCall("logout", paramJSON, this.props.ip, null, null);
+
+    restCall("logout", paramJSON, ip, null, null);
     this.props.navigation.goBack();
   }
 
@@ -113,7 +116,6 @@ export class ProspectListScreen extends Component {
   }
 
   reload(){
-    console.log("RELOAD!!!!");
     this.fetchProspectList();
   }
 
@@ -132,16 +134,20 @@ export class ProspectListScreen extends Component {
 
     var param = '{"session":"'+ session +'","module_name":"Leads","query":"","max_results":"100" }';
 
-    //this.disableNavButton(true);
+    /*
+      '{"session":"'+ session +'","module_name":"Leads","query":"","order_by":"","offset":"0","max_results":"100"}';
+    ,"select_fields":'+
+    '["name","last_name","first_name","title","service","department","account_name","email1","phone_work","phone_mobile","website",'+
+    '"primary_address_street","primary_address_city","primary_address_postalcode","primary_address_country","description"]
+
+    */
 
     this.setState({isFetching: true});
     var onSuccess = function(responseData){
         this.setState({isFetching: false, error: false, prospectList: responseData.entry_list});
-        //this.disableNavButton(false);
     }
     var onFailure = function(error){
         this.setState({isFetching: false, error: true});
-        //this.disableNavButton(false);
     }
 
     restCall("get_entry_list", param, ip, onSuccess.bind(this), onFailure.bind(this));
@@ -169,7 +175,6 @@ export class ProspectListScreen extends Component {
     	return (
         <ThemeProvider uiTheme={uiTheme}>
         		<View style={styles.container}>
-        
                   <Toolbar
                     ref={toolbarComponent => this.toolbar = toolbarComponent}
                     key="toolbar"
@@ -204,9 +209,15 @@ export class ProspectListScreen extends Component {
                                     data={this.state.isSearching ? this.state.prospectSearch : this.state.prospectList}
                                     keyExtractor = {(item, index) => item.name_value_list.id.value}
                                     extraData = {this.state.flatListNeedUpdate}
-                                    renderItem={({item}) =>
-                                    <TouchableHighlight onPress={() => this.goToEdit(item)}>
-                                        <Text style={defaultStyles.fontBasicBig}>{item.name_value_list.name.value}</Text>
+                                    renderItem={({item, index}) =>
+                                    <TouchableHighlight style={styles.listStyle} onPress={() => this.goToEdit(item)}>
+                                        <View style={{flexDirection: 'row', backgroundColor:(index % 2) ? '#f1f2f4' : '#e2e6e9', alignItems: 'center'}}>
+                                            <Icon name='account-circle' style={styles.inputListIcon}/>
+                                            <View>
+                                                <Text style={[defaultStyles.fontBasicBig, {backgroundColor:(index % 2) ? '#f1f2f4' : '#e2e6e9'}]}>{item.name_value_list.name.value}</Text>
+                                                <Text style={[defaultStyles.fontBasicMedium, {backgroundColor:(index % 2) ? '#f1f2f4' : '#e2e6e9'}]}>{item.name_value_list.primary_address_country.value}</Text>
+                                            </View>
+                                        </View>
                                     </TouchableHighlight>
                                     }
                                 />

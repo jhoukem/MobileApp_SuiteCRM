@@ -1,4 +1,4 @@
-const DEBUG = false;
+const DEBUG = true;
 
 export var restCall = function(method, parameters, url, functionOnSuccess, functionOnFailure){
 
@@ -33,8 +33,6 @@ export var restCall = function(method, parameters, url, functionOnSuccess, funct
         if(functionOnFailure){
             functionOnFailure(error);
         }
-        //if(DEBUG){
-            console.log("Fetch error: " + error);
-        //}
+        console.log("Fetch error: " + error);
     });
 } 

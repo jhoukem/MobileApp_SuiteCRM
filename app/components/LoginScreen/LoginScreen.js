@@ -9,16 +9,12 @@ import { restCall } from '../../lib/rest_api.js'
 
 var DEBUG = false;
 var MD5 = require("crypto-js/md5");
-const HEADERS = 'method=login&input_type=JSON&response_type=JSON&rest_data=';
-
-
 
 export class LoginScreen extends Component {
 
   static navigationOptions = {
     title: 'ExelciaCRM Prospect Manager',
   };
-
 
   constructor(props) {
     super(props);
@@ -35,14 +31,13 @@ export class LoginScreen extends Component {
   }
 
   navigate(route){
-    const { navigate } = this.props.navigation;
 
     var params = {
           session: this.state.session,
           ip: this.state.ip,
     };
 
-    navigate("List", params);
+    this.props.navigation.navigate(route, params);
   }
 
   connect(){
@@ -150,7 +145,7 @@ export class LoginScreen extends Component {
           
           
           {this.state.isFetching &&
-           <ActivityIndicator style={[styles.statusWrapper, {height: 80}]} size="large" /> ||
+           <ActivityIndicator style={styles.statusWrapper} size="large" /> ||
            <Text style={defaultStyles.fontBasicError}> { this.state.status } </Text>
           }
 

@@ -1,3 +1,3 @@
-export const loginScreen = 0;
-export const listScreen = 1;
-export const editScreen = 2;
+export const loginScreen = "ProspectLoginScreen";
+export const listScreen = "ProspectlistScreen";
+export const editScreen = "ProspectEditScreen";

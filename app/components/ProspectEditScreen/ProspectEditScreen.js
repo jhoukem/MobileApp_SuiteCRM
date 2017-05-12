@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, ScrollView, View, Button, TextInput, Alert, Image, ActivityIndicator } from 'react-native';
-import { Toolbar, ThemeProvider, IconToggle } from 'react-native-material-ui';
+import { Toolbar, ThemeProvider, Icon, IconToggle } from 'react-native-material-ui';
 
 import { styles as defaultStyles } from '../../layout/styles.js'
 import { styles, images } from './index.js'
@@ -41,8 +41,11 @@ export class ProspectEditScreen extends Component {
         phone_number: null,
         mobile_phone_number: null,
         website: null,
-        email: null,
-        address: null,
+        email1: null,
+        primary_address_street: null,
+        primary_address_city: null,
+        primary_address_postalcode: null,
+        primary_address_country: null,
         description: null,
         deleted: 0,
         };
@@ -58,7 +61,6 @@ export class ProspectEditScreen extends Component {
     var ip = this.props.navigation.state.params.ip;
     var session = this.props.navigation.state.params.session;
 
-    console.log("ip = " + ip + "  session = "+ session);
     var itemID = null;
     var updateListScreenFlatList = this.props.navigation.state.params.callback;
 
@@ -77,7 +79,13 @@ export class ProspectEditScreen extends Component {
                             {name:"account_name", value: this.state.account_name},
                             {name:"phone_work", value: this.state.phone_number},
                             {name:"phone_mobile", value: this.state.mobile_phone_number},
-                            {name:"email1", value: this.state.email},
+                            {name:"website", value: this.state.website},
+                            {name:"primary_address_street", value: this.state.primary_address_street},
+                            {name:"primary_address_city", value: this.state.primary_address_city},
+                            {name:"primary_address_postalcode", value: this.state.primary_address_postalcode},
+                            {name:"primary_address_country", value: this.state.primary_address_country},
+                            {name:"description", value: this.state.description},
+                            {name:"email1", value: this.state.email1},
                             {name:"deleted", value: this.state.deleted},
                         ]
     var updatedData = {session: session,
@@ -142,52 +150,69 @@ export class ProspectEditScreen extends Component {
    
    if(!this.state.isPushing){
       this.state.deleted = 0;
-      this.pushToServer("Le prospect à bien été enregistré dans votre CRM",
-        "Le prospect n'a pas pu être enregistré dans votre CRM");
+
+      // Check if the input field values are corrects.
+      if(this.checkInputFields()){
+          this.pushToServer("Le prospect à bien été enregistré dans votre CRM",
+          "Le prospect n'a pas pu être enregistré dans votre CRM");
+      } 
     }
   }
 
   handleDelete(){
-    if(!this.state.isPushing){
-      this.state.deleted = 1;
-      this.pushToServer("Le prospect à bien été supprimé de votre CRM",
-        "Le prospect n'a pas pu être supprimé de votre CRM");
-    }
+
+  var deleteProspect = function(){
+      if(!this.state.isPushing){
+          this.state.deleted = 1;
+          this.pushToServer("Le prospect à bien été supprimé de votre CRM",
+            "Le prospect n'a pas pu être supprimé de votre CRM");
+      }
+  }
+
+  Alert.alert('Attention', "Êtes vous sûr de vouloir supprimer ce prospect ?",
+                  [ 
+                      {text: 'Non', },
+                      {text: 'Oui', onPress: deleteProspect.bind(this)},
+                  ]
+            )
   }
 
   debugState(){
-      console.log("Deleted: "+ this.state.deleted);
-      console.log("Nom: "+ this.state.last_name);
-      console.log("Prenom: "+ this.state.first_name);
-      console.log("Fonction: "+ this.state.title);
-      console.log("Service: "+ this.state.service);
-      console.log("Nom de compte: "+ this.state.account_name);
-      console.log("Telephone: "+ this.state.phone_number);
-      console.log("Mobile: "+ this.state.mobile_phone_number);
-      console.log("Site web: "+ this.state.website);
-      console.log("email: "+ this.state.email);
-      console.log("Adresse: "+ this.state.address);
-      console.log("Description: "+ this.state.description);
+      console.log("this.state=");
+      console.log(this.state);
+  }
+
+  checkInputFields(){
+    // Better regex but not needed here. 
+    //  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+    // Basic regex for email checking.
+    var reg = /^[\w.-]+@[\w-]+\.[a-zA-Z]{2,4}$/;
+
+    if(this.state.email1 && !reg.test(this.state.email1)){
+       Alert.alert('Erreur', 'Format de l\'email incorrect',
+                  [ 
+                      {text: 'OK'},
+                  ]
+        )
+        return false;
+    }
+    return true;
   }
 
   componentWillMount(){
-      var item = null;
-      item = this.props.navigation.state.params.item;
+      var item = this.props.navigation.state.params.item;
 
       if(item){
-          this.setState({
-                last_name: item.name_value_list.last_name ? item.name_value_list.last_name.value : "",
-                first_name: item.name_value_list.first_name ? item.name_value_list.first_name.value : "",
-                title: item.name_value_list.title ? item.name_value_list.title.value : "",
-                service: item.name_value_list.department ? item.name_value_list.department.value : "",
-                account_name: item.name_value_list.account_name ? item.name_value_list.account_name.value : "",
-                phone_number: item.name_value_list.phone_work ? item.name_value_list.phone_work.value : "",
-                mobile_phone_number: item.name_value_list.phone_mobile ? item.name_value_list.phone_mobile.value : "",
-                //website: this.props.item.name_value_list.surname ? this.props.item.name_value_list.surname.value : "",
-                email: item.name_value_list.email1 ? item.name_value_list.email1.value : "",
-                //address: this.props.item.name_value_list.surname.value,
-                description: item.name_value_list.description ? item.name_value_list.description.value : "",
-          });
+        item = item.name_value_list;
+          for(key in item){
+              if(item[key].value){
+                  if(DEBUG){
+                      console.log("Key retireved: "+ key + "   value =  "+ item[key].value);
+                  }
+                  this.setState({[key]: item[key].value});
+              }
+          }
       }
   }
 
@@ -204,8 +229,7 @@ export class ProspectEditScreen extends Component {
                 <Toolbar
                     ref={toolbarComponent => this.toolbar = toolbarComponent}
                     key="toolbar"
-                    leftElement="navigate-before"
-                    onLeftElementPress={this.handleCancel}
+                    leftElement={<IconToggle name="navigate-before" color="white" onPress={this.handleCancel} disabled={this.state.isPushing}/>}
                     rightElement={<IconToggle name="save" color="white" onPress={this.handleSave} disabled={this.state.isPushing}/>}
                     centerElement="Edition du prospect"
                 />
@@ -222,17 +246,20 @@ export class ProspectEditScreen extends Component {
                   <ActivityIndicator style={styles.headerWrapper} size="large" /> ||
 
         					   <ScrollView style={styles.scroll}>
-        						      <InputLabelRow label='Nom' value = {this.state.last_name} onChangeText = {(text) => this.updateData("last_name" ,text)} placeholder='enter data'/>
-        						      <InputLabelRow label='Prénom' value = {this.state.first_name} onChangeText = {(text) => this.updateData("first_name", text)} placeholder='enter data'/>
-        						      <InputLabelRow label='Fonction' value = {this.state.title} onChangeText = {(text) => this.updateData("title",text)} placeholder='enter data'/>
-        						      <InputLabelRow label='Service' value = {this.state.service} onChangeText = {(text) => this.updateData("service", text)} placeholder='enter data'/>
-        						      <InputLabelRow label='Nom de compte' value = {this.state.account_name} onChangeText = {(text) => this.updateData("account_name", text)} placeholder='enter data'/>
-        					      	<InputLabelRow label='Téléphone' value = {this.state.phone_number} onChangeText = {(text) => this.updateData("phone_number", text)} placeholder='enter data'/>
-        					     	  <InputLabelRow label='Mobile' value = {this.state.mobile_phone_number} onChangeText = {(text) => this.updateData("mobile_phone_number", text)} placeholder='enter data'/>
-        						      <InputLabelRow label='Site web' value = {this.state.website} onChangeText = {(text) => this.updateData("website", text)} placeholder='enter data'/>
-        						      <InputLabelRow label='E-mail' value = {this.state.email} onChangeText = {(text) => this.updateData("email", text)} placeholder='enter data'/>
-        						      <InputLabelRow label='Adresse' value = {this.state.address} onChangeText = {(text) => this.updateData("address", text)} placeholder='enter data'/>
-        						      <InputLabelRow label='Description' value = {this.state.description} onChangeText = {(text) => this.updateData("description", text)} placeholder='enter data'/>
+        						      <InputLabelRow icon='account-circle' value = {this.state.last_name} onChangeText = {(text) => this.updateData("last_name" ,text)} placeholder='Nom'/>
+        						      <InputLabelRow icon={null} value = {this.state.first_name} onChangeText = {(text) => this.updateData("first_name", text)} placeholder='Prénom'/>
+        						      <InputLabelRow icon={null} value = {this.state.title} onChangeText = {(text) => this.updateData("title",text)} placeholder='Fonction'/>
+        						      <InputLabelRow icon={null} value = {this.state.department} onChangeText = {(text) => this.updateData("department", text)} placeholder='Service'/>
+        						      <InputLabelRow icon={null} value = {this.state.account_name} onChangeText = {(text) => this.updateData("account_name", text)} placeholder='Nom de compte'/>
+        					      	<InputLabelRow icon='phone' value = {this.state.phone_work} onChangeText = {(text) => this.updateData("phone_work", text)} placeholder='Téléphone fixe'/>
+        					     	  <InputLabelRow icon={null} value = {this.state.phone_mobile} onChangeText = {(text) => this.updateData("phone_mobile", text)} placeholder='Téléphone mobile'/>
+                          <InputLabelRow icon='mail' value = {this.state.email1} onChangeText = {(text) => this.updateData("email1", text)} placeholder='E-mail'/>
+        						      <InputLabelRow icon={null} value = {this.state.website} onChangeText = {(text) => this.updateData("website", text)} placeholder='Site web'/>
+        						      <InputLabelRow icon='add-location' value = {this.state.primary_address_street} onChangeText = {(text) => this.updateData("primary_address_street", text)} placeholder='Rue'/>
+                          <InputLabelRow icon={null} value = {this.state.primary_address_city} onChangeText = {(text) => this.updateData("primary_address_city", text)} placeholder='Ville'/>
+                          <InputLabelRow icon={null} value = {this.state.primary_address_postalcode} onChangeText = {(text) => this.updateData("primary_address_postalcode", text)} placeholder='Code Postal'/>
+                          <InputLabelRow icon={null} value = {this.state.primary_address_country} onChangeText = {(text) => this.updateData("primary_address_country", text)} placeholder='Pays'/>
+        						      <InputLabelRow icon='description' multiline={true} value = {this.state.description} onChangeText = {(text) => this.updateData("description", text)} placeholder='Description'/>
         					   </ScrollView>
                   }
         				</View>
@@ -268,9 +295,15 @@ var InputLabelRow = React.createClass({
     			//justifyContent: 'space-around',
 				  alignItems: 'center',
 			  }}>
-
-				<Text style={defaultStyles.fontBasicMedium}>{this.props.label}:</Text>
-				    <TextInput style={{flex: 1}} value = {this.props.value} onChangeText = {this.props.onChangeText} placeholder={this.props.placeholder} />
+            <View style={{
+              height: 30,
+              width: 30,
+            }}>
+                {this.props.icon &&
+      				      <Icon name={this.props.icon}/>
+                }
+          </View>
+				  <TextInput multiline={this.props.multiline} style={{flex: 1}} value = {this.props.value} onChangeText = {this.props.onChangeText} placeholder={this.props.placeholder} />
     		</View>
 
     	);

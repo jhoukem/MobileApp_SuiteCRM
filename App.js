@@ -1,10 +1,11 @@
+import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
 import { AppRegistry } from 'react-native';
 
 import { LoginScreen } from './app/components/LoginScreen/LoginScreen.js'
 import { ProspectListScreen } from './app/components/ProspectListScreen/ProspectListScreen.js'
 import { ProspectEditScreen } from './app/components/ProspectEditScreen/ProspectEditScreen.js'
-//import * as constants from '../../config/const.js'
+import * as constants from './app/config/const.js'
 
 
 const options = {
@@ -22,11 +23,25 @@ const options = {
 
 
 const Navigator = StackNavigator({
-			Login: { screen: LoginScreen },
-			List: { screen: ProspectListScreen },
-			Edit: { screen: ProspectEditScreen },
+			[constants.loginScreen]: { screen: LoginScreen },
+			[constants.listScreen]: { screen: ProspectListScreen },
+			[constants.editScreen]: { screen: ProspectEditScreen },
 		},
 		options
 );
 
-AppRegistry.registerComponent('CRM_Prospect', () => Navigator);
+class App extends Component {
+
+
+	render(){
+		return ( 
+			<Navigator onNavigationStateChange={null}/>
+			);
+
+	}
+
+}
+
+
+
+AppRegistry.registerComponent('CRM_Prospect', () => App);
