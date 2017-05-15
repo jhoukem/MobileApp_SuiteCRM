@@ -1,4 +1,4 @@
-const DEBUG = true;
+const DEBUG = false;
 
 export var restCall = function(method, parameters, url, functionOnSuccess, functionOnFailure){
 

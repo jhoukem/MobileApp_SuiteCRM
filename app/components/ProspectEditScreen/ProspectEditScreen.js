@@ -69,8 +69,6 @@ export class ProspectEditScreen extends Component {
     }
 
     var nameValueList = [
-                            // name:name only used to update the list screen with a proper value
-                            {name:"name", value:''},
                             {name:"id", value: (itemID) ? itemID : ''},
                             {name:"last_name", value: this.state.last_name},
                             {name:"first_name", value: this.state.first_name},
@@ -197,6 +195,15 @@ export class ProspectEditScreen extends Component {
         )
         return false;
     }
+
+    if(!this.state.last_name){
+       Alert.alert('Erreur', 'Le champ \'Nom\' est vide',
+                  [ 
+                      {text: 'OK'},
+                  ]
+        )
+        return false;
+    }
     return true;
   }
 
@@ -255,10 +262,10 @@ export class ProspectEditScreen extends Component {
         					     	  <InputLabelRow icon={null} value = {this.state.phone_mobile} onChangeText = {(text) => this.updateData("phone_mobile", text)} placeholder='Téléphone mobile'/>
                           <InputLabelRow icon='mail' value = {this.state.email1} onChangeText = {(text) => this.updateData("email1", text)} placeholder='E-mail'/>
         						      <InputLabelRow icon={null} value = {this.state.website} onChangeText = {(text) => this.updateData("website", text)} placeholder='Site web'/>
-        						      <InputLabelRow icon='add-location' value = {this.state.primary_address_street} onChangeText = {(text) => this.updateData("primary_address_street", text)} placeholder='Rue'/>
+                          <InputLabelRow icon='add-location' value = {this.state.primary_address_country} onChangeText = {(text) => this.updateData("primary_address_country", text)} placeholder='Pays'/>
                           <InputLabelRow icon={null} value = {this.state.primary_address_city} onChangeText = {(text) => this.updateData("primary_address_city", text)} placeholder='Ville'/>
+                          <InputLabelRow icon={null} value = {this.state.primary_address_street} onChangeText = {(text) => this.updateData("primary_address_street", text)} placeholder='Rue'/>
                           <InputLabelRow icon={null} value = {this.state.primary_address_postalcode} onChangeText = {(text) => this.updateData("primary_address_postalcode", text)} placeholder='Code Postal'/>
-                          <InputLabelRow icon={null} value = {this.state.primary_address_country} onChangeText = {(text) => this.updateData("primary_address_country", text)} placeholder='Pays'/>
         						      <InputLabelRow icon='description' multiline={true} value = {this.state.description} onChangeText = {(text) => this.updateData("description", text)} placeholder='Description'/>
         					   </ScrollView>
                   }
@@ -300,7 +307,7 @@ var InputLabelRow = React.createClass({
               width: 30,
             }}>
                 {this.props.icon &&
-      				      <Icon name={this.props.icon}/>
+      				      <Icon name={this.props.icon} size={30}/>
                 }
           </View>
 				  <TextInput multiline={this.props.multiline} style={{flex: 1}} value = {this.props.value} onChangeText = {this.props.onChangeText} placeholder={this.props.placeholder} />

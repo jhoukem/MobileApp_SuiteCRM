@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, ScrollView, View, Button, FlatList, TouchableHighlight, ActivityIndicator } from 'react-native';
-import { Toolbar, ThemeProvider, Icon, IconToggle, Avatar} from 'react-native-material-ui';
+import { Toolbar, ThemeProvider, IconToggle, Avatar} from 'react-native-material-ui';
 
 import { styles as defaultStyles } from '../../layout/styles.js'
 import { styles, images } from './index.js'
@@ -8,7 +8,7 @@ import * as constants from '../../config/const.js'
 import { restCall } from '../../lib/rest_api.js'
 
 var DEBUG = false;
-
+var avatarColors = ["blue","red", "green", "yellow", "purple", "blueviolet", "cadetblue ", "antiquewhite", "aqua",];
   const uiTheme = {
     palette: {
         primaryColor: '#1F94B7',
@@ -132,19 +132,16 @@ export class ProspectListScreen extends Component {
       console.log("(ListScreen) Session id received = " + session);
     }
 
-    var param = '{"session":"'+ session +'","module_name":"Leads","query":"","max_results":"100" }';
+    var param = '{"session":"'+ session +'","module_name":"Leads","query":"","order_by":"","offset":"0",'+
+    '"select_fields":["id","last_name","first_name","title","service","department","account_name","email1",'+
+    '"phone_work","phone_mobile","website","primary_address_street","primary_address_city","primary_address_postalcode",'+
+    '"primary_address_country","description"],"link_name_to_fields_array":[],"max_results":"1000"}';
 
-    /*
-      '{"session":"'+ session +'","module_name":"Leads","query":"","order_by":"","offset":"0","max_results":"100"}';
-    ,"select_fields":'+
-    '["name","last_name","first_name","title","service","department","account_name","email1","phone_work","phone_mobile","website",'+
-    '"primary_address_street","primary_address_city","primary_address_postalcode","primary_address_country","description"]
-
-    */
 
     this.setState({isFetching: true});
     var onSuccess = function(responseData){
         this.setState({isFetching: false, error: false, prospectList: responseData.entry_list});
+        this.state.prospectList.sort(this.alphabeticalSort);
     }
     var onFailure = function(error){
         this.setState({isFetching: false, error: true});
@@ -153,6 +150,13 @@ export class ProspectListScreen extends Component {
     restCall("get_entry_list", param, ip, onSuccess.bind(this), onFailure.bind(this));
   }
 
+
+  alphabeticalSort(itemA, itemB){
+    if(!itemA.name_value_list.last_name || !itemB.name_value_list.last_name) return 0;
+    if(itemA.name_value_list.last_name.value < itemB.name_value_list.last_name.value) return -1;
+    if(itemA.name_value_list.last_name.value > itemB.name_value_list.last_name.value) return 1; 
+    return 0;
+  }
 
   handleSearch(pattern){
     var results = new Array();
@@ -207,15 +211,23 @@ export class ProspectListScreen extends Component {
                             <ScrollView style={styles.scroll}>
                                 <FlatList 
                                     data={this.state.isSearching ? this.state.prospectSearch : this.state.prospectList}
-                                    keyExtractor = {(item, index) => item.name_value_list.id.value}
-                                    extraData = {this.state.flatListNeedUpdate}
+                                    keyExtractor={(item, index) => item.name_value_list.id.value}
+                                    extraData={this.state.flatListNeedUpdate}
                                     renderItem={({item, index}) =>
-                                    <TouchableHighlight style={styles.listStyle} onPress={() => this.goToEdit(item)}>
+                                    <TouchableHighlight onPress={() => this.goToEdit(item)}>
                                         <View style={{flexDirection: 'row', backgroundColor:(index % 2) ? '#f1f2f4' : '#e2e6e9', alignItems: 'center'}}>
-                                            <Icon name='account-circle' style={styles.inputListIcon}/>
+                                            <View style={{width: 50, padding: 5}}>
+                                                <Avatar text={item.name_value_list.last_name.value.charAt(0).toUpperCase()} size={40}/>
+                                            </View>
                                             <View>
-                                                <Text style={[defaultStyles.fontBasicBig, {backgroundColor:(index % 2) ? '#f1f2f4' : '#e2e6e9'}]}>{item.name_value_list.name.value}</Text>
-                                                <Text style={[defaultStyles.fontBasicMedium, {backgroundColor:(index % 2) ? '#f1f2f4' : '#e2e6e9'}]}>{item.name_value_list.primary_address_country.value}</Text>
+                                                <Text style={[defaultStyles.fontBasicBig, {backgroundColor:(index % 2) ? '#f1f2f4' : '#e2e6e9'}]}>
+                                                {item.name_value_list.last_name.value} {item.name_value_list.first_name.value}
+                                                </Text>
+                                                {item.name_value_list.email1 &&
+                                                    <Text style={[defaultStyles.fontBasic, {backgroundColor:(index % 2) ? '#f1f2f4' : '#e2e6e9'}]}>
+                                                    {item.name_value_list.email1.value}
+                                                    </Text>
+                                                }
                                             </View>
                                         </View>
                                     </TouchableHighlight>

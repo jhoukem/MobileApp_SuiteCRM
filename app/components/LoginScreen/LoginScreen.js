@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
 import { Text, TextInput, Image, View, Button, ActivityIndicator } from 'react-native';
-
+import { ThemeProvider} from 'react-native-material-ui';
+import { default as Icon  } from 'react-native-vector-icons/MaterialCommunityIcons';
 import { styles as defaultStyles } from '../../layout/styles.js'
 import { styles, images } from './index.js'
 import * as constants from '../../config/const.js'
@@ -9,6 +10,12 @@ import { restCall } from '../../lib/rest_api.js'
 
 var DEBUG = false;
 var MD5 = require("crypto-js/md5");
+
+const uiTheme = {
+    palette: {
+        primaryColor: '#1F94B7',
+    },
+};
 
 export class LoginScreen extends Component {
 
@@ -86,80 +93,82 @@ export class LoginScreen extends Component {
   render() {
 
     return (
-    <View style={styles.container}>
+    <ThemeProvider uiTheme={uiTheme}>
+        <View style={styles.container}>
 
-        <View style={styles.logoWrapper}>
-            <Image source={images.logoExelcia} style={styles.logo} resizeMode="contain" />
-        </View>
-
-     
-        <View style={styles.inputWrapper}>
-            
-            {/* Server field*/}
-            <View style={styles.inputLineWrap}>
-                <View style={styles.iconWrap}>
-                    <Image source={images.serverIcon} style={styles.icon} resizeMode="contain" />
-                </View>
-                <TextInput 
-                  maxLength = {15}
-                  onChangeText = { (text) => this.setState({ip: text})}
-                  value = {this.state.ip }
-                  keyboardType = "numeric"
-                  placeholder = "IP server" 
-                  placeholderTextColor = "#CCC"
-                  style={styles.input} 
-                />
+            <View style={styles.logoWrapper}>
+                <Image source={images.logoExelcia} style={styles.logo} resizeMode="contain" />
             </View>
 
-            {/* Login field*/}
-            <View style={styles.inputLineWrap}>
-                <View style={styles.iconWrap}>
-                    <Image source={images.personIcon} style={styles.icon} resizeMode="contain" />
+         
+            <View style={styles.inputWrapper}>
+                
+                {/* Server field*/}
+                <View style={styles.inputLineWrap}>
+                    <View style={styles.iconWrap}>
+                        <Icon name='server-network' size={30}/>
+                    </View>
+                    <TextInput 
+                      maxLength = {15}
+                      onChangeText = { (text) => this.setState({ip: text})}
+                      value = {this.state.ip }
+                      keyboardType = "numeric"
+                      placeholder = "IP server" 
+                      placeholderTextColor = "#CCC"
+                      style={styles.input} 
+                    />
                 </View>
-                <TextInput 
-                  maxLength = {20}
-                  onChangeText = { (text) => this.setState({login: text})}
-                  value = {this.state.login}
-                  placeholder="Username" 
-                  placeholderTextColor="#CCC"
-                  style={styles.input} 
-                />
-            </View>
-            
-            {/* Password field*/}
-            <View style={styles.inputLineWrap}>
-                <View style={styles.iconWrap}>
-                    <Image source={images.lockIcon} style={styles.icon} resizeMode="contain" />
-                </View>
-                <TextInput 
-                  secureTextEntry={true}
-                  onChangeText = { (text) => this.setState({password: text})}
-                  value = {this.state.password}
-                  placeholder="Password" 
-                  placeholderTextColor="#CCC"
-                  style={styles.input} 
-                />
-            </View>
-        </View>
-        <View style={styles.statusWrapper}>
-          
-          
-          {this.state.isFetching &&
-           <ActivityIndicator style={styles.statusWrapper} size="large" /> ||
-           <Text style={defaultStyles.fontBasicError}> { this.state.status } </Text>
-          }
 
+                {/* Login field*/}
+                <View style={styles.inputLineWrap}>
+                    <View style={styles.iconWrap}>
+                        <Icon name='account-outline' size={30}/>
+                    </View>
+                    <TextInput 
+                      maxLength = {20}
+                      onChangeText = { (text) => this.setState({login: text})}
+                      value = {this.state.login}
+                      placeholder="Username" 
+                      placeholderTextColor="#CCC"
+                      style={styles.input} 
+                    />
+                </View>
+                
+                {/* Password field*/}
+                <View style={styles.inputLineWrap}>
+                    <View style={styles.iconWrap}>
+                        <Icon name='lock-outline' size={30}/>
+                    </View>
+                    <TextInput 
+                      secureTextEntry={true}
+                      onChangeText = { (text) => this.setState({password: text})}
+                      value = {this.state.password}
+                      placeholder="Password" 
+                      placeholderTextColor="#CCC"
+                      style={styles.input} 
+                    />
+                </View>
+            </View>
+            <View style={styles.statusWrapper}>
+              
+              
+              {this.state.isFetching &&
+               <ActivityIndicator style={styles.statusWrapper} size="large" /> ||
+               <Text style={defaultStyles.fontBasicError}> { this.state.status } </Text>
+              }
+
+            </View>
+            <View style={styles.buttonWrapper}>
+                <Button
+                  onPress={() => this.connect()}
+                  title="Connection"
+                  color="#1F94B7"
+                  disabled={this.state.isFetching}
+                  accessibilityLabel="Connect to the CRM server"
+                />
+            </View>
         </View>
-        <View style={styles.buttonWrapper}>
-            <Button
-              onPress={() => this.connect()}
-              title="Connection"
-              color="#1F94B7"
-              disabled={this.state.isFetching}
-              accessibilityLabel="Connect to the CRM server"
-            />
-        </View>
-    </View>
+    </ThemeProvider>
     );
   }
 }

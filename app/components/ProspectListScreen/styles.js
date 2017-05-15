@@ -48,11 +48,6 @@ export const styles = StyleSheet.create({
     	borderColor: '#CCCC',
 	},
 
-	inputListIcon: {
-		padding: 10,
-	},
-
-
 	icon: {
 		height: 30,
 		width: 30,
