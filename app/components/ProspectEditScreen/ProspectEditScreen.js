@@ -197,8 +197,9 @@ export class ProspectEditScreen extends Component {
         return false;
     }
 
-    if(!this.state[constants.last_name_key]){
-       Alert.alert('Erreur', 'Le champ \'Nom\' est vide',
+    // Not null and no white space only.
+    if(!this.state[constants.last_name_key] || !this.state[constants.last_name_key].replace(/\s/g, '').length){
+       Alert.alert('Erreur', 'Le champ \'Nom\' est obligatoire',
                   [ 
                       {text: 'OK'},
                   ]
@@ -315,6 +316,7 @@ var InputLabelRow = React.createClass({
     			flex: 1,
     			flexDirection: 'row',
 				  alignItems: 'center',
+          height: this.props.multiline ? 100 :50,
 			  }}>
             <View style={{
               height: 30,
@@ -330,7 +332,7 @@ var InputLabelRow = React.createClass({
           </View>
 				  <TextInput 
               multiline={this.props.multiline}
-              style={{flex: 1}}
+              style={{flex: 1, height: this.props.multiline ? 100 : 50}}
               value = {this.props.value}
               onChangeText = {this.props.onChangeText}
               placeholder={this.props.placeholder}

@@ -8,13 +8,13 @@ export const styles = StyleSheet.create({
 	},
 
   logoWrapper: {
-    	flex: 0.3,
+    	flex: 0.5,
   },
 	
 	inputWrapper: {
-		flex: 0.2,
+		flex: 0.6,
     padding: 20,
-    	//backgroundColor: 'black'
+    //backgroundColor: 'grey'
   },
 
 	statusWrapper: {
@@ -37,10 +37,8 @@ export const styles = StyleSheet.create({
   },
 
   inputLineWrap: {
+      flex: 1,
     	flexDirection: 'row',
-    	marginVertical: 10,
-    	height: 40,
-    	borderBottomWidth: 1,
     	borderBottomColor: '#CCCC',
   },
 

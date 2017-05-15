@@ -8,7 +8,8 @@ import * as constants from '../../config/const.js'
 import { restCall } from '../../lib/rest_api.js'
 
 var DEBUG = false;
-var avatarColors = ["blue","red", "green", "yellow", "purple", "blueviolet", "cadetblue ", "antiquewhite", "aqua",];
+var avatarColors = ["cornflowerblue", "orangered", "green", "burlywood", "purple", "blueviolet", "chocolate", "lightseagreen", "darkred", "lightslategray", "coral", "darkcyan", "forestgreen",
+"gold", "pink", "lightblue", "navy", "orange", "teal", "steelblue", "plum", "skyblue", "olive"];
   const uiTheme = {
     palette: {
         primaryColor: '#1F94B7',
@@ -227,7 +228,11 @@ export class ProspectListScreen extends Component {
                                     <TouchableHighlight onPress={() => this.goToEdit(item)}>
                                         <View style={{flexDirection: 'row', backgroundColor:(index % 2) ? '#f1f2f4' : '#e2e6e9', alignItems: 'center'}}>
                                             <View style={{width: 50, padding: 5}}>
-                                                <Avatar text={item.name_value_list[constants.last_name_key].value.charAt(0).toUpperCase()} size={40}/>
+                                                <Avatar
+                                                	style={{container:{backgroundColor:avatarColors[index%avatarColors.length]}}}
+                                                	text={item.name_value_list[constants.last_name_key].value.charAt(0).toUpperCase()} 
+                                                	size={40}
+                                                />
                                             </View>
                                             <View>
                                                 <Text style={[defaultStyles.fontBasicBig, {backgroundColor:'rgba(0,0,0,0)'}]}>

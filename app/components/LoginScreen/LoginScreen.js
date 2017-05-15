@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
-import { Text, TextInput, Image, View, Button, ActivityIndicator } from 'react-native';
+import { Text, TextInput, Image, View, ScrollView, Button, ActivityIndicator, AsyncStorage } from 'react-native';
 import { default as Icon  } from 'react-native-vector-icons/MaterialCommunityIcons';
+import { ThemeProvider, Checkbox } from 'react-native-material-ui';
 import { styles as defaultStyles } from '../../layout/styles.js'
 import { styles, images } from './index.js'
 import * as constants from '../../config/const.js'
@@ -10,6 +11,17 @@ import { restCall } from '../../lib/rest_api.js'
 
 var DEBUG = false;
 var MD5 = require("crypto-js/md5");
+
+const uiTheme = {
+    palette: {
+        primaryColor: '#1F94B7',
+    },
+    toolbar: {
+        container: {
+            height: 50,
+        },
+    },
+  };
 
 export class LoginScreen extends Component {
 
@@ -25,9 +37,10 @@ export class LoginScreen extends Component {
         status: '',
         session: null,
         isFetching: false,
-        ip: "10.32.15.51",
-        login: "admin",
-        password: "admin",
+        ip: null,
+        login: null,
+        password: null,
+        isChecked: false,
         };
   }
 
@@ -43,6 +56,7 @@ export class LoginScreen extends Component {
 
   connect(){
 
+    this.storeInfo();
     this.authentify(this.state.ip, this.state.login, MD5(this.state.password));
     
     if(DEBUG){
@@ -84,83 +98,104 @@ export class LoginScreen extends Component {
     restCall("login", credential2, this.state.ip, onSuccess.bind(this), onFailure.bind(this));
   }
 
+  onCheckboxCheck(checked, value){
+    this.setState({isChecked: checked})
+    this.storeInfo(checked);
+  }
+
+  async storeInfo(isSaving=true){
+    try {
+
+      if(isSaving){
+         await AsyncStorage.setItem('ip', this.state.ip);
+         await AsyncStorage.setItem('login', this.state.login);
+      } else {
+         await AsyncStorage.removeItem('ip');
+         await AsyncStorage.removeItem('login');        
+      }
+    } catch (error) {
+        console.log("AsyncStorage error: "+ error);
+    }
+  }
+
+  async getInfo(key){
+    try {
+        var value = await AsyncStorage.getItem(key);  
+        return value;
+    } catch (error) {
+        console.log("AsyncStorage error: "+ error);
+        return null;
+    }
+  }
+
+  async componentWillMount(){
+      var ip = await this.getInfo("ip");
+      var login = await this.getInfo("login");
+      this.setState({ip: ip ? ip : '', login: login ? login : '', isChecked: (ip || login) ? true : false});
+  }
+
   render() {
-
     return (
-        <View style={styles.container}>
+        <ThemeProvider uiTheme={uiTheme}>
+            <View style={styles.container}>
 
-            <View style={styles.logoWrapper}>
-                <Image source={images.logoExelcia} style={styles.logo} resizeMode="contain" />
-            </View>
-
-         
-            <View style={styles.inputWrapper}>
-                
-                {/* Server field*/}
-                <View style={styles.inputLineWrap}>
-                    <View style={styles.iconWrap}>
-                        <Icon name='server-network' size={30}/>
-                    </View>
-                    <TextInput 
-                      maxLength = {15}
-                      onChangeText = { (text) => this.setState({ip: text})}
-                      value = {this.state.ip }
-                      keyboardType = "numeric"
-                      placeholder = "IP server" 
-                      placeholderTextColor = "#CCC"
-                      style={styles.input} 
-                    />
+                <View style={styles.logoWrapper}>
+                    <Image source={images.logoExelcia} style={styles.logo} resizeMode="contain" />
                 </View>
 
-                {/* Login field*/}
-                <View style={styles.inputLineWrap}>
-                    <View style={styles.iconWrap}>
-                        <Icon name='account-outline' size={30}/>
-                    </View>
-                    <TextInput 
-                      maxLength = {20}
-                      onChangeText = { (text) => this.setState({login: text})}
-                      value = {this.state.login}
-                      placeholder="Username" 
-                      placeholderTextColor="#CCC"
-                      style={styles.input} 
-                    />
+                <View style={styles.inputWrapper}>
+                <ScrollView>
+                    {/* Server field*/}
+                    <InputLabelRow icon='server-network' value={this.state.ip} placeholder='IP server' isSecure={false}
+                    onChangeText={(text) => this.setState({ip: text})} keyboardType='numeric'/>
+                    {/* Login field*/}
+                    <InputLabelRow icon='account-outline' value={this.state.login} placeholder='Username' isSecure={false}
+                    onChangeText={(text) => this.setState({login: text})} />
+                    {/* Password field*/}
+                    <InputLabelRow icon='lock-outline' value={this.state.password} placeholder='Password' isSecure={true}
+                    onChangeText={(text) => this.setState({password: text})} onSubmitEditing={() =>this.connect()}/>
+                    <Checkbox  style={{height:40}}value="ok" checked={this.state.isChecked} onCheck={this.onCheckboxCheck.bind(this)} label="Retenir le login et l'adresse du serveur" />
+                </ScrollView>
                 </View>
-                
-                {/* Password field*/}
-                <View style={styles.inputLineWrap}>
-                    <View style={styles.iconWrap}>
-                        <Icon name='lock-outline' size={30}/>
-                    </View>
-                    <TextInput 
-                      secureTextEntry={true}
-                      onChangeText = { (text) => this.setState({password: text})}
-                      value = {this.state.password}
-                      placeholder="Password" 
-                      placeholderTextColor="#CCC"
-                      style={styles.input} 
+                <View style={styles.statusWrapper}>
+                    {this.state.isFetching &&
+                        <ActivityIndicator style={styles.statusWrapper} size="large" /> ||
+                        <Text style={defaultStyles.fontBasicError}> { this.state.status } </Text>
+                    }
+                </View>
+                <View style={styles.buttonWrapper}>
+                    <Button
+                      onPress={() => this.connect()}
+                      title="Connection"
+                      color="#1F94B7"
+                      disabled={this.state.isFetching}
+                      accessibilityLabel="Connect to the CRM server"
                     />
                 </View>
             </View>
-            <View style={styles.statusWrapper}>
-              
-              
-              {this.state.isFetching &&
-               <ActivityIndicator style={styles.statusWrapper} size="large" /> ||
-               <Text style={defaultStyles.fontBasicError}> { this.state.status } </Text>
-              }
-
-            </View>
-            <View style={styles.buttonWrapper}>
-                <Button
-                  onPress={() => this.connect()}
-                  title="Connection"
-                  color="#1F94B7"
-                  disabled={this.state.isFetching}
-                  accessibilityLabel="Connect to the CRM server"
-                />
-            </View>
-        </View>
+        </ThemeProvider>
     );
   }
 }
+
+var InputLabelRow = React.createClass({
+    render() {
+      return (
+        <View style={styles.inputLineWrap}>
+            <View style={styles.iconWrap}>
+                  <Icon name={this.props.icon} size={30}/>
+            </View>
+                <TextInput 
+                    keyboardType={this.props.keyboardType ? this.props.keyboardType : 'default'}
+                    secureTextEntry={this.props.isSecure}
+                    onChangeText={this.props.onChangeText}
+                    onSubmitEditing={this.props.onSubmitEditing}
+                    value={this.props.value}
+                    placeholder={this.props.placeholder} 
+                    placeholderTextColor="#CCC"
+                    style={styles.input} 
+                />
+        </View>
+      );
+    }
+  });
