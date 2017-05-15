@@ -22,7 +22,10 @@ export const styles = StyleSheet.create({
 
 	bodyWrapper: {
 		flex: 0.5,
-		padding: 20,
+		paddingLeft: 5,
+		paddingRight: 5,
+		paddingBottom: 20,
+		paddingTop: 20,
 	},
 
 	activityIndicator: {
@@ -44,7 +47,8 @@ export const styles = StyleSheet.create({
 	},
 
 	scroll: {
-		borderWidth: 2,
+		borderBottomWidth: 2,
+		borderTopWidth: 2,
     	borderColor: '#CCCC',
 	},
 

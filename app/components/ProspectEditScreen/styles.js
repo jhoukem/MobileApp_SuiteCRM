@@ -25,7 +25,10 @@ export const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-around',
 		alignItems: 'center',
-		padding: 20,
+		paddingTop: 20,
+		paddingBottom: 20,
+		paddingLeft: 5,
+		paddingRight: 5,
 	},
 
 	input: {
@@ -34,7 +37,8 @@ export const styles = StyleSheet.create({
 	},
 
 	scroll: {
-		borderWidth: 2,
+		borderBottomWidth: 1,
+		borderTopWidth: 1,
     	borderColor: '#CCCC',
 	},
 

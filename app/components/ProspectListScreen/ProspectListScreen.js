@@ -20,6 +20,8 @@ var avatarColors = ["blue","red", "green", "yellow", "purple", "blueviolet", "ca
     },
   };
 
+
+
 export class ProspectListScreen extends Component {
 
   static navigationOptions = {
@@ -59,6 +61,7 @@ export class ProspectListScreen extends Component {
     // It was a prospect creation since it doesn't exist in the list.
     if(itemIndex === -1){
         item = new Object();
+        item.name_value_list = new Object();
         item.id = returnedItemID;
         item.module_name = "Leads";
         this.state.prospectList.push(item);
@@ -69,8 +72,9 @@ export class ProspectListScreen extends Component {
     }
     
     // We update the name_value_list.
-    item.name_value_list = entry_list;
-
+    for(key in entry_list){
+      item.name_value_list[key] = entry_list[key];
+    }
 
      // The prospect has been deleted. It is removed from the list.
      if(entry_list.deleted.value === 1 && itemIndex !== -1){
@@ -96,6 +100,9 @@ export class ProspectListScreen extends Component {
      if(DEBUG){
         console.log("List length = "+this.state.prospectList.length);
      }
+
+    // Resort the list in case the name has changed. 
+    this.state.prospectList.sort(this.alphabeticalSort);
     // Usefull to re-render the flatList because it is a PureComponent.
     this.setState({flatListNeedUpdate: (-this.state.flatListNeedUpdate)});
   }
@@ -133,7 +140,7 @@ export class ProspectListScreen extends Component {
     }
 
     var param = '{"session":"'+ session +'","module_name":"Leads","query":"","order_by":"","offset":"0",'+
-    '"select_fields":["id","name","last_name","first_name","title","service","department","account_name","email1",'+
+    '"select_fields":["id","last_name","first_name","title","service","department","account_name","email1",'+
     '"phone_work","phone_mobile","website","primary_address_street","primary_address_city","primary_address_postalcode",'+
     '"primary_address_country","description"],"link_name_to_fields_array":[],"max_results":"1000"}';
 
@@ -154,9 +161,9 @@ export class ProspectListScreen extends Component {
 
 
   alphabeticalSort(itemA, itemB){
-    if(!itemA.name_value_list.last_name || !itemB.name_value_list.last_name) return 0;
-    if(itemA.name_value_list.last_name.value < itemB.name_value_list.last_name.value) return -1;
-    if(itemA.name_value_list.last_name.value > itemB.name_value_list.last_name.value) return 1; 
+    if(!itemA.name_value_list[constants.last_name_key] || !itemB.name_value_list[constants.last_name_key]) return 0;
+    if(itemA.name_value_list[constants.last_name_key].value.toLowerCase() < itemB.name_value_list[constants.last_name_key].value.toLowerCase()) return -1;
+    if(itemA.name_value_list[constants.last_name_key].value.toLowerCase() > itemB.name_value_list[constants.last_name_key].value.toLowerCase()) return 1;
     return 0;
   }
 
@@ -164,8 +171,9 @@ export class ProspectListScreen extends Component {
     var results = new Array();
 
     for(idx in this.state.prospectList){
-        var name = this.state.prospectList[idx].name_value_list.name.value;
-        if(name.contains(pattern)){
+        var last_name = this.state.prospectList[idx].name_value_list[constants.last_name_key].value;
+        var first_name = this.state.prospectList[idx].name_value_list[constants.first_name_key].value;
+        if(last_name.contains(pattern) || first_name.contains(pattern)){
           results.push(this.state.prospectList[idx]);
         }
     }
@@ -219,15 +227,16 @@ export class ProspectListScreen extends Component {
                                     <TouchableHighlight onPress={() => this.goToEdit(item)}>
                                         <View style={{flexDirection: 'row', backgroundColor:(index % 2) ? '#f1f2f4' : '#e2e6e9', alignItems: 'center'}}>
                                             <View style={{width: 50, padding: 5}}>
-                                                <Avatar text={item.name_value_list.last_name.value.charAt(0).toUpperCase()} size={40}/>
+                                                <Avatar text={item.name_value_list[constants.last_name_key].value.charAt(0).toUpperCase()} size={40}/>
                                             </View>
                                             <View>
                                                 <Text style={[defaultStyles.fontBasicBig, {backgroundColor:'rgba(0,0,0,0)'}]}>
-                                                {item.name_value_list.last_name.value} {item.name_value_list.first_name.value}
+                                                {item.name_value_list[constants.last_name_key].value} {item.name_value_list[constants.first_name_key] ? 
+                                                  item.name_value_list[constants.first_name_key].value : ''}
                                                 </Text>
-                                                {item.name_value_list.email1 &&
+                                                {item.name_value_list[constants.email_key] &&
                                                     <Text style={[defaultStyles.fontBasic, {backgroundColor:'rgba(0,0,0,0)'}]}>
-                                                    {item.name_value_list.email1.value}
+                                                    {item.name_value_list[constants.email_key].value}
                                                     </Text>
                                                 }
                                             </View>

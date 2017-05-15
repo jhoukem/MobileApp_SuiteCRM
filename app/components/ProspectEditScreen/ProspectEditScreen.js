@@ -21,7 +21,6 @@ const uiTheme = {
     },
   };
 
-
 export class ProspectEditScreen extends Component {
 
   static navigationOptions = {
@@ -34,20 +33,20 @@ export class ProspectEditScreen extends Component {
         isPushing: false,
         saveSucceed: undefined,
         hasModifications: false,
-        last_name: null,
-        first_name: null,
-        title: null,
-        service: null,
-        account_name: null,
-        phone_number: null,
-        mobile_phone_number: null,
-        website: null,
-        email1: null,
-        primary_address_street: null,
-        primary_address_city: null,
-        primary_address_postalcode: null,
-        primary_address_country: null,
-        description: null,
+        [constants.last_name_key]: null,
+        [constants.first_name_key]: null,
+        [constants.title_key]: null,
+        [constants.service_key]: null,
+        [constants.account_name_key]: null,
+        [constants.work_phone_number_key]: null,
+        [constants.mobile_phone_number_key]: null,
+        [constants.website_key]: null,
+        [constants.email_key]: null,
+        [constants.country_key]: null,
+        [constants.street_key]: null,
+        [constants.city_key]: null,
+        [constants.postalcode_key]: null,
+        [constants.description_key]: null,
         deleted: 0,
         };
     this.handleCancel = this.handleCancel.bind(this);
@@ -72,20 +71,20 @@ export class ProspectEditScreen extends Component {
     var nameValueList = [
                             {name:"name", value: ''},
                             {name:"id", value: (itemID) ? itemID : ''},
-                            {name:"last_name", value: this.state.last_name},
-                            {name:"first_name", value: this.state.first_name},
-                            {name:"title", value: this.state.title},
-                            {name:"department", value: this.state.service},
-                            {name:"account_name", value: this.state.account_name},
-                            {name:"phone_work", value: this.state.phone_number},
-                            {name:"phone_mobile", value: this.state.mobile_phone_number},
-                            {name:"website", value: this.state.website},
-                            {name:"primary_address_street", value: this.state.primary_address_street},
-                            {name:"primary_address_city", value: this.state.primary_address_city},
-                            {name:"primary_address_postalcode", value: this.state.primary_address_postalcode},
-                            {name:"primary_address_country", value: this.state.primary_address_country},
-                            {name:"description", value: this.state.description},
-                            {name:"email1", value: this.state.email1},
+                            {name:constants.last_name_key, value: this.state[constants.last_name_key]},
+                            {name:constants.first_name_key, value: this.state[constants.first_name_key]},
+                            {name:constants.title_key, value: this.state[constants.title_key]},
+                            {name:constants.service_key, value: this.state[constants.service_key]},
+                            {name:constants.account_name_key, value: this.state[constants.account_name_key]},
+                            {name:constants.work_phone_number_key, value: this.state[constants.work_phone_number_key]},
+                            {name:constants.mobile_phone_number_key, value: this.state[constants.mobile_phone_number_key]},
+                            {name:constants.website_key, value: this.state[constants.website_key]},
+                            {name:constants.country_key, value: this.state[constants.country_key]},
+                            {name:constants.street_key, value: this.state[constants.street_key]},
+                            {name:constants.city_key, value: this.state[constants.city_key]},
+                            {name:constants.postalcode_key, value: this.state[constants.postalcode_key]},
+                            {name:constants.description_key, value: this.state[constants.description_key]},
+                            {name:constants.email_key, value: this.state[constants.email_key]},
                             {name:"deleted", value: this.state.deleted},
                         ]
     var updatedData = {session: session,
@@ -189,7 +188,7 @@ export class ProspectEditScreen extends Component {
     // Basic regex for email checking.
     var reg = /^[\w.-]+@[\w-]+\.[a-zA-Z]{2,4}$/;
 
-    if(this.state.email1 && !reg.test(this.state.email1)){
+    if(this.state[constants.email_key] && !reg.test(this.state[constants.email_key])){
        Alert.alert('Erreur', 'Format de l\'email incorrect',
                   [ 
                       {text: 'OK'},
@@ -198,7 +197,7 @@ export class ProspectEditScreen extends Component {
         return false;
     }
 
-    if(!this.state.last_name){
+    if(!this.state[constants.last_name_key]){
        Alert.alert('Erreur', 'Le champ \'Nom\' est vide',
                   [ 
                       {text: 'OK'},
@@ -240,7 +239,7 @@ export class ProspectEditScreen extends Component {
                     key="toolbar"
                     leftElement={<IconToggle name="navigate-before" color="white" onPress={this.handleCancel} disabled={this.state.isPushing}/>}
                     rightElement={<IconToggle name="save" color="white" onPress={this.handleSave} disabled={this.state.isPushing}/>}
-                    centerElement="Edition du prospect"
+                    centerElement={this.props.navigation.state.params.item ? "Édition du prospect" : "Création d'un prospect"}
                 />
 
         				<View style={styles.headerWrapper}>
@@ -255,20 +254,34 @@ export class ProspectEditScreen extends Component {
                   <ActivityIndicator style={styles.headerWrapper} size="large" /> ||
 
         					   <ScrollView style={styles.scroll}>
-        						      <InputLabelRow icon='account-circle' value = {this.state.last_name} onChangeText = {(text) => this.updateData("last_name" ,text)} placeholder='Nom'/>
-        						      <InputLabelRow icon={null} value = {this.state.first_name} onChangeText = {(text) => this.updateData("first_name", text)} placeholder='Prénom'/>
-        						      <InputLabelRow icon={null} value = {this.state.title} onChangeText = {(text) => this.updateData("title",text)} placeholder='Fonction'/>
-        						      <InputLabelRow icon={null} value = {this.state.department} onChangeText = {(text) => this.updateData("department", text)} placeholder='Service'/>
-        						      <InputLabelRow icon={null} value = {this.state.account_name} onChangeText = {(text) => this.updateData("account_name", text)} placeholder='Nom de compte'/>
-        					      	<InputLabelRow micon='phone-classic' value = {this.state.phone_work} onChangeText = {(text) => this.updateData("phone_work", text)} placeholder='Téléphone fixe' keyboardType='phone-pad'/>
-        					     	  <InputLabelRow micon='cellphone' value = {this.state.phone_mobile} onChangeText = {(text) => this.updateData("phone_mobile", text)} placeholder='Téléphone mobile' keyboardType='phone-pad'/>
-                          <InputLabelRow icon='mail-outline' value = {this.state.email1} onChangeText = {(text) => this.updateData("email1", text)} placeholder='E-mail'/>
-        						      <InputLabelRow micon='web' value = {this.state.website} onChangeText = {(text) => this.updateData("website", text)} placeholder='Site web' keyboardType='url' />
-                          <InputLabelRow icon='edit-location' value = {this.state.primary_address_country} onChangeText = {(text) => this.updateData("primary_address_country", text)} placeholder='Pays'/>
-                          <InputLabelRow icon={null} value = {this.state.primary_address_city} onChangeText = {(text) => this.updateData("primary_address_city", text)} placeholder='Ville'/>
-                          <InputLabelRow icon={null} value = {this.state.primary_address_street} onChangeText = {(text) => this.updateData("primary_address_street", text)} placeholder='Rue'/>
-                          <InputLabelRow icon={null} value = {this.state.primary_address_postalcode} onChangeText = {(text) => this.updateData("primary_address_postalcode", text)} placeholder='Code Postal' keyboardType='numeric'/>
-        						      <InputLabelRow icon='description' multiline={true} value = {this.state.description} onChangeText = {(text) => this.updateData("description", text)} placeholder='Description'/>
+        						      <InputLabelRow icon='account-circle' value = {this.state[constants.last_name_key]}
+                          onChangeText = {(text) => this.updateData(constants.last_name_key, text)} placeholder='Nom'/>
+        						      <InputLabelRow icon={null} value = {this.state[constants.first_name_key]}
+                          onChangeText = {(text) => this.updateData(constants.first_name_key, text)} placeholder='Prénom'/>
+        						      <InputLabelRow icon={null} value = {this.state[constants.title_key]}
+                          onChangeText = {(text) => this.updateData(constants.title_key, text)} placeholder='Fonction'/>
+        						      <InputLabelRow icon={null} value = {this.state[constants.service_key]}
+                          onChangeText = {(text) => this.updateData(constants.service_key, text)} placeholder='Service'/>
+        						      <InputLabelRow icon={null} value = {this.state[constants.account_name_key]}
+                          onChangeText = {(text) => this.updateData(constants.account_name_key, text)} placeholder='Nom de compte'/>
+        					      	<InputLabelRow micon='phone-classic' value = {this.state[constants.work_phone_number_key]}
+                          onChangeText = {(text) => this.updateData(constants.work_phone_number_key, text)} placeholder='Téléphone fixe' keyboardType='phone-pad'/>
+        					     	  <InputLabelRow micon='cellphone' value = {this.state[constants.mobile_phone_number_key]}
+                          onChangeText = {(text) => this.updateData(constants.mobile_phone_number_key, text)} placeholder='Téléphone mobile' keyboardType='phone-pad'/>
+                          <InputLabelRow icon='mail-outline' value = {this.state[constants.email_key]}
+                          onChangeText = {(text) => this.updateData(constants.email_key, text)} placeholder='E-mail'/>
+        						      <InputLabelRow micon='web' value = {this.state[constants.website_key]}
+                          onChangeText = {(text) => this.updateData(constants.website_key, text)} placeholder='Site web' keyboardType='url' />
+                          <InputLabelRow icon='edit-location' value = {this.state[constants.country_key]}
+                          onChangeText = {(text) => this.updateData(constants.country_key, text)} placeholder='Pays'/>
+                          <InputLabelRow icon={null} value = {this.state[constants.city_key]}
+                          onChangeText = {(text) => this.updateData(constants.city_key, text)} placeholder='Ville'/>
+                          <InputLabelRow icon={null} value = {this.state[constants.street_key]}
+                          onChangeText = {(text) => this.updateData(constants.street_key, text)} placeholder='Rue'/>
+                          <InputLabelRow icon={null} value = {this.state[constants.postalcode_key]}
+                          onChangeText = {(text) => this.updateData(constants.postalcode_key, text)} placeholder='Code Postal' keyboardType='numeric'/>
+        						      <InputLabelRow icon='description' multiline={true} value = {this.state[constants.description_key]}
+                          onChangeText = {(text) => this.updateData(constants.description_key, text)} placeholder='Description'/>
         					   </ScrollView>
                   }
         				</View>
