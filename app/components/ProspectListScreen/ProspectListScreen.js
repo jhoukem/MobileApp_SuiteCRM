@@ -133,15 +133,17 @@ export class ProspectListScreen extends Component {
     }
 
     var param = '{"session":"'+ session +'","module_name":"Leads","query":"","order_by":"","offset":"0",'+
-    '"select_fields":["id","last_name","first_name","title","service","department","account_name","email1",'+
+    '"select_fields":["id","name","last_name","first_name","title","service","department","account_name","email1",'+
     '"phone_work","phone_mobile","website","primary_address_street","primary_address_city","primary_address_postalcode",'+
     '"primary_address_country","description"],"link_name_to_fields_array":[],"max_results":"1000"}';
 
 
     this.setState({isFetching: true});
     var onSuccess = function(responseData){
-        this.setState({isFetching: false, error: false, prospectList: responseData.entry_list});
+        // Set the state manually to sort before rendering.
+        this.state.prospectList = responseData.entry_list;
         this.state.prospectList.sort(this.alphabeticalSort);
+        this.setState({isFetching: false});
     }
     var onFailure = function(error){
         this.setState({isFetching: false, error: true});
@@ -220,11 +222,11 @@ export class ProspectListScreen extends Component {
                                                 <Avatar text={item.name_value_list.last_name.value.charAt(0).toUpperCase()} size={40}/>
                                             </View>
                                             <View>
-                                                <Text style={[defaultStyles.fontBasicBig, {backgroundColor:(index % 2) ? '#f1f2f4' : '#e2e6e9'}]}>
+                                                <Text style={[defaultStyles.fontBasicBig, {backgroundColor:'rgba(0,0,0,0)'}]}>
                                                 {item.name_value_list.last_name.value} {item.name_value_list.first_name.value}
                                                 </Text>
                                                 {item.name_value_list.email1 &&
-                                                    <Text style={[defaultStyles.fontBasic, {backgroundColor:(index % 2) ? '#f1f2f4' : '#e2e6e9'}]}>
+                                                    <Text style={[defaultStyles.fontBasic, {backgroundColor:'rgba(0,0,0,0)'}]}>
                                                     {item.name_value_list.email1.value}
                                                     </Text>
                                                 }

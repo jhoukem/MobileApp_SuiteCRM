@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, ScrollView, View, Button, TextInput, Alert, Image, ActivityIndicator } from 'react-native';
 import { Toolbar, ThemeProvider, Icon, IconToggle } from 'react-native-material-ui';
+import { default as MIcon } from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { styles as defaultStyles } from '../../layout/styles.js'
 import { styles, images } from './index.js'
@@ -69,6 +70,7 @@ export class ProspectEditScreen extends Component {
     }
 
     var nameValueList = [
+                            {name:"name", value: ''},
                             {name:"id", value: (itemID) ? itemID : ''},
                             {name:"last_name", value: this.state.last_name},
                             {name:"first_name", value: this.state.first_name},
@@ -258,14 +260,14 @@ export class ProspectEditScreen extends Component {
         						      <InputLabelRow icon={null} value = {this.state.title} onChangeText = {(text) => this.updateData("title",text)} placeholder='Fonction'/>
         						      <InputLabelRow icon={null} value = {this.state.department} onChangeText = {(text) => this.updateData("department", text)} placeholder='Service'/>
         						      <InputLabelRow icon={null} value = {this.state.account_name} onChangeText = {(text) => this.updateData("account_name", text)} placeholder='Nom de compte'/>
-        					      	<InputLabelRow icon='phone' value = {this.state.phone_work} onChangeText = {(text) => this.updateData("phone_work", text)} placeholder='Téléphone fixe'/>
-        					     	  <InputLabelRow icon={null} value = {this.state.phone_mobile} onChangeText = {(text) => this.updateData("phone_mobile", text)} placeholder='Téléphone mobile'/>
-                          <InputLabelRow icon='mail' value = {this.state.email1} onChangeText = {(text) => this.updateData("email1", text)} placeholder='E-mail'/>
-        						      <InputLabelRow icon={null} value = {this.state.website} onChangeText = {(text) => this.updateData("website", text)} placeholder='Site web'/>
-                          <InputLabelRow icon='add-location' value = {this.state.primary_address_country} onChangeText = {(text) => this.updateData("primary_address_country", text)} placeholder='Pays'/>
+        					      	<InputLabelRow micon='phone-classic' value = {this.state.phone_work} onChangeText = {(text) => this.updateData("phone_work", text)} placeholder='Téléphone fixe' keyboardType='phone-pad'/>
+        					     	  <InputLabelRow micon='cellphone' value = {this.state.phone_mobile} onChangeText = {(text) => this.updateData("phone_mobile", text)} placeholder='Téléphone mobile' keyboardType='phone-pad'/>
+                          <InputLabelRow icon='mail-outline' value = {this.state.email1} onChangeText = {(text) => this.updateData("email1", text)} placeholder='E-mail'/>
+        						      <InputLabelRow micon='web' value = {this.state.website} onChangeText = {(text) => this.updateData("website", text)} placeholder='Site web' keyboardType='url' />
+                          <InputLabelRow icon='edit-location' value = {this.state.primary_address_country} onChangeText = {(text) => this.updateData("primary_address_country", text)} placeholder='Pays'/>
                           <InputLabelRow icon={null} value = {this.state.primary_address_city} onChangeText = {(text) => this.updateData("primary_address_city", text)} placeholder='Ville'/>
                           <InputLabelRow icon={null} value = {this.state.primary_address_street} onChangeText = {(text) => this.updateData("primary_address_street", text)} placeholder='Rue'/>
-                          <InputLabelRow icon={null} value = {this.state.primary_address_postalcode} onChangeText = {(text) => this.updateData("primary_address_postalcode", text)} placeholder='Code Postal'/>
+                          <InputLabelRow icon={null} value = {this.state.primary_address_postalcode} onChangeText = {(text) => this.updateData("primary_address_postalcode", text)} placeholder='Code Postal' keyboardType='numeric'/>
         						      <InputLabelRow icon='description' multiline={true} value = {this.state.description} onChangeText = {(text) => this.updateData("description", text)} placeholder='Description'/>
         					   </ScrollView>
                   }
@@ -299,7 +301,6 @@ var InputLabelRow = React.createClass({
     		<View style={{
     			flex: 1,
     			flexDirection: 'row',
-    			//justifyContent: 'space-around',
 				  alignItems: 'center',
 			  }}>
             <View style={{
@@ -309,8 +310,19 @@ var InputLabelRow = React.createClass({
                 {this.props.icon &&
       				      <Icon name={this.props.icon} size={30}/>
                 }
+
+                {this.props.micon &&
+                    <MIcon name={this.props.micon} size={30}/>
+                }
           </View>
-				  <TextInput multiline={this.props.multiline} style={{flex: 1}} value = {this.props.value} onChangeText = {this.props.onChangeText} placeholder={this.props.placeholder} />
+				  <TextInput 
+              multiline={this.props.multiline}
+              style={{flex: 1}}
+              value = {this.props.value}
+              onChangeText = {this.props.onChangeText}
+              placeholder={this.props.placeholder}
+              keyboardType = {this.props.keyboardType ? this.props.keyboardType : 'default'}
+          />
     		</View>
 
     	);

@@ -42,7 +42,7 @@ export const styles = StyleSheet.create({
 	fontBasicBig: {
 		color: 'black',
 		fontSize: 20,
-		fontWeight: 'bold',
+		//fontWeight: 'bold',
 		backgroundColor: "white",
 	},
 
