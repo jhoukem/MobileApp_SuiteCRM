@@ -8,8 +8,11 @@ import * as constants from '../../config/const.js'
 import { restCall } from '../../lib/rest_api.js'
 
 var DEBUG = false;
-var avatarColors = ["cornflowerblue", "orangered", "green", "burlywood", "purple", "blueviolet", "chocolate", "lightseagreen", "darkred", "lightslategray", "coral", "darkcyan", "forestgreen",
-"gold", "pink", "lightblue", "navy", "orange", "teal", "steelblue", "plum", "skyblue", "olive"];
+var avatarColors = ["#e8d725", "#38579e", "#f9b6bf", "#ef64d8", "#c10f6e",
+"#e57074", "#f9d1c0", "#2c55a3", "#611296", "#f22bcd", "#4a97ad", "#85f702",
+"#f7a5a7", "#e4f7a0", "#81ef93", "#1cddb7", "#ea6267", "#91b7ff", "#91d613",
+"#eac715", "#fcd292", "#a40bc6", "#ed38e4", "#605df7", "#c6008b", "#e0477d",
+"#27dd95", "#d64f02", "#fc7bcf", "#f79283"];
   const uiTheme = {
     palette: {
         primaryColor: '#1F94B7',
@@ -190,80 +193,78 @@ export class ProspectListScreen extends Component {
     	return (
         <ThemeProvider uiTheme={uiTheme}>
         		<View style={styles.container}>
-                  <Toolbar
-                    ref={toolbarComponent => this.toolbar = toolbarComponent}
-                    key="toolbar"
-                    leftElement="exit-to-app"
-                    onLeftElementPress={this.logout}
-                    rightElement={<IconToggle name="cloud-download" color="white" onPress={this.reload} disabled={this.state.isFetching}/>}
-                    centerElement="Liste des prospects"
-                    searchable={{ autoFocus: true,
-                                  placeholder: 'Search',
-                                  onSearchPressed: () => this.setSearching(true),
-                                  onSearchClosed: () => this.setSearching(false),
-                                  onChangeText: (text) => this.handleSearch(text),
-                                }}
-                  />
+                		<Toolbar
+			                    ref={toolbarComponent => this.toolbar = toolbarComponent}
+			                    key="toolbar"
+			                    leftElement="exit-to-app"
+			                    onLeftElementPress={this.logout}
+			                    rightElement={<IconToggle name="cloud-download" color="white" onPress={this.reload} disabled={this.state.isFetching}/>}
+			                    centerElement="Liste des prospects"
+			                    searchable={{ autoFocus: true,
+			                                  placeholder: 'Search',
+			                                  onSearchPressed: () => this.setSearching(true),
+			                                  onSearchClosed: () => this.setSearching(false),
+			                                  onChangeText: (text) => this.handleSearch(text),
+			                                }}
+                  		/>
 
         				{/*Header Part*/}
         				<View style={styles.headerWrapper}>
-                  {this.state.error && 
-                      <Text style={defaultStyles.fontBasicError}>Erreur de réseau</Text> ||
-      				        <Text style={defaultStyles.fontBasicNote}>Selectionnez un prospect pour le modifier</Text>
-                  }
+                  		{this.state.error && 
+                      			<Text style={defaultStyles.fontBasicError}>Erreur de réseau</Text> ||
+      				        	<Text style={defaultStyles.fontBasicNote}>Selectionnez un prospect pour le modifier</Text>
+                  		}
         				</View>
 
         				{/*Body Part*/}
         				<View style={styles.bodyWrapper}>
 
-                    { this.state.isFetching &&
-                       <ActivityIndicator style={styles.activityIndicator} size="large" /> ||
+                    	{this.state.isFetching &&
+                        		<ActivityIndicator style={styles.activityIndicator} size="large" /> ||
 
-                            <ScrollView style={styles.scroll}>
-                                <FlatList 
-                                    data={this.state.isSearching ? this.state.prospectSearch : this.state.prospectList}
-                                    keyExtractor={(item, index) => item.name_value_list.id.value}
-                                    extraData={this.state.flatListNeedUpdate}
-                                    renderItem={({item, index}) =>
-                                    <TouchableHighlight onPress={() => this.goToEdit(item)}>
-                                        <View style={{flexDirection: 'row', backgroundColor:(index % 2) ? '#f1f2f4' : '#e2e6e9', alignItems: 'center'}}>
-                                            <View style={{width: 50, padding: 5}}>
-                                                <Avatar
-                                                	style={{container:{backgroundColor:avatarColors[index%avatarColors.length]}}}
-                                                	text={item.name_value_list[constants.last_name_key].value.charAt(0).toUpperCase()} 
-                                                	size={40}
-                                                />
-                                            </View>
-                                            <View>
-                                                <Text style={[defaultStyles.fontBasicBig, {backgroundColor:'rgba(0,0,0,0)'}]}>
-                                                {item.name_value_list[constants.last_name_key].value} {item.name_value_list[constants.first_name_key] ? 
-                                                  item.name_value_list[constants.first_name_key].value : ''}
-                                                </Text>
-                                                {item.name_value_list[constants.email_key] &&
-                                                    <Text style={[defaultStyles.fontBasic, {backgroundColor:'rgba(0,0,0,0)'}]}>
-                                                    {item.name_value_list[constants.email_key].value}
-                                                    </Text>
-                                                }
-                                            </View>
-                                        </View>
-                                    </TouchableHighlight>
-                                    }
-                                />
-                  			    </ScrollView>
-        				    }
-                </View>
-
+	                            <ScrollView style={styles.scroll}>
+	                                <FlatList 
+	                                    data={this.state.isSearching ? this.state.prospectSearch : this.state.prospectList}
+	                                    keyExtractor={(item, index) => item.name_value_list.id.value}
+	                                    extraData={this.state.flatListNeedUpdate}
+	                                    renderItem={({item, index}) =>
+			                                    <TouchableHighlight onPress={() => this.goToEdit(item)}>
+			                                        <View style={{flexDirection: 'row', backgroundColor:(index % 2) ? '#f1f2f4' : '#e2e6e9', alignItems: 'center'}}>
+			                                            <View style={{width: 50, padding: 5}}>
+			                                            		<Avatar
+			                                                		style={{container:{backgroundColor:avatarColors[index%avatarColors.length]}}}
+			                                                		text={item.name_value_list[constants.last_name_key].value.charAt(0).toUpperCase()} 
+			                                                		size={40}
+			                                                	/>
+			                                            </View>
+			                                        	<View>
+				                                        		<Text style={[defaultStyles.fontBasicBig, {backgroundColor:'rgba(0,0,0,0)'}]}>
+				                                                {item.name_value_list[constants.last_name_key].value} {item.name_value_list[constants.first_name_key] ? 
+				                                                  item.name_value_list[constants.first_name_key].value : ''}
+				                                                </Text>
+				                                                {item.name_value_list[constants.email_key] &&
+				                                                    <Text style={[defaultStyles.fontBasic, {backgroundColor:'rgba(0,0,0,0)'}]}>
+				                                                    {item.name_value_list[constants.email_key].value}
+				                                                    </Text>
+				                                                }
+			                                            </View>
+			                                        </View>
+			                                    </TouchableHighlight>
+	                                    }
+	                                />
+	                  			</ScrollView>
+        				}
+                		</View>
     	    			{/*Button Part*/}
         				<View style={styles.buttonWrapper}>
-        				    <Button
-                  			onPress={() => this.navigate(constants.editScreen)}
-                 				title="Créer un nouveau prospect"
-                  			color="#1F94B7"
-                  			accessibilityLabel="Créer un nouveau prospect"
-                        disabled={this.state.isFetching}
-                	  />
+	        				    <Button
+	                  				onPress={() => this.navigate(constants.editScreen)}
+	                 				title="Créer un nouveau prospect"
+	                  				color="#1F94B7"
+	                  				accessibilityLabel="Créer un nouveau prospect"
+	                        		disabled={this.state.isFetching}
+	                	  		/>
         				</View>
-
         		</View>
         </ThemeProvider>
   		);

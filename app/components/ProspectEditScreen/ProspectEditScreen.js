@@ -243,48 +243,48 @@ export class ProspectEditScreen extends Component {
                     centerElement={this.props.navigation.state.params.item ? "Édition du prospect" : "Création d'un prospect"}
                 />
 
-        				<View style={styles.headerWrapper}>
-                    {/*Only display the prospect ID field if it exists*/}
-                    {this.props.navigation.state.params.item &&
-        					       <Text>Prospect ID: {this.props.navigation.state.params.item.name_value_list.id.value} </Text>
-        				    }
-                </View>
+        			<View style={styles.headerWrapper}>
+                    	{/*Only display the prospect ID field if it exists*/}
+                    	{this.props.navigation.state.params.item &&
+        						<Text>Prospect ID: {this.props.navigation.state.params.item.name_value_list.id.value} </Text>
+        				}
+                	</View>
 
-        				<View style={styles.bodyWrapper}>
-                  {this.state.isPushing &&
-                  <ActivityIndicator style={styles.headerWrapper} size="large" /> ||
+        			<View style={styles.bodyWrapper}>
+                  	{this.state.isPushing &&
+                  			<ActivityIndicator style={styles.headerWrapper} size="large" /> ||
 
         					   <ScrollView style={styles.scroll}>
-        						      <InputLabelRow icon='account-circle' value = {this.state[constants.last_name_key]}
-                          onChangeText = {(text) => this.updateData(constants.last_name_key, text)} placeholder='Nom'/>
-        						      <InputLabelRow icon={null} value = {this.state[constants.first_name_key]}
-                          onChangeText = {(text) => this.updateData(constants.first_name_key, text)} placeholder='Prénom'/>
-        						      <InputLabelRow icon={null} value = {this.state[constants.title_key]}
-                          onChangeText = {(text) => this.updateData(constants.title_key, text)} placeholder='Fonction'/>
-        						      <InputLabelRow icon={null} value = {this.state[constants.service_key]}
-                          onChangeText = {(text) => this.updateData(constants.service_key, text)} placeholder='Service'/>
-        						      <InputLabelRow icon={null} value = {this.state[constants.account_name_key]}
-                          onChangeText = {(text) => this.updateData(constants.account_name_key, text)} placeholder='Nom de compte'/>
+        					   		<InputLabelRow icon='account-circle' value = {this.state[constants.last_name_key]}
+                          					onChangeText = {(text) => this.updateData(constants.last_name_key, text)} placeholder='Nom'/>
+        						    <InputLabelRow icon={null} value = {this.state[constants.first_name_key]}
+                          					onChangeText = {(text) => this.updateData(constants.first_name_key, text)} placeholder='Prénom'/>
+        						    <InputLabelRow icon={null} value = {this.state[constants.title_key]}
+                          					onChangeText = {(text) => this.updateData(constants.title_key, text)} placeholder='Fonction'/>
+        						    <InputLabelRow icon={null} value = {this.state[constants.service_key]}
+                          					onChangeText = {(text) => this.updateData(constants.service_key, text)} placeholder='Service'/>
+        						    <InputLabelRow icon={null} value = {this.state[constants.account_name_key]}
+                          					onChangeText = {(text) => this.updateData(constants.account_name_key, text)} placeholder='Nom de compte'/>
         					      	<InputLabelRow micon='phone-classic' value = {this.state[constants.work_phone_number_key]}
-                          onChangeText = {(text) => this.updateData(constants.work_phone_number_key, text)} placeholder='Téléphone fixe' keyboardType='phone-pad'/>
-        					     	  <InputLabelRow micon='cellphone' value = {this.state[constants.mobile_phone_number_key]}
-                          onChangeText = {(text) => this.updateData(constants.mobile_phone_number_key, text)} placeholder='Téléphone mobile' keyboardType='phone-pad'/>
-                          <InputLabelRow icon='mail-outline' value = {this.state[constants.email_key]}
-                          onChangeText = {(text) => this.updateData(constants.email_key, text)} placeholder='E-mail'/>
-        						      <InputLabelRow micon='web' value = {this.state[constants.website_key]}
-                          onChangeText = {(text) => this.updateData(constants.website_key, text)} placeholder='Site web' keyboardType='url' />
-                          <InputLabelRow icon='edit-location' value = {this.state[constants.country_key]}
-                          onChangeText = {(text) => this.updateData(constants.country_key, text)} placeholder='Pays'/>
-                          <InputLabelRow icon={null} value = {this.state[constants.city_key]}
-                          onChangeText = {(text) => this.updateData(constants.city_key, text)} placeholder='Ville'/>
-                          <InputLabelRow icon={null} value = {this.state[constants.street_key]}
-                          onChangeText = {(text) => this.updateData(constants.street_key, text)} placeholder='Rue'/>
-                          <InputLabelRow icon={null} value = {this.state[constants.postalcode_key]}
-                          onChangeText = {(text) => this.updateData(constants.postalcode_key, text)} placeholder='Code Postal' keyboardType='numeric'/>
-        						      <InputLabelRow icon='description' multiline={true} value = {this.state[constants.description_key]}
-                          onChangeText = {(text) => this.updateData(constants.description_key, text)} placeholder='Description'/>
+                          					onChangeText = {(text) => this.updateData(constants.work_phone_number_key, text)} placeholder='Téléphone fixe' keyboardType='phone-pad'/>
+        					     	<InputLabelRow micon='cellphone' value = {this.state[constants.mobile_phone_number_key]}
+                          					onChangeText = {(text) => this.updateData(constants.mobile_phone_number_key, text)} placeholder='Téléphone mobile' keyboardType='phone-pad'/>
+                          			<InputLabelRow icon='mail-outline' value = {this.state[constants.email_key]}
+                          					onChangeText = {(text) => this.updateData(constants.email_key, text)} placeholder='E-mail'/>
+        						    <InputLabelRow micon='web' value = {this.state[constants.website_key]}
+                          					onChangeText = {(text) => this.updateData(constants.website_key, text)} placeholder='Site web' keyboardType='url' />
+                          			<InputLabelRow icon='edit-location' value = {this.state[constants.country_key]}
+                          					onChangeText = {(text) => this.updateData(constants.country_key, text)} placeholder='Pays'/>
+                          			<InputLabelRow icon={null} value = {this.state[constants.city_key]}
+                          					onChangeText = {(text) => this.updateData(constants.city_key, text)} placeholder='Ville'/>
+                          			<InputLabelRow icon={null} value = {this.state[constants.street_key]}
+                          					onChangeText = {(text) => this.updateData(constants.street_key, text)} placeholder='Rue'/>
+                          			<InputLabelRow icon={null} value = {this.state[constants.postalcode_key]}
+                          					onChangeText = {(text) => this.updateData(constants.postalcode_key, text)} placeholder='Code Postal' keyboardType='numeric'/>
+        						    <InputLabelRow icon='description' multiline={true} value = {this.state[constants.description_key]}
+                          					onChangeText = {(text) => this.updateData(constants.description_key, text)} placeholder='Description'/>
         					   </ScrollView>
-                  }
+                  	}
         				</View>
         			
                 {/*Only display the delete button when the screen is accessed from an existing prospect*/}
@@ -292,14 +292,14 @@ export class ProspectEditScreen extends Component {
 
         				    <View style={styles.buttonWrapper}>
         						    <Button
-                  				  onPress={() => this.handleDelete()}
-                 					  title= "Delete"
-                  				  color="red"
-                  				  accessibilityLabel="Delete the current prospect"
-                            disabled={this.state.isPushing}
-                		    />
+                  				  		onPress={() => this.handleDelete()}
+                 					  	title= "Delete"
+                  				  		color="red"
+                  				  		accessibilityLabel="Delete the current prospect"
+                            			disabled={this.state.isPushing}
+                		    		/>
         				    </View>
-        			  }
+        		}
         		</View>
         </ThemeProvider>
     		);
@@ -315,29 +315,29 @@ var InputLabelRow = React.createClass({
     		<View style={{
     			flex: 1,
     			flexDirection: 'row',
-				  alignItems: 'center',
-          height: this.props.multiline ? 100 :50,
-			  }}>
-            <View style={{
-              height: 30,
-              width: 30,
-            }}>
-                {this.props.icon &&
-      				      <Icon name={this.props.icon} size={30}/>
-                }
+				alignItems: 'center',
+          		height: this.props.multiline ? 100 :50,
+			}}>
+            	<View style={{
+              		height: 30,
+              		width: 30,
+            	}}>
+                	{this.props.icon &&
+      					<Icon name={this.props.icon} size={30}/>
+                	}
 
-                {this.props.micon &&
-                    <MIcon name={this.props.micon} size={30}/>
-                }
-          </View>
-				  <TextInput 
-              multiline={this.props.multiline}
-              style={{flex: 1, height: this.props.multiline ? 100 : 50}}
-              value = {this.props.value}
-              onChangeText = {this.props.onChangeText}
-              placeholder={this.props.placeholder}
-              keyboardType = {this.props.keyboardType ? this.props.keyboardType : 'default'}
-          />
+                	{this.props.micon &&
+                    	<MIcon name={this.props.micon} size={30}/>
+                	}
+          		</View>
+				<TextInput 
+              		multiline={this.props.multiline}
+              		style={{flex: 1, height: this.props.multiline ? 100 : 50}}
+              		value = {this.props.value}
+              		onChangeText = {this.props.onChangeText}
+              		placeholder={this.props.placeholder}
+              		keyboardType = {this.props.keyboardType ? this.props.keyboardType : 'default'}
+          		/>
     		</View>
 
     	);
