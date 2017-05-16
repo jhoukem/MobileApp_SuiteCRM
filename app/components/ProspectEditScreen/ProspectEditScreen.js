@@ -32,6 +32,7 @@ export class ProspectEditScreen extends Component {
     this.state = {
         isPushing: false,
         saveSucceed: undefined,
+        isEditable: false,
         hasModifications: false,
         [constants.last_name_key]: null,
         [constants.first_name_key]: null,
@@ -51,6 +52,7 @@ export class ProspectEditScreen extends Component {
         };
     this.handleCancel = this.handleCancel.bind(this);
     this.handleSave = this.handleSave.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
   }
 
   pushToServer(onSuccessMessage, onFailureMessage) {
@@ -176,6 +178,8 @@ export class ProspectEditScreen extends Component {
             )
   }
 
+
+
   debugState(){
       console.log("this.state=");
       console.log(this.state);
@@ -209,8 +213,9 @@ export class ProspectEditScreen extends Component {
     return true;
   }
 
-  componentWillMount(){
-      var item = this.props.navigation.state.params.item;
+
+  setStateToItem(){
+    var item = this.props.navigation.state.params.item;
 
       if(item){
         item = item.name_value_list;
@@ -225,9 +230,40 @@ export class ProspectEditScreen extends Component {
       }
   }
 
+  componentWillMount(){
+      this.setStateToItem();
+  }
+
   updateData(key, value){
       key.value = value;
       this.setState({[key]: value, hasModifications: true});
+  }
+
+  handleEdit(){
+
+        if(!this.state.isEditable){
+            Alert.alert('Info', 'Voulez vous activer le mode édition ?',
+                  [ 
+                      {text: 'Non', },
+                      {text: 'Oui', onPress: () => this.setState({isEditable: true}) },
+                  ],
+                  {cancelable: false},
+            )
+        } else {
+          // If there is any modifications, toggling the edit mode to off will ask to save the infos
+          if(this.state.hasModifications){
+              Alert.alert('Info', 'Sauvegarder les changements ?',
+                  [ 
+                      {text: 'Annuler', },
+                      {text: 'Oui', onPress: () => {this.handleSave(); this.setState({isEditable: false})} },
+                      {text: 'Non', onPress: () => {this.setStateToItem(); this.setState({isEditable: false})} },
+                  ],
+                  {cancelable: false},
+                )
+          } else {
+                  this.setState({isEditable: false})
+          }
+        }
   }
 
   render() {
@@ -239,8 +275,14 @@ export class ProspectEditScreen extends Component {
                     ref={toolbarComponent => this.toolbar = toolbarComponent}
                     key="toolbar"
                     leftElement={<IconToggle name="navigate-before" color="white" onPress={this.handleCancel} disabled={this.state.isPushing}/>}
-                    rightElement={<IconToggle name="save" color="white" onPress={this.handleSave} disabled={this.state.isPushing}/>}
-                    centerElement={this.props.navigation.state.params.item ? "Édition du prospect" : "Création d'un prospect"}
+                    rightElement={
+                      <View style={{flexDirection: 'row'}}>
+                          <IconToggle name="mode-edit" color={this.state.isEditable ? "grey" : "white"} onPress={this.handleEdit} 
+                          disabled={!this.props.navigation.state.params.item || this.state.isPushing}/>
+                          <IconToggle name="save" color="white" onPress={this.handleSave} disabled={this.state.isPushing || !this.state.isEditable}/>
+                      </View>
+                    }
+                    centerElement={this.props.navigation.state.params.item ? this.state.isEditable ? "Édition du prospect" : "Consultation du prospect" : "Création d'un prospect"}
                 />
 
         			<View style={styles.headerWrapper}>
@@ -255,33 +297,33 @@ export class ProspectEditScreen extends Component {
                   			<ActivityIndicator style={styles.headerWrapper} size="large" /> ||
 
         					   <ScrollView style={styles.scroll}>
-        					   		<InputLabelRow icon='account-circle' value = {this.state[constants.last_name_key]}
+        					   		<InputLabelRow icon='account-circle' value = {this.state[constants.last_name_key]} editable={this.state.isEditable}
                           					onChangeText = {(text) => this.updateData(constants.last_name_key, text)} placeholder='Nom'/>
-        						    <InputLabelRow icon={null} value = {this.state[constants.first_name_key]}
+        						    <InputLabelRow icon={null} value = {this.state[constants.first_name_key]} editable={this.state.isEditable}
                           					onChangeText = {(text) => this.updateData(constants.first_name_key, text)} placeholder='Prénom'/>
-        						    <InputLabelRow icon={null} value = {this.state[constants.title_key]}
+        						    <InputLabelRow icon={null} value = {this.state[constants.title_key]} editable={this.state.isEditable}
                           					onChangeText = {(text) => this.updateData(constants.title_key, text)} placeholder='Fonction'/>
-        						    <InputLabelRow icon={null} value = {this.state[constants.service_key]}
+        						    <InputLabelRow icon={null} value = {this.state[constants.service_key]} editable={this.state.isEditable}
                           					onChangeText = {(text) => this.updateData(constants.service_key, text)} placeholder='Service'/>
-        						    <InputLabelRow icon={null} value = {this.state[constants.account_name_key]}
+        						    <InputLabelRow icon={null} value = {this.state[constants.account_name_key]} editable={this.state.isEditable}
                           					onChangeText = {(text) => this.updateData(constants.account_name_key, text)} placeholder='Nom de compte'/>
-        					      	<InputLabelRow micon='phone-classic' value = {this.state[constants.work_phone_number_key]}
+        					      	<InputLabelRow micon='phone-classic' value = {this.state[constants.work_phone_number_key]} editable={this.state.isEditable}
                           					onChangeText = {(text) => this.updateData(constants.work_phone_number_key, text)} placeholder='Téléphone fixe' keyboardType='phone-pad'/>
-        					     	<InputLabelRow micon='cellphone' value = {this.state[constants.mobile_phone_number_key]}
+        					     	<InputLabelRow micon='cellphone' value = {this.state[constants.mobile_phone_number_key]} editable={this.state.isEditable}
                           					onChangeText = {(text) => this.updateData(constants.mobile_phone_number_key, text)} placeholder='Téléphone mobile' keyboardType='phone-pad'/>
-                          			<InputLabelRow icon='mail-outline' value = {this.state[constants.email_key]}
+                          			<InputLabelRow icon='mail-outline' value = {this.state[constants.email_key]} editable={this.state.isEditable}
                           					onChangeText = {(text) => this.updateData(constants.email_key, text)} placeholder='E-mail'/>
-        						    <InputLabelRow micon='web' value = {this.state[constants.website_key]}
+        						    <InputLabelRow micon='web' value = {this.state[constants.website_key]} editable={this.state.isEditable}
                           					onChangeText = {(text) => this.updateData(constants.website_key, text)} placeholder='Site web' keyboardType='url' />
-                          			<InputLabelRow icon='edit-location' value = {this.state[constants.country_key]}
+                          			<InputLabelRow icon='edit-location' value = {this.state[constants.country_key]} editable={this.state.isEditable}
                           					onChangeText = {(text) => this.updateData(constants.country_key, text)} placeholder='Pays'/>
-                          			<InputLabelRow icon={null} value = {this.state[constants.city_key]}
+                          			<InputLabelRow icon={null} value = {this.state[constants.city_key]} editable={this.state.isEditable}
                           					onChangeText = {(text) => this.updateData(constants.city_key, text)} placeholder='Ville'/>
-                          			<InputLabelRow icon={null} value = {this.state[constants.street_key]}
+                          			<InputLabelRow icon={null} value = {this.state[constants.street_key]} editable={this.state.isEditable}
                           					onChangeText = {(text) => this.updateData(constants.street_key, text)} placeholder='Rue'/>
-                          			<InputLabelRow icon={null} value = {this.state[constants.postalcode_key]}
+                          			<InputLabelRow icon={null} value = {this.state[constants.postalcode_key]} editable={this.state.isEditable}
                           					onChangeText = {(text) => this.updateData(constants.postalcode_key, text)} placeholder='Code Postal' keyboardType='numeric'/>
-        						    <InputLabelRow icon='description' multiline={true} value = {this.state[constants.description_key]}
+        						    <InputLabelRow icon='description' multiline={true} value = {this.state[constants.description_key]} editable={this.state.isEditable}
                           					onChangeText = {(text) => this.updateData(constants.description_key, text)} placeholder='Description'/>
         					   </ScrollView>
                   	}
@@ -296,7 +338,7 @@ export class ProspectEditScreen extends Component {
                  					  	title= "Delete"
                   				  		color="red"
                   				  		accessibilityLabel="Delete the current prospect"
-                            			disabled={this.state.isPushing}
+                            			disabled={this.state.isPushing || !this.state.isEditable}
                 		    		/>
         				    </View>
         		}
@@ -332,6 +374,7 @@ var InputLabelRow = React.createClass({
           		</View>
 				<TextInput 
               		multiline={this.props.multiline}
+                  editable={this.props.editable}
               		style={{flex: 1, height: this.props.multiline ? 100 : 50}}
               		value = {this.props.value}
               		onChangeText = {this.props.onChangeText}
