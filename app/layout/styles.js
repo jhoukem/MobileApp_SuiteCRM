@@ -19,11 +19,9 @@ export const styles = StyleSheet.create({
 
 	fontNavBar: {
 	  color: 'white',
-	  fontSize: 15,
-	  flexDirection: 'column',
-	  justifyContent: 'center',
-	  alignItems: 'center',
-	  backgroundColor: "#1F94B7",
+	  fontSize: 20,
+	  fontWeight: 'bold',
+	  backgroundColor: "rgba(0,0,0,0)",
   	},
 
 	fontBasicDefault: {

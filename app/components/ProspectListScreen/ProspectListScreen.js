@@ -201,7 +201,7 @@ export class ProspectListScreen extends Component {
 			                    rightElement={<IconToggle name="cloud-download" color="white" onPress={this.reload} disabled={this.state.isFetching}/>}
 			                    centerElement="Liste des prospects"
 			                    searchable={{ autoFocus: true,
-			                                  placeholder: 'Search',
+			                                  placeholder: 'Rechercher dans la liste',
 			                                  onSearchPressed: () => this.setSearching(true),
 			                                  onSearchClosed: () => this.setSearching(false),
 			                                  onChangeText: (text) => this.handleSearch(text),

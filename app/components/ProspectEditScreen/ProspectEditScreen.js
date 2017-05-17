@@ -156,8 +156,10 @@ export class ProspectEditScreen extends Component {
       if(this.checkInputFields()){
           this.pushToServer("Le prospect à bien été enregistré dans votre CRM",
           "Le prospect n'a pas pu être enregistré dans votre CRM");
+          return true;
       } 
     }
+    return false;
   }
 
   handleDelete(){
@@ -233,6 +235,8 @@ export class ProspectEditScreen extends Component {
 
   componentWillMount(){
       this.setStateToItem();
+      // If it is a prospect creation, we want the field to be editable.
+      this.state.isEditable = !this.props.navigation.state.params.item;
   }
 
   updateData(key, value){
@@ -256,8 +260,8 @@ export class ProspectEditScreen extends Component {
               Alert.alert('Info', 'Sauvegarder les changements ?',
                   [ 
                       {text: 'Annuler', },
-                      {text: 'Oui', onPress: () => {this.handleSave(); this.setState({isEditable: false})} },
-                      {text: 'Non', onPress: () => {this.setStateToItem(); this.setState({isEditable: false})} },
+                      {text: 'Oui', onPress: () => { if(this.handleSave()){this.setState({isEditable: false})}} },
+                      {text: 'Non', onPress: () => {this.setStateToItem(); this.setState({isEditable: false, hasModifications: false})} },
                   ],
                   {cancelable: false},
                 )
@@ -279,11 +283,20 @@ export class ProspectEditScreen extends Component {
                     rightElement={
                       <View style={{flexDirection: 'row'}}>
                           <IconToggle name="mode-edit" color={this.state.isEditable ? "grey" : "white"} onPress={this.handleEdit} 
-                          disabled={!this.props.navigation.state.params.item || this.state.isPushing}/>
-                          <IconToggle name="save" color="white" onPress={this.handleSave} disabled={this.state.isPushing || !this.state.isEditable}/>
+                            disabled={!this.props.navigation.state.params.item || this.state.isPushing}
+                          />
+                          <IconToggle name="save" color="white" onPress={this.handleSave}
+                            disabled={this.state.isPushing ? true : this.props.navigation.state.params.item ? !this.state.isEditable : false }
+                          />
                       </View>
                     }
-                    centerElement={this.props.navigation.state.params.item ? this.state.isEditable ? "Édition du prospect" : "Consultation du prospect" : "Création d'un prospect"}
+                    centerElement={
+                      <View style={{alignItems: 'center'}}>
+                        <Text style={defaultStyles.fontNavBar}>
+                            {this.props.navigation.state.params.item ? this.state.isEditable ? "Édition" : "Consultation" : "Création"}
+                        </Text>
+                      </View>
+                    }
                 />
 
         			<View style={styles.headerWrapper}>
