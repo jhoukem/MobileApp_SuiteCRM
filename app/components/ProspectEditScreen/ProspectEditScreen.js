@@ -224,7 +224,8 @@ export class ProspectEditScreen extends Component {
                   if(DEBUG){
                       console.log("Key retireved: "+ key + "   value =  "+ item[key].value);
                   }
-                  this.setState({[key]: item[key].value});
+                  // We don't use setState() here because it cause to re-render and it slow the process.
+                  this.state[key] = item[key].value;
               }
           }
       }
@@ -242,7 +243,7 @@ export class ProspectEditScreen extends Component {
   handleEdit(){
 
         if(!this.state.isEditable){
-            Alert.alert('Info', 'Voulez vous activer le mode édition ?',
+            Alert.alert('Info', 'Voulez-vous activer le mode édition ?',
                   [ 
                       {text: 'Non', },
                       {text: 'Oui', onPress: () => this.setState({isEditable: true}) },
@@ -335,9 +336,9 @@ export class ProspectEditScreen extends Component {
         				    <View style={styles.buttonWrapper}>
         						    <Button
                   				  		onPress={() => this.handleDelete()}
-                 					  	title= "Delete"
+                 					  	title= "Supprimer"
                   				  		color="red"
-                  				  		accessibilityLabel="Delete the current prospect"
+                  				  		accessibilityLabel="Supprimer le prospect"
                             			disabled={this.state.isPushing || !this.state.isEditable}
                 		    		/>
         				    </View>

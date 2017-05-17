@@ -92,7 +92,7 @@ export class LoginScreen extends Component {
     }
 
     var onFailure = function(error){
-        this.setState({isFetching: false, status: "Server unreachable", session: null});
+        this.setState({isFetching: false, status: "Server injoignable", session: null});
     }
 
     restCall("login", credential2, this.state.ip, onSuccess.bind(this), onFailure.bind(this));
@@ -146,13 +146,13 @@ export class LoginScreen extends Component {
                 <View style={styles.inputWrapper}>
                 <ScrollView>
                     {/* Server field*/}
-                    <InputLabelRow icon='server-network' value={this.state.ip} placeholder='IP server' isSecure={false}
+                    <InputLabelRow icon='server-network' value={this.state.ip} placeholder="IP du serveur" isSecure={false}
                     onChangeText={(text) => this.setState({ip: text})} keyboardType='numeric'/>
                     {/* Login field*/}
-                    <InputLabelRow icon='account-outline' value={this.state.login} placeholder='Username' isSecure={false}
+                    <InputLabelRow icon='account-outline' value={this.state.login} placeholder="Nom d'utilisateur" isSecure={false}
                     onChangeText={(text) => this.setState({login: text})} />
                     {/* Password field*/}
-                    <InputLabelRow icon='lock-outline' value={this.state.password} placeholder='Password' isSecure={true}
+                    <InputLabelRow icon='lock-outline' value={this.state.password} placeholder="Mot de passe" isSecure={true}
                     onChangeText={(text) => this.setState({password: text})} onSubmitEditing={() =>this.connect()}/>
                     <Checkbox  style={{height:40}}value="ok" checked={this.state.isChecked} onCheck={this.onCheckboxCheck.bind(this)} label="Retenir le login et l'adresse du serveur" />
                 </ScrollView>
@@ -166,7 +166,7 @@ export class LoginScreen extends Component {
                 <View style={styles.buttonWrapper}>
                     <Button
                       onPress={() => this.connect()}
-                      title="Connection"
+                      title="Connexion"
                       color="#1F94B7"
                       disabled={this.state.isFetching}
                       accessibilityLabel="Connect to the CRM server"
