@@ -52,10 +52,3 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 
-#Other
-
-.babelrc
-.buckconfig
-.flowconfig
-.watchmanconfig
-__tests__/
