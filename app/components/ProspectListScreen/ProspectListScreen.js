@@ -50,7 +50,6 @@ export class ProspectListScreen extends Component {
           item: item,
           callback: this.updateProspectList.bind(this),
     };
-
     this.props.navigation.navigate(route, params);
   }
 
@@ -81,11 +80,11 @@ export class ProspectListScreen extends Component {
     }
 
      // The prospect has been deleted. It is removed from the list.
-     if(entry_list.deleted.value === 1 && itemIndex !== -1){
-       this.state.prospectList.splice(itemIndex, 1);
-     }
+    if(entry_list.deleted.value === 1 && itemIndex !== -1){
+        this.state.prospectList.splice(itemIndex, 1);
+    }
      // The prospect has been updated.
-     else {
+    else {
          if(DEBUG){
              console.log("updated item: ");
              console.log(item);
@@ -100,11 +99,15 @@ export class ProspectListScreen extends Component {
                  }
              }
          }
-     }
-     if(DEBUG){
+    }
+    if(DEBUG){
         console.log("List length = "+this.state.prospectList.length);
-     }
+    }
 
+    // If we are in search mode we need to redo the search.
+    if(this.state.isSearching){
+        this.handleSearch(this.toolbar.state.searchValue);
+    }
     // Resort the list in case the name has changed. 
     this.state.prospectList.sort(this.alphabeticalSort);
     // Usefull to re-render the flatList because it is a PureComponent.
@@ -176,8 +179,11 @@ export class ProspectListScreen extends Component {
 
     for(idx in this.state.prospectList){
         var last_name = this.state.prospectList[idx].name_value_list[constants.last_name_key].value;
-        var first_name = this.state.prospectList[idx].name_value_list[constants.first_name_key].value;
-        if(last_name.contains(pattern) || first_name.contains(pattern)){
+        var first_name;
+        if(this.state.prospectList[idx].name_value_list[constants.first_name_key]){
+          first_name = this.state.prospectList[idx].name_value_list[constants.first_name_key].value;
+        }
+        if(last_name.contains(pattern) || (first_name ? first_name.contains(pattern) : false)){
           results.push(this.state.prospectList[idx]);
         }
     }
