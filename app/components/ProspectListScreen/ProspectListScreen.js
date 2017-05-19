@@ -134,7 +134,12 @@ export class ProspectListScreen extends Component {
   }
 
   componentDidMount(){
-    this.fetchProspectList();
+    // Usefull for jest test as we don't want to fetch data in Jest.
+    if(this.props.jest){
+        this.setState({prospectList: this.props.jest.list.entry_list});
+    } else {
+        this.fetchProspectList();
+      }
   }
 
   fetchProspectList(){
@@ -183,7 +188,7 @@ export class ProspectListScreen extends Component {
         if(this.state.prospectList[idx].name_value_list[constants.first_name_key]){
           first_name = this.state.prospectList[idx].name_value_list[constants.first_name_key].value;
         }
-        if(last_name.contains(pattern) || (first_name ? first_name.contains(pattern) : false)){
+        if(last_name.includes(pattern) || (first_name ? first_name.includes(pattern) : false)){
           results.push(this.state.prospectList[idx]);
         }
     }
