@@ -71,8 +71,7 @@ export class LoginScreen extends Component {
 
   authentify(ip, login, password){
 
-    //var credential = {"user_auth":{"user_name":login,"password":password}};
-    var credential2 = '{"user_auth":{"user_name":"'+ login +'","password":"'+ password +'"}}';
+    var credential = '{"user_auth":{"user_name":"'+ login +'","password":"'+ password +'"}}';
 
     
     this.setState({isFetching: true});
@@ -87,7 +86,7 @@ export class LoginScreen extends Component {
       } 
       // Wrong credential.
       else {
-        this.setState({status: 'Bad credential', session: null});
+        this.setState({status: 'Mauvais identifiants', session: null});
       }
     }
 
@@ -95,7 +94,7 @@ export class LoginScreen extends Component {
         this.setState({isFetching: false, status: "Server injoignable", session: null});
     }
 
-    restCall("login", credential2, this.state.ip, onSuccess.bind(this), onFailure.bind(this));
+    restCall("login", credential, this.state.ip, onSuccess.bind(this), onFailure.bind(this));
   }
 
   onCheckboxCheck(checked, value){
@@ -169,7 +168,7 @@ export class LoginScreen extends Component {
                       title="Connexion"
                       color="#1F94B7"
                       disabled={this.state.isFetching}
-                      accessibilityLabel="Connect to the CRM server"
+                      accessibilityLabel="Connexion au serveur CRM"
                     />
                 </View>
             </View>
