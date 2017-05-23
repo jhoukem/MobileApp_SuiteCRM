@@ -91,7 +91,7 @@ export class LoginScreen extends Component {
     }
 
     var onFailure = function(error){
-        this.setState({isFetching: false, status: "Server injoignable", session: null});
+        this.setState({isFetching: false, status: "Serveur injoignable", session: null});
     }
 
     restCall("login", credential, this.state.ip, onSuccess.bind(this), onFailure.bind(this));
