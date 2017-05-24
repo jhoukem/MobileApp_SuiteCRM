@@ -82,3 +82,12 @@ describe('ProspectEditScreen', () => {
     	expect(instance.state.isEditable).toBeFalsy();
  	});
 });
+
+describe('Snapshot testing', () => {
+    it('renders correctly', () => {
+        const tree = renderer.create(
+            <ProspectEditScreen navigation={arg}/>
+        ).toJSON();
+    expect(tree).toMatchSnapshot();
+    });
+});

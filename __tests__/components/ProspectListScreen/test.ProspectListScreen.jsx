@@ -104,8 +104,27 @@ describe('ProspectListScreen', () => {
         const wrapper = shallow(
             <ProspectListScreen jest={{list: prospectListMock}} navigation={arg}/>
         );
-        const wrapper2 = wrapper.setState({isFecthing: true});
-        //console.log(wrapper2);
-        expect(wrapper2.contains(ActivityIndicator)).toBe(true);
+
+        const wrapperTmp = wrapper.setState({isFecthing: true});
+        
+        wrapperTmp.instance().render();
+        const wrapperToTest = wrapperTmp.update();
+       
+        console.log("HERE!!!!");
+        for(idx in wrapperToTest.nodes){
+            console.log(wrapperToTest.nodes[idx].type);
+        }
+
+       
+        expect(wrapperTmp.contains(ActivityIndicator)).toBe(true);
+    });
+});
+
+describe('Snapshot testing', () => {
+    it('renders correctly', () => {
+        const tree = renderer.create(
+            <ProspectListScreen jest={{list: prospectListMock}} navigation={arg}/>
+        ).toJSON();
+    expect(tree).toMatchSnapshot();
     });
 });

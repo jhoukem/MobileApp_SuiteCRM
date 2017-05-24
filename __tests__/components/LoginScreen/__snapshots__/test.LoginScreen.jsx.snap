@@ -1,0 +1,427 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot testing renders correctly 1`] = `
+<View
+  style={
+    Object {
+      "backgroundColor": "white",
+      "flex": 1,
+    }
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 0.5,
+      }
+    }
+  >
+    <Image
+      resizeMode="contain"
+      source={1}
+      style={
+        Object {
+          "flex": 1,
+          "height": null,
+          "width": null,
+        }
+      }
+    />
+  </View>
+  <View
+    style={
+      Object {
+        "flex": 0.6,
+        "padding": 20,
+      }
+    }
+  >
+    <RCTScrollView>
+      <View>
+        <View
+          style={
+            Object {
+              "borderBottomColor": "#CCCC",
+              "flex": 1,
+              "flexDirection": "row",
+            }
+          }
+        >
+          <View
+            style={
+              Object {
+                "alignItems": "center",
+                "justifyContent": "center",
+                "paddingHorizontal": 5,
+              }
+            }
+          >
+            <Text
+              accessible={true}
+              allowFontScaling={false}
+              ellipsizeMode="tail"
+              style={
+                Array [
+                  Object {
+                    "color": undefined,
+                    "fontSize": 30,
+                  },
+                  undefined,
+                  Object {
+                    "fontFamily": "Material Design Icons",
+                    "fontStyle": "normal",
+                    "fontWeight": "normal",
+                  },
+                ]
+              }
+            >
+              
+            </Text>
+          </View>
+          <TextInput
+            keyboardType="numeric"
+            onChangeText={[Function]}
+            onSubmitEditing={undefined}
+            placeholder="IP du serveur"
+            placeholderTextColor="#CCC"
+            secureTextEntry={false}
+            style={
+              Object {
+                "flex": 1,
+                "paddingHorizontal": 10,
+              }
+            }
+            value={null}
+          />
+        </View>
+        <View
+          style={
+            Object {
+              "borderBottomColor": "#CCCC",
+              "flex": 1,
+              "flexDirection": "row",
+            }
+          }
+        >
+          <View
+            style={
+              Object {
+                "alignItems": "center",
+                "justifyContent": "center",
+                "paddingHorizontal": 5,
+              }
+            }
+          >
+            <Text
+              accessible={true}
+              allowFontScaling={false}
+              ellipsizeMode="tail"
+              style={
+                Array [
+                  Object {
+                    "color": undefined,
+                    "fontSize": 30,
+                  },
+                  undefined,
+                  Object {
+                    "fontFamily": "Material Design Icons",
+                    "fontStyle": "normal",
+                    "fontWeight": "normal",
+                  },
+                ]
+              }
+            >
+              
+            </Text>
+          </View>
+          <TextInput
+            keyboardType="default"
+            onChangeText={[Function]}
+            onSubmitEditing={undefined}
+            placeholder="Nom d'utilisateur"
+            placeholderTextColor="#CCC"
+            secureTextEntry={false}
+            style={
+              Object {
+                "flex": 1,
+                "paddingHorizontal": 10,
+              }
+            }
+            value={null}
+          />
+        </View>
+        <View
+          style={
+            Object {
+              "borderBottomColor": "#CCCC",
+              "flex": 1,
+              "flexDirection": "row",
+            }
+          }
+        >
+          <View
+            style={
+              Object {
+                "alignItems": "center",
+                "justifyContent": "center",
+                "paddingHorizontal": 5,
+              }
+            }
+          >
+            <Text
+              accessible={true}
+              allowFontScaling={false}
+              ellipsizeMode="tail"
+              style={
+                Array [
+                  Object {
+                    "color": undefined,
+                    "fontSize": 30,
+                  },
+                  undefined,
+                  Object {
+                    "fontFamily": "Material Design Icons",
+                    "fontStyle": "normal",
+                    "fontWeight": "normal",
+                  },
+                ]
+              }
+            >
+              
+            </Text>
+          </View>
+          <TextInput
+            keyboardType="default"
+            onChangeText={[Function]}
+            onSubmitEditing={[Function]}
+            placeholder="Mot de passe"
+            placeholderTextColor="#CCC"
+            secureTextEntry={true}
+            style={
+              Object {
+                "flex": 1,
+                "paddingHorizontal": 10,
+              }
+            }
+            value={null}
+          />
+        </View>
+        <View
+          accessibilityComponentType={undefined}
+          accessibilityLabel={undefined}
+          accessibilityTraits={undefined}
+          accessible={true}
+          hitSlop={undefined}
+          onLayout={undefined}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "flex": 1,
+                "flexDirection": "row",
+              },
+              undefined,
+              undefined,
+            ]
+          }
+          testID={undefined}
+        >
+          <View
+            accessibilityComponentType={undefined}
+            accessibilityLabel={undefined}
+            accessibilityTraits={undefined}
+            accessible={true}
+            hitSlop={undefined}
+            onLayout={undefined}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={undefined}
+            testID={undefined}
+          >
+            <View
+              style={
+                Object {
+                  "backgroundColor": "rgb(0, 0, 0)",
+                  "borderRadius": 21.6,
+                  "height": 43.2,
+                  "left": 2.3999999999999986,
+                  "opacity": 0.16,
+                  "position": "absolute",
+                  "top": 2.3999999999999986,
+                  "transform": Array [
+                    Object {
+                      "scale": 0.01,
+                    },
+                  ],
+                  "width": 43.2,
+                  "zIndex": 1,
+                }
+              }
+            />
+            <View
+              style={
+                Array [
+                  Object {
+                    "alignItems": "center",
+                    "height": 48,
+                    "justifyContent": "center",
+                    "width": 48,
+                  },
+                  Object {
+                    "height": 48,
+                    "width": 48,
+                  },
+                  undefined,
+                ]
+              }
+            >
+              <Text
+                accessible={true}
+                allowFontScaling={false}
+                ellipsizeMode="tail"
+                style={
+                  Array [
+                    Object {
+                      "color": "#000000",
+                      "fontSize": 24,
+                    },
+                    undefined,
+                    Object {
+                      "fontFamily": "Material Icons",
+                      "fontStyle": "normal",
+                      "fontWeight": "normal",
+                    },
+                  ]
+                }
+              >
+                
+              </Text>
+            </View>
+          </View>
+          <Text
+            accessible={true}
+            allowFontScaling={true}
+            ellipsizeMode="tail"
+            style={
+              Array [
+                Object {
+                  "color": "#000000",
+                  "flex": 1,
+                  "marginLeft": 20,
+                },
+                undefined,
+                undefined,
+                false,
+              ]
+            }
+          >
+            Retenir le login et l'adresse du serveur
+          </Text>
+        </View>
+      </View>
+    </RCTScrollView>
+  </View>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "flex": 0.1,
+        "flexDirection": "column",
+        "justifyContent": "center",
+        "padding": 10,
+      }
+    }
+  >
+    <Text
+      accessible={true}
+      allowFontScaling={true}
+      ellipsizeMode="tail"
+      style={
+        Object {
+          "backgroundColor": "white",
+          "color": "red",
+          "fontSize": 15,
+        }
+      }
+    >
+       
+      
+       
+    </Text>
+  </View>
+  <View
+    style={
+      Object {
+        "flex": 0.1,
+        "padding": 20,
+      }
+    }
+  >
+    <View
+      accessibilityComponentType="button"
+      accessibilityLabel="Connexion au serveur CRM"
+      accessibilityTraits={
+        Array [
+          "button",
+        ]
+      }
+      accessible={true}
+      hitSlop={undefined}
+      isTVSelectable={true}
+      onLayout={undefined}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "opacity": 1,
+        }
+      }
+      testID={undefined}
+      tvParallaxProperties={undefined}
+    >
+      <View
+        style={
+          Array [
+            Object {},
+          ]
+        }
+      >
+        <Text
+          accessible={true}
+          allowFontScaling={true}
+          ellipsizeMode="tail"
+          style={
+            Array [
+              Object {
+                "color": "#0C42FD",
+                "fontSize": 18,
+                "padding": 8,
+                "textAlign": "center",
+              },
+              Object {
+                "color": "#1F94B7",
+              },
+            ]
+          }
+        >
+          Connexion
+        </Text>
+      </View>
+    </View>
+  </View>
+</View>
+`;

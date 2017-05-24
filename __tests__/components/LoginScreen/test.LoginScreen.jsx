@@ -13,3 +13,12 @@ describe('LoginScreen', () => {
        	);
     });
 });
+
+describe('Snapshot testing', () => {
+    it('renders correctly', () => {
+        const tree = renderer.create(
+            	<LoginScreen />
+        ).toJSON();
+    expect(tree).toMatchSnapshot();
+    });
+});
