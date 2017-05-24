@@ -34,6 +34,7 @@ export class ProspectEditScreen extends Component {
         saveSucceed: undefined,
         isEditable: false,
         hasModifications: false,
+        [constants.id_key]: null,
         [constants.last_name_key]: null,
         [constants.first_name_key]: null,
         [constants.title_key]: null,
@@ -48,8 +49,8 @@ export class ProspectEditScreen extends Component {
         [constants.city_key]: null,
         [constants.postalcode_key]: null,
         [constants.description_key]: null,
-        deleted: 0,
-        };
+        [constants.deleted_key]: null,
+    };
     this.handleCancel = this.handleCancel.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
@@ -63,16 +64,10 @@ export class ProspectEditScreen extends Component {
     var ip = this.props.navigation.state.params.ip;
     var session = this.props.navigation.state.params.session;
 
-    var itemID = null;
     var updateListScreenFlatList = this.props.navigation.state.params.callback;
 
-    if(this.props.navigation.state.params.item){
-        itemID = this.props.navigation.state.params.item.name_value_list.id.value;
-    }
-
     var nameValueList = [
-                            {name:"name", value: ''},
-                            {name:"id", value: (itemID) ? itemID : ''},
+                            {name:constants.id_key, value: (this.state[constants.id_key]) ? this.state[constants.id_key] : ''},
                             {name:constants.last_name_key, value: this.state[constants.last_name_key]},
                             {name:constants.first_name_key, value: this.state[constants.first_name_key]},
                             {name:constants.title_key, value: this.state[constants.title_key]},
@@ -87,7 +82,7 @@ export class ProspectEditScreen extends Component {
                             {name:constants.postalcode_key, value: this.state[constants.postalcode_key]},
                             {name:constants.description_key, value: this.state[constants.description_key]},
                             {name:constants.email_key, value: this.state[constants.email_key]},
-                            {name:"deleted", value: this.state.deleted},
+                            {name:constants.deleted_key, value: this.state[constants.deleted_key]},
                         ]
     var updatedData = {session: session,
                         module_name:"Leads",
@@ -150,7 +145,7 @@ export class ProspectEditScreen extends Component {
   handleSave(){
    
    if(!this.state.isPushing){
-      this.state.deleted = 0;
+      this.state[constants.deleted_key] = 0;
 
       // Check if the input field values are corrects.
       if(this.checkInputFields()){
@@ -166,7 +161,7 @@ export class ProspectEditScreen extends Component {
 
   var deleteProspect = function(){
       if(!this.state.isPushing){
-          this.state.deleted = 1;
+          this.state[constants.deleted_key] = 1;
           this.pushToServer("Le prospect à bien été supprimé de votre CRM",
             "Le prospect n'a pas pu être supprimé de votre CRM");
       }
@@ -301,8 +296,8 @@ export class ProspectEditScreen extends Component {
 
         			<View style={styles.headerWrapper}>
                     	{/*Only display the prospect ID field if it exists*/}
-                    	{this.props.navigation.state.params.item &&
-        						<Text>Prospect ID: {this.props.navigation.state.params.item.name_value_list.id.value} </Text>
+                    	{this.state[constants.id_key] &&
+        						<Text>Prospect ID: {this.state[constants.id_key]} </Text>
         				}
                 	</View>
 

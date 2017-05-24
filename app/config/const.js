@@ -5,6 +5,7 @@ export const editScreen = "ProspectEditScreen";
 /**
   These keys must match the returned key from SuiteCRM REST API.
 **/
+export const id_key = "id";
 export const last_name_key = "last_name";
 export const first_name_key = "first_name";
 export const title_key = "title";
@@ -19,3 +20,4 @@ export const street_key = "primary_address_street";
 export const city_key = "primary_address_city";
 export const postalcode_key = "primary_address_postalcode";
 export const description_key = "description";
+export const deleted_key = "deleted";

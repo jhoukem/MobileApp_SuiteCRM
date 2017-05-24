@@ -134,7 +134,7 @@ export class ProspectListScreen extends Component {
   }
 
   componentDidMount(){
-    // Usefull for jest test as we don't want to fetch data in Jest.
+    // Usefull for jest test as we don't want to fetch data in Jest. TODO: find a way to mock the fetch function.
     if(this.props.jest){
         this.setState({prospectList: this.props.jest.list.entry_list});
     } else {
