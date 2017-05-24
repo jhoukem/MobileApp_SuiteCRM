@@ -17,6 +17,7 @@ var arg = {
 
 var prospectListMock = require('./prospectListMock.json');
 var prospectUpdateMock = require('./prospectUpdateMock.json');
+var newProspectMock = require('./newProspectMock.json');
 
 var findProspectById = (prospect, idToMatch) => {
     return prospect.name_value_list.id.value == idToMatch;
@@ -59,11 +60,28 @@ describe('ProspectListScreen', () => {
         var updatedProspectIndex = instance.state.prospectList.findIndex((item) => findProspectById(item, prospectUpdateMock.id.value)); 
         var updatedProspect = instance.state.prospectList[updatedProspectIndex].name_value_list;
          
-
         // Ensure that the prospectList is updated with the corrects values.
-        expect(updatedProspect.first_name.value).toEqual(prospectUpdateMock.first_name.value);
-        expect(updatedProspect.last_name.value).toEqual(prospectUpdateMock.last_name.value);
-        expect(updatedProspect.description.value).toEqual(prospectUpdateMock.description.value);
+        for(key in prospectUpdateMock){
+            expect(prospectUpdateMock[key]).toEqual(updatedProspect[key])
+        }
+    });
+    it('add a prospect to the list', () => {
+        const tree = renderer.create(
+            <ProspectListScreen jest={{list: prospectListMock}} navigation={arg}/>
+        );
+        const instance = tree.getInstance();
+        var listSize = instance.state.prospectList.length;
+        instance.updateProspectList(newProspectMock);
+        // Ensure that the prospectList size has increased by one.
+        expect(instance.state.prospectList.length).toBe(listSize + 1);
+
+        var updatedProspectIndex = instance.state.prospectList.findIndex((item) => findProspectById(item, newProspectMock.id.value)); 
+        var updatedProspect = instance.state.prospectList[updatedProspectIndex].name_value_list;
+         
+        // Ensure that the prospectList is updated with the corrects values.
+        for(key in newProspectMock){
+            expect(newProspectMock[key]).toEqual(updatedProspect[key])
+        }
     });
     it('delete a prospect from the list', () => {
         const tree = renderer.create(
