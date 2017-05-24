@@ -19,7 +19,5 @@ Of course in order to be used, this application need to connect to a [SuiteCRM s
 
 ## Demo
 
-<img src="https://cloud.githubusercontent.com/assets/9862039/26375281/4a3d9c46-3fd6-11e7-89f3-421ddbe925e9.png" alt="LoginScreen" height="512"/>
-<img src="https://cloud.githubusercontent.com/assets/9862039/26359231/e267f428-3fa2-11e7-9fce-6778ea3634db.png" alt="ListScreen" height="512"/>
-<img src="https://cloud.githubusercontent.com/assets/9862039/26359232/e27799f0-3fa2-11e7-8502-2afc41d5033d.png" alt="ListScreenOnSearch" height="512"/>
-<img src="https://cloud.githubusercontent.com/assets/9862039/26375297/5d6a3644-3fd6-11e7-981b-a81d2e2c9d79.png" alt="EditScreen" height="512"/>
+<img src="https://cloud.githubusercontent.com/assets/9862039/26405076/27c98f3a-4062-11e7-959a-0c6f78b57d64.png" alt="Demo 1" height="512"/>
+<img src="https://cloud.githubusercontent.com/assets/9862039/26405082/2b2a1dde-4062-11e7-8be7-89ea7c28cc96.png" alt="Demo 2" height="512"/>
