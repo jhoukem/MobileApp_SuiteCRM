@@ -11,6 +11,7 @@ var DEBUG = false;
 
 export class ProspectListScreen extends Component {
 
+  // Hide the navigation bar since we use a Toolbar on this component.
   static navigationOptions = {
         header: null,
   };
@@ -24,18 +25,25 @@ export class ProspectListScreen extends Component {
     this.setSearching = this.setSearching.bind(this);
   }
 
-  /*item is used to know if the delete button should be present on the entry.*/
-  navigate(route, item=null){
+  /**
+   * Navigate to the given string.
+   * item if set it is the prospect to consult/edit. Otherwise it mean it is a prospect creation (which it is by default).
+   **/
+  navigate(screen, item=null){
 
     var params = {
           session: this.props.navigation.state.params.session,
           ip: this.props.navigation.state.params.ip,
           item: item,
+          // This is the function that will be called on EditScreen before going back to this screen.
           callback: this.updateProspectList.bind(this),
     };
-    this.props.navigation.navigate(route, params);
+    this.props.navigation.navigate(screen, params);
   }
 
+  /**
+   * Use the info returned by the EditScreen to update the prospectList without refetching the database.
+   */
   updateProspectList(entry_list){
     
     // Return the index in the list of the item to be updated.
@@ -56,42 +64,30 @@ export class ProspectListScreen extends Component {
     else {
         item = this.state.prospectList[itemIndex];
     }
-    
-    // We update the name_value_list.
-    for(key in entry_list){
-      item.name_value_list[key] = entry_list[key];
-    }
 
-     // The prospect has been deleted. It is removed from the list.
+    // If the prospect has been deleted. It is removed from the list.
     if(entry_list.deleted.value === 1 && itemIndex !== -1){
         this.state.prospectList.splice(itemIndex, 1);
-    }
-     // The prospect has been updated.
+    } 
+    // Else we update the prospect data.
     else {
-         if(DEBUG){
-             console.log("updated item: ");
-             console.log(item);
-             // If it wasn't deleted then we display its value in the list.
-             if(entry_list.deleted.value !== 1){
-                 if(itemIndex !== -1){
-                     console.log("this.prospectList["+itemIndex+"].name_value_list.name.value ");
-                     console.log(this.state.prospectList[itemIndex].name_value_list.name.value);
-                 } else {
-                     console.log("this.prospectList["+(this.state.prospectList.length - 1)+"].name_value_list.name.value ");
-                     console.log(this.state.prospectList[this.state.prospectList.length - 1].name_value_list.name.value);
-                 }
-             }
-         }
+      for(key in entry_list){
+        if(DEBUG){
+          console.log("item.name_value_list["+key+"]="+item.name_value_list[key]);
+        }
+        item.name_value_list[key] = entry_list[key];
+      }
     }
+
     if(DEBUG){
         console.log("List length = "+this.state.prospectList.length);
     }
 
-    // If we are in search mode we need to redo the search.
+    // If we are in search mode we need to redo the search since an item has changed.
     if(this.state.isSearching){
         this.handleSearch(this.toolbar.state.searchValue);
     }
-    // Resort the list in case the name has changed. 
+    // Resort the list in case a name has changed. 
     this.state.prospectList.sort(this.alphabeticalSort);
     // Usefull to re-render the flatList because it is a PureComponent.
     this.setState({flatListNeedUpdate: (-this.state.flatListNeedUpdate)});
@@ -133,7 +129,7 @@ export class ProspectListScreen extends Component {
     if(DEBUG){
       console.log("(ListScreen) Session id received = " + session);
     }
-
+    // Api request field
     var param = '{"session":"'+ session +'","module_name":"Leads","query":"","order_by":"","offset":"0",'+
     '"select_fields":["id","last_name","first_name","title","service","department","account_name","email1",'+
     '"phone_work","phone_mobile","website","primary_address_street","primary_address_city","primary_address_postalcode",'+
@@ -171,6 +167,7 @@ export class ProspectListScreen extends Component {
         if(this.state.prospectList[idx].name_value_list[constants.first_name_key]){
           first_name = this.state.prospectList[idx].name_value_list[constants.first_name_key].value;
         }
+        // Add to the searchList items which includes in their last_name/first_name the searchPattern.
         if(last_name.includes(pattern) || (first_name ? first_name.includes(pattern) : false)){
           results.push(this.state.prospectList[idx]);
         }
