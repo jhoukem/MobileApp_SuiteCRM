@@ -369,7 +369,7 @@ exports[`Snapshot testing renders correctly 1`] = `
   >
     <View
       accessibilityComponentType="button"
-      accessibilityLabel="Connexion au serveur CRM"
+      accessibilityLabel={undefined}
       accessibilityTraits={
         Array [
           "button",

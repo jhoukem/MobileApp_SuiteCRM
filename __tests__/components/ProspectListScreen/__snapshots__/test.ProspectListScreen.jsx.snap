@@ -3733,7 +3733,7 @@ exports[`Snapshot testing renders correctly 1`] = `
   >
     <View
       accessibilityComponentType="button"
-      accessibilityLabel="Créer un nouveau prospect"
+      accessibilityLabel={undefined}
       accessibilityTraits={
         Array [
           "button",

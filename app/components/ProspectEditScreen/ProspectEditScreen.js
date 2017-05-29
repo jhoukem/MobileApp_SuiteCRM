@@ -1,25 +1,14 @@
 import React, { Component } from 'react';
 import { Text, ScrollView, View, Button, TextInput, Alert, Image, ActivityIndicator } from 'react-native';
-import { Toolbar, ThemeProvider, Icon, IconToggle } from 'react-native-material-ui';
+import { ThemeProvider, Toolbar, Icon, IconToggle } from 'react-native-material-ui';
 import { default as MIcon } from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { styles as defaultStyles } from '../../layout/styles.js'
 import { styles, images } from './index.js'
 import * as constants from '../../config/const.js'
-import { restCall } from '../../lib/rest_api.js'
+import { restCall } from '../../core/rest_api.js'
 
 var DEBUG = false;
-
-const uiTheme = {
-    palette: {
-        primaryColor: '#1F94B7',
-    },
-    toolbar: {
-        container: {
-            height: 50,
-        },
-    },
-  };
 
 export class ProspectEditScreen extends Component {
 
@@ -268,9 +257,8 @@ export class ProspectEditScreen extends Component {
 
   render() {
     	return (
-        <ThemeProvider uiTheme={uiTheme}>
+        <ThemeProvider uiTheme={constants.uiTheme}>
         		<View style={styles.container}>
-        					
                 <Toolbar
                     ref={toolbarComponent => this.toolbar = toolbarComponent}
                     key="toolbar"
@@ -346,14 +334,13 @@ export class ProspectEditScreen extends Component {
                   				  		onPress={() => this.handleDelete()}
                  					  	title= "Supprimer"
                   				  		color="red"
-                  				  		accessibilityLabel="Supprimer le prospect"
                             			disabled={this.state.isPushing || !this.state.isEditable}
                 		    		/>
         				    </View>
         		}
         		</View>
         </ThemeProvider>
-    		);
+    	);
   }
 
 }

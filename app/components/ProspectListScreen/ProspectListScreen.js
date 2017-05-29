@@ -1,30 +1,13 @@
 import React, { Component } from 'react';
 import { Text, ScrollView, View, Button, FlatList, TouchableHighlight, ActivityIndicator } from 'react-native';
-import { Toolbar, ThemeProvider, IconToggle, Avatar} from 'react-native-material-ui';
+import { ThemeProvider, Toolbar, IconToggle, Avatar} from 'react-native-material-ui';
 
 import { styles as defaultStyles } from '../../layout/styles.js'
 import { styles, images } from './index.js'
 import * as constants from '../../config/const.js'
-import { restCall } from '../../lib/rest_api.js'
+import { restCall } from '../../core/rest_api.js'
 
 var DEBUG = false;
-var avatarColors = ["#e8d725", "#38579e", "#f9b6bf", "#ef64d8", "#c10f6e",
-"#e57074", "#f9d1c0", "#2c55a3", "#611296", "#f22bcd", "#4a97ad", "#85f702",
-"#f7a5a7", "#e4f7a0", "#81ef93", "#1cddb7", "#ea6267", "#91b7ff", "#91d613",
-"#eac715", "#fcd292", "#a40bc6", "#ed38e4", "#605df7", "#c6008b", "#e0477d",
-"#27dd95", "#d64f02", "#fc7bcf", "#f79283"];
-  const uiTheme = {
-    palette: {
-        primaryColor: '#1F94B7',
-    },
-    toolbar: {
-        container: {
-            height: 50,
-        },
-    },
-  };
-
-
 
 export class ProspectListScreen extends Component {
 
@@ -200,9 +183,8 @@ export class ProspectListScreen extends Component {
   }
 
   render() {
-
     	return (
-        <ThemeProvider uiTheme={uiTheme}>
+        <ThemeProvider uiTheme={constants.uiTheme}>
         		<View style={styles.container}>
                 		<Toolbar
 			                    ref={toolbarComponent => this.toolbar = toolbarComponent}
@@ -218,7 +200,6 @@ export class ProspectListScreen extends Component {
 			                                  onChangeText: (text) => this.handleSearch(text),
 			                                }}
                   		/>
-
         				{/*Header Part*/}
         				<View style={styles.headerWrapper}>
                   		{this.state.error && 
@@ -226,7 +207,6 @@ export class ProspectListScreen extends Component {
       				        	<Text style={defaultStyles.fontBasicNote}>Selectionnez un prospect pour le modifier</Text>
                   		}
         				</View>
-
         				{/*Body Part*/}
         				<View style={styles.bodyWrapper}>
 
@@ -243,7 +223,7 @@ export class ProspectListScreen extends Component {
 			                                        <View style={{flexDirection: 'row', backgroundColor:(index % 2) ? '#f1f2f4' : '#e2e6e9', alignItems: 'center'}}>
 			                                            <View style={{width: 50, padding: 5}}>
 			                                            		<Avatar
-			                                                		style={{container:{backgroundColor:avatarColors[index%avatarColors.length]}}}
+			                                                		style={{container:{backgroundColor:constants.avatarColors[index%constants.avatarColors.length]}}}
 			                                                		text={item.name_value_list[constants.last_name_key].value.charAt(0).toUpperCase()} 
 			                                                		size={40}
 			                                                	/>
@@ -270,14 +250,13 @@ export class ProspectListScreen extends Component {
         				<View style={styles.buttonWrapper}>
 	        				    <Button
 	                  				onPress={() => this.navigate(constants.editScreen)}
-	                 				title="Créer un nouveau prospect"
-	                  				color="#1F94B7"
-	                  				accessibilityLabel="Créer un nouveau prospect"
-	                        		disabled={this.state.isFetching}
-	                	  		/>
+	                 				  title="Créer un nouveau prospect"
+	                  				color={constants.uiTheme.palette.primaryColor}
+	                        	disabled={this.state.isFetching}
+	                	  />
         				</View>
         		</View>
-        </ThemeProvider>
+      </ThemeProvider>
   		);
   }
 }

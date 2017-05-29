@@ -14,7 +14,6 @@ export const styles = StyleSheet.create({
 	inputWrapper: {
 		flex: 0.6,
     padding: 20,
-    //backgroundColor: 'grey'
   },
 
 	statusWrapper: {

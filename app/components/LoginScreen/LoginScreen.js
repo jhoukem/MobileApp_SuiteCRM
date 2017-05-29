@@ -1,32 +1,21 @@
 import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
-import { Text, TextInput, Image, View, ScrollView, Button, ActivityIndicator, AsyncStorage } from 'react-native';
+import { Text, TextInput, Image, View, ScrollView, Button, ActivityIndicator, AsyncStorage, Keyboard } from 'react-native';
 import { default as Icon  } from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ThemeProvider, Checkbox } from 'react-native-material-ui';
 import { styles as defaultStyles } from '../../layout/styles.js'
 import { styles, images } from './index.js'
 import * as constants from '../../config/const.js'
-import { restCall } from '../../lib/rest_api.js'
+import { restCall } from '../../core/rest_api.js'
 
 
 var DEBUG = false;
 var MD5 = require("crypto-js/md5");
 
-const uiTheme = {
-    palette: {
-        primaryColor: '#1F94B7',
-    },
-    toolbar: {
-        container: {
-            height: 50,
-        },
-    },
-  };
-
 export class LoginScreen extends Component {
 
   static navigationOptions = {
-    title: 'ExelciaCRM Prospect Manager',
+    title: 'Exelcia CRM Prospect Manager',
   };
 
   constructor(props) {
@@ -41,22 +30,23 @@ export class LoginScreen extends Component {
         login: null,
         password: null,
         isChecked: false,
-        };
+        isKeyboardOpen: false,
+    };
   }
 
-  navigate(route){
+  navigate(screen){
 
     var params = {
           session: this.state.session,
           ip: this.state.ip,
     };
-
-    this.props.navigation.navigate(route, params);
+    // Navigate to the given screen.
+    this.props.navigation.navigate(screen, params);
   }
 
   connect(){
 
-    this.storeInfo();
+    this.setInfo(this.state.isChecked);
     this.authentify(this.state.ip, this.state.login, MD5(this.state.password));
     
     if(DEBUG){
@@ -71,13 +61,13 @@ export class LoginScreen extends Component {
 
   authentify(ip, login, password){
 
-    var credential = '{"user_auth":{"user_name":"'+ login +'","password":"'+ password +'"}}';
+    var credential = '{"user_auth":{"user_name":"'+ login +'","password":"'+ password.toString() +'"}}';
 
     
     this.setState({isFetching: true});
     
     var onSuccess = function(responseData){
-
+      // We received a response from the server.
       this.setState({isFetching: false, session: responseData.id});
       // Got a session.
       if(this.state.session){
@@ -91,6 +81,7 @@ export class LoginScreen extends Component {
     }
 
     var onFailure = function(error){
+        // No response from the server or an error.
         this.setState({isFetching: false, status: "Serveur injoignable", session: null});
     }
 
@@ -99,10 +90,14 @@ export class LoginScreen extends Component {
 
   onCheckboxCheck(checked, value){
     this.setState({isChecked: checked})
-    this.storeInfo(checked);
+    this.setInfo(checked);
   }
 
-  async storeInfo(isSaving=true){
+  /**
+   * Store/Delete the login and the server IP.
+   * If isSaving is true then the data are saved otherwise it is removed.
+   **/
+  async setInfo(isSaving){
     try {
 
       if(isSaving){
@@ -117,6 +112,7 @@ export class LoginScreen extends Component {
     }
   }
 
+  // Get the stored values of the server IP and login if there is any.
   async getInfo(key){
     try {
         var value = await AsyncStorage.getItem(key);  
@@ -128,20 +124,37 @@ export class LoginScreen extends Component {
   }
 
   async componentWillMount(){
+      // Auto fill the input field if the user has checked the remind info checkbox.
       var ip = await this.getInfo("ip");
       var login = await this.getInfo("login");
       this.setState({ip: ip ? ip : '', login: login ? login : '', isChecked: (ip || login) ? true : false});
+      // Add keyboard listener.
+      this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
+      this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
+  }
+
+  componentWillUnmount(){
+      this.keyboardDidShowListener.remove();
+      this.keyboardDidHideListener.remove();
+  }
+
+  _keyboardDidShow(){
+    this.setState({isKeyboardOpen: true});
+  }
+  _keyboardDidHide(){
+   this.setState({isKeyboardOpen: false});
   }
 
   render() {
     return (
-        <ThemeProvider uiTheme={uiTheme}>
+      <ThemeProvider uiTheme={constants.uiTheme}>
             <View style={styles.container}>
 
-                <View style={styles.logoWrapper}>
-                    <Image source={images.logoExelcia} style={styles.logo} resizeMode="contain" />
-                </View>
-
+                {!this.state.isKeyboardOpen && // We dont display the logo when the keyboard is open
+                    <View style={styles.logoWrapper}>
+                        <Image source={images.logoExelcia} style={styles.logo} resizeMode="contain" />
+                    </View>
+                }
                 <View style={styles.inputWrapper}>
                 <ScrollView>
                     {/* Server field*/}
@@ -166,13 +179,12 @@ export class LoginScreen extends Component {
                     <Button
                       onPress={() => this.connect()}
                       title="Connexion"
-                      color="#1F94B7"
+                      color={constants.uiTheme.palette.primaryColor}
                       disabled={this.state.isFetching}
-                      accessibilityLabel="Connexion au serveur CRM"
                     />
                 </View>
             </View>
-        </ThemeProvider>
+      </ThemeProvider>
     );
   }
 }
