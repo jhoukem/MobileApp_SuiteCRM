@@ -12,6 +12,7 @@ var DEBUG = false;
 
 export class ProspectEditScreen extends Component {
 
+  // Hide the navigation bar since we use a Toolbar on this component.
   static navigationOptions = {
         header: null,
   };
@@ -52,7 +53,6 @@ export class ProspectEditScreen extends Component {
     }
     var ip = this.props.navigation.state.params.ip;
     var session = this.props.navigation.state.params.session;
-
     var updateListScreenFlatList = this.props.navigation.state.params.callback;
 
     var nameValueList = [
@@ -83,16 +83,19 @@ export class ProspectEditScreen extends Component {
     this.setState({isPushing: true});
 
     var onSuccess = function(responseData){
+        // Received a server response.
         this.setState({isPushing: false});
         if(responseData.entry_list){
-
-            console.log("(EditScreen received item) :");
-            console.log(responseData.entry_list);
+            if(DEBUG){
+                console.log("(EditScreen received item) :");
+                console.log(responseData.entry_list);
+            }
             this.setState({hasModifications: false});
             
             Alert.alert('Succès', onSuccessMessage,
                   [ 
                       {text: 'OK', onPress: () => {
+                        // Update the prospectList and go back to the previousScreen.
                         updateListScreenFlatList(responseData.entry_list);
                         this.props.navigation.goBack();
                       }},
@@ -164,8 +167,6 @@ export class ProspectEditScreen extends Component {
             )
   }
 
-
-
   debugState(){
       console.log("this.state=");
       console.log(this.state);
@@ -177,7 +178,7 @@ export class ProspectEditScreen extends Component {
 
     // Basic regex for email checking.
     var reg = /^[\w.-]+@[\w-]+\.[a-zA-Z]{2,4}$/;
-
+    // If the email field is set, it ensure that it has a correct format.
     if(this.state[constants.email_key] && !reg.test(this.state[constants.email_key])){
        Alert.alert('Erreur', 'Format de l\'email incorrect',
                   [ 
@@ -187,7 +188,7 @@ export class ProspectEditScreen extends Component {
         return false;
     }
 
-    // Not null and no white space only.
+    // Insure that the prospect last_name is set and not with white space only.
     if(!this.state[constants.last_name_key] || !this.state[constants.last_name_key].replace(/\s/g, '').length){
        Alert.alert('Erreur', 'Le champ \'Nom\' est obligatoire',
                   [ 
@@ -199,7 +200,9 @@ export class ProspectEditScreen extends Component {
     return true;
   }
 
-
+  /**
+   * It auto fill the prospect informations on the editScreen.
+   */
   setStateToItem(){
     var item = this.props.navigation.state.params.item;
 
@@ -208,9 +211,9 @@ export class ProspectEditScreen extends Component {
           for(key in item){
               if(item[key].value){
                   if(DEBUG){
-                      console.log("Key retireved: "+ key + "   value =  "+ item[key].value);
+                      console.log("item["+ key + "] =  "+ item[key].value);
                   }
-                  // We don't use setState() here because it cause to re-render and it slow the process.
+                  // We don't use setState() here because it cause to re-render the screen for each key and thus slow the process.
                   this.state[key] = item[key].value;
               }
           }
@@ -223,8 +226,10 @@ export class ProspectEditScreen extends Component {
       this.state.isEditable = !this.props.navigation.state.params.item;
   }
 
+  /**
+   * It update the state key with the given value and set the hasModification flag to true.
+   */
   updateData(key, value){
-      key.value = value;
       this.setState({[key]: value, hasModifications: true});
   }
 
@@ -345,6 +350,9 @@ export class ProspectEditScreen extends Component {
 
 }
 
+/**
+ * This class is used to have an icon followed by an input text component.
+ */
 var InputLabelRow = React.createClass({
 
    	render() {

@@ -26,7 +26,7 @@ export class ProspectListScreen extends Component {
   }
 
   /**
-   * Navigate to the given string.
+   * Navigate to the given screen.
    * item if set it is the prospect to consult/edit. Otherwise it mean it is a prospect creation (which it is by default).
    **/
   navigate(screen, item=null){
