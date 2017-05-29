@@ -28,7 +28,7 @@ export class ProspectEditScreen extends Component {
         [constants.last_name_key]: null,
         [constants.first_name_key]: null,
         [constants.title_key]: null,
-        [constants.service_key]: null,
+        [constants.department_key]: null,
         [constants.account_name_key]: null,
         [constants.work_phone_number_key]: null,
         [constants.mobile_phone_number_key]: null,
@@ -60,7 +60,7 @@ export class ProspectEditScreen extends Component {
                             {name:constants.last_name_key, value: this.state[constants.last_name_key]},
                             {name:constants.first_name_key, value: this.state[constants.first_name_key]},
                             {name:constants.title_key, value: this.state[constants.title_key]},
-                            {name:constants.service_key, value: this.state[constants.service_key]},
+                            {name:constants.department_key, value: this.state[constants.department_key]},
                             {name:constants.account_name_key, value: this.state[constants.account_name_key]},
                             {name:constants.work_phone_number_key, value: this.state[constants.work_phone_number_key]},
                             {name:constants.mobile_phone_number_key, value: this.state[constants.mobile_phone_number_key]},
@@ -78,8 +78,6 @@ export class ProspectEditScreen extends Component {
                         name_value_list: nameValueList,
                       }
 
-    var updatedDataJson = JSON.stringify(updatedData);                      
-    
     this.setState({isPushing: true});
 
     var onSuccess = function(responseData){
@@ -115,7 +113,7 @@ export class ProspectEditScreen extends Component {
         this.setState({isPushing: false, error: true});
     }
   
-    restCall("set_entry", updatedDataJson, ip, onSuccess.bind(this), onFailure.bind(this));
+    restCall("set_entry", updatedData, ip, onSuccess.bind(this), onFailure.bind(this));
   
   }
 
@@ -305,8 +303,8 @@ export class ProspectEditScreen extends Component {
                           					onChangeText = {(text) => this.updateData(constants.first_name_key, text)} placeholder='Prénom'/>
         						    <InputLabelRow icon={null} value = {this.state[constants.title_key]} editable={this.state.isEditable}
                           					onChangeText = {(text) => this.updateData(constants.title_key, text)} placeholder='Fonction'/>
-        						    <InputLabelRow icon={null} value = {this.state[constants.service_key]} editable={this.state.isEditable}
-                          					onChangeText = {(text) => this.updateData(constants.service_key, text)} placeholder='Service'/>
+        						    <InputLabelRow icon={null} value = {this.state[constants.department_key]} editable={this.state.isEditable}
+                          					onChangeText = {(text) => this.updateData(constants.department_key, text)} placeholder='Département'/>
         						    <InputLabelRow icon={null} value = {this.state[constants.account_name_key]} editable={this.state.isEditable}
                           					onChangeText = {(text) => this.updateData(constants.account_name_key, text)} placeholder='Nom de compte'/>
         					      	<InputLabelRow micon='phone-classic' value = {this.state[constants.work_phone_number_key]} editable={this.state.isEditable}

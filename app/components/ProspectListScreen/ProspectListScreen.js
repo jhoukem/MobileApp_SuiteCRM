@@ -129,11 +129,12 @@ export class ProspectListScreen extends Component {
     if(DEBUG){
       console.log("(ListScreen) Session id received = " + session);
     }
-    // Api request field
-    var param = '{"session":"'+ session +'","module_name":"Leads","query":"","order_by":"","offset":"0",'+
-    '"select_fields":["id","last_name","first_name","title","service","department","account_name","email1",'+
-    '"phone_work","phone_mobile","website","primary_address_street","primary_address_city","primary_address_postalcode",'+
-    '"primary_address_country","description"],"link_name_to_fields_array":[],"max_results":"1000"}';
+    // Api request.
+    var params = {"session":session, "module_name":"Leads", "query":"", "order_by":"", "offset":0, "select_fields":
+    [constants.id_key, constants.last_name_key, constants.first_name_key, constants.title_key, constants.department_key, constants.account_name_key,
+     constants.email_key, constants.work_phone_number_key, constants.mobile_phone_number_key, constants.website_key, constants.country_key, constants.street_key,
+     constants.city_key, constants.postalcode_key, constants.description_key]
+    ,"link_name_to_fields_array":[], "max_results":1000};
 
 
     this.setState({isFetching: true});
@@ -147,7 +148,7 @@ export class ProspectListScreen extends Component {
         this.setState({isFetching: false, error: true});
     }
 
-    restCall("get_entry_list", param, ip, onSuccess.bind(this), onFailure.bind(this));
+    restCall("get_entry_list", params, ip, onSuccess.bind(this), onFailure.bind(this));
   }
 
 

@@ -6,7 +6,6 @@ export const uiTheme = {
     palette: {
         primaryColor: '#1F94B7', //'#1F94B7',
         accentColor: '#07589A',
-        primaryTextColor: 'white',
     },
     toolbar: {
         container: {
@@ -29,7 +28,7 @@ export const id_key = "id";
 export const last_name_key = "last_name";
 export const first_name_key = "first_name";
 export const title_key = "title";
-export const service_key = "department";
+export const department_key = "department";
 export const account_name_key = "account_name";
 export const work_phone_number_key = "phone_work";
 export const mobile_phone_number_key = "phone_mobile";

@@ -10,7 +10,7 @@ export var restCall = function(method, parameters, url, functionOnSuccess, funct
             'Accept': 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: arg.concat(parameters),
+        body: arg.concat(JSON.stringify(parameters)),
     }
 
     if(DEBUG){
@@ -19,6 +19,9 @@ export var restCall = function(method, parameters, url, functionOnSuccess, funct
         console.log(dataToSend);
     }
 
+    // For production you may want to remove 'SuiteCRM' from the path.
+    // Here it is set because I use a Wampserver and you can have multiple website with wamp
+    // so you have to specify the folder.
     fetch('http://'+ url +'/SuiteCRM/service/v3_1/rest.php', dataToSend)  
     .then((response) => response.json())
     .then((responseData) => {

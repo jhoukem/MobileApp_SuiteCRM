@@ -61,7 +61,7 @@ export class LoginScreen extends Component {
 
   authentify(ip, login, password){
 
-    var credential = '{"user_auth":{"user_name":"'+ login +'","password":"'+ password.toString() +'"}}';
+    var credential = {"user_auth":{"user_name": login, "password": password.toString() }};
 
     
     this.setState({isFetching: true});
