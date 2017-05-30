@@ -128,7 +128,7 @@ export class LoginScreen extends Component {
       var ip = await this.getInfo("ip");
       var login = await this.getInfo("login");
       this.setState({ip: ip ? ip : '', login: login ? login : '', isChecked: (ip || login) ? true : false});
-      // Add keyboard listener.
+      // Add keyboard listener to hide the logo on show up.
       this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
       this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
   }

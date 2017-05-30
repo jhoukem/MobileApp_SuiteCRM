@@ -19,5 +19,5 @@ Of course in order to be used, this application need to connect to a [SuiteCRM s
 
 ## Demo
 
-<img src="https://cloud.githubusercontent.com/assets/9862039/26405076/27c98f3a-4062-11e7-959a-0c6f78b57d64.png" alt="Demo 1" height="512"/>
+<img src="https://cloud.githubusercontent.com/assets/9862039/26598392/18a7c14e-4543-11e7-9784-6564a3f21176.png" alt="Demo 1" height="512"/>
 <img src="https://cloud.githubusercontent.com/assets/9862039/26405082/2b2a1dde-4062-11e7-8be7-89ea7c28cc96.png" alt="Demo 2" height="512"/>
