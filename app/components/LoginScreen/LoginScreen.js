@@ -12,11 +12,15 @@ import { restCall } from '../../core/rest_api.js'
 var DEBUG = false;
 var MD5 = require("crypto-js/md5");
 
+/**
+ * Author: Jean-Hugo OUWE MISSI OUKEM
+ *
+ * Description: This is a React Native component which gives an UI to connect to a CRM server.
+ * It can give a feedback on a connection failure and it can remember the user login and the server IP
+ * accross application life cycle.
+ *
+ */
 export class LoginScreen extends Component {
-
-  static navigationOptions = {
-    title: 'Exelcia CRM Prospect Manager',
-  };
 
   constructor(props) {
     super(props);

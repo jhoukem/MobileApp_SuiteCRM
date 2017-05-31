@@ -10,6 +10,13 @@ import { restCall } from '../../core/rest_api.js'
 
 var DEBUG = false;
 
+/**
+ * Author: Jean-Hugo OUWE MISSI OUKEM
+ *
+ * Description: This is a React Native component used to show a prospect details.
+ * It has an edit mode (disabled by default) that allow to modify a prospect details.
+ *
+ */
 export class ProspectEditScreen extends Component {
 
   // Hide the navigation bar since we use a Toolbar on this component.

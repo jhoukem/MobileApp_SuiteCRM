@@ -9,6 +9,15 @@ import { restCall } from '../../core/rest_api.js'
 
 var DEBUG = false;
 
+/**
+ * Author: Jean-Hugo OUWE MISSI OUKEM
+ *
+ * Description: This is a React Native component which gives an UI to visualize a list of prospect
+ * fetched from a CRM server.
+ * It can give a feedback on a connection failure and it can remember the user login and the server IP
+ * accross application life cycle.
+ *
+ */
 export class ProspectListScreen extends Component {
 
   // Hide the navigation bar since we use a Toolbar on this component.

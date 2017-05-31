@@ -9,6 +9,7 @@ import * as constants from './app/config/const.js'
 // The style options for the navigation Bar.
 const options = {
 		navigationOptions: {
+				title: constants.applicationTitle,
 		        headerStyle: {
 								backgroundColor: constants.uiTheme.palette.primaryColor,
 								height: constants.uiTheme.toolbar.container.height,
